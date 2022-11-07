@@ -16,30 +16,30 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/v1/members")
 public class MemberController {
     private final MemberService memberService;
 
     //회원가입
-    @PostMapping(value="/members/signup")
+    @PostMapping(value="/signup")
     public ResponseDto<?> signup(@RequestBody @Valid MemberRequestDto requestDto) {
         return memberService.createMember(requestDto);
     }
 
     //로그인
-    @PostMapping(value = "/members/login")
+    @PostMapping(value = "/login")
     public ResponseDto<?> login(@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse response) {
         return memberService.login(requestDto, response);
     }
 
     //로그아웃
-    @PostMapping(value = "/members/logout")
+    @PostMapping(value = "/logout")
     public ResponseDto<?> logout(HttpServletRequest request) {
         return memberService.logout(request);
     }
 
     //토큰재발급
-    @PostMapping(value = "/members/reissue")
+    @PostMapping(value = "/reissue")
     public ResponseDto<?> reissue(HttpServletRequest request, HttpServletResponse response) {
         return memberService.reissue(request, response);
     }
