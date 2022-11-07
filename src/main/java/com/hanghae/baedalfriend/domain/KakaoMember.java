@@ -7,6 +7,7 @@ import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.sql.Time;
 import java.util.Objects;
 
 @Builder
@@ -15,7 +16,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @Entity
-public class Member extends Timestamped {
+public class KakaoMember extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,35 +30,25 @@ public class Member extends Timestamped {
     @JsonIgnore
     @Column(nullable = false)
     private String password;
-    private String address;
+
     private String profileURL;
 
-    @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private Authority role;
+    @Column(unique = true)
+    private Long kakaoId;
 
-    public Member(String email, String encodedPassword, String profileURL, String nickname, Long kakaoId) {
-        super();
-    }
 
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (object == null || Hibernate.getClass(this) != Hibernate.getClass(object)) {
-            return false;
-        }
-        Member member = (Member) object;
-        return id != null & Objects.equals(id, member.id);
-    }
 
     @Override
     public int hashCode() {
         return getClass().hashCode();
     }
 
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private Authority role;
+
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
 }
+
