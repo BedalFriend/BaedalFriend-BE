@@ -12,7 +12,6 @@ import java.util.Objects;
 @Builder
 @Getter
 @NoArgsConstructor
-@Setter
 @AllArgsConstructor
 @Entity
 public class Member extends Timestamped {
