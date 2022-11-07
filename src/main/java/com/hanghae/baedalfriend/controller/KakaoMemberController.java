@@ -17,11 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/v1/kakao")
 public class KakaoMemberController {
     private final KakaoMemberService kakaoMemberService;
 
-    @GetMapping("/kakao/callback")
+    @GetMapping("/callback")
     public ResponseDto<MemberResponseDto> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         return kakaoMemberService.kakaoLogin(code, response);
     }
