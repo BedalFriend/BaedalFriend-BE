@@ -45,7 +45,6 @@ public class SecurityConfiguration {
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors();
-
         http.csrf().disable()
 
                 .exceptionHandling()
@@ -56,10 +55,8 @@ public class SecurityConfiguration {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-
                 .and()
                 .authorizeRequests()
-//                .antMatchers("/api/member/**").permitAll()
                 .antMatchers("/api/post/**").permitAll()
                 .antMatchers("/v1/members/**").permitAll()
                 .antMatchers("/api/comment/**").permitAll()

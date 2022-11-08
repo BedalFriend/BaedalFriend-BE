@@ -3,12 +3,9 @@ package com.hanghae.baedalfriend.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hanghae.baedalfriend.shared.Authority;
 import lombok.*;
-import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.sql.Time;
-import java.util.Objects;
 
 @Builder
 @Getter
@@ -24,9 +21,6 @@ public class KakaoMember extends Timestamped {
     @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = false)
-    private String email;
-
     @JsonIgnore
     @Column(nullable = false)
     private String password;
@@ -35,8 +29,6 @@ public class KakaoMember extends Timestamped {
 
     @Column(unique = true)
     private Long kakaoId;
-
-
 
     @Override
     public int hashCode() {
@@ -51,4 +43,3 @@ public class KakaoMember extends Timestamped {
         return passwordEncoder.matches(password, this.password);
     }
 }
-

@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.hanghae.baedalfriend.domain.Check;
-import com.hanghae.baedalfriend.domain.KakaoMember;
+
 import com.hanghae.baedalfriend.domain.Member;
-import com.hanghae.baedalfriend.domain.UserDetailsImpl;
-import com.hanghae.baedalfriend.dto.requestdto.TokenDto;
+
 import com.hanghae.baedalfriend.dto.responsedto.KakaoMemberInfoDto;
 import com.hanghae.baedalfriend.dto.responsedto.MemberResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
@@ -16,15 +15,13 @@ import com.hanghae.baedalfriend.jwt.TokenProvider;
 import com.hanghae.baedalfriend.repository.MemberRepository;
 import com.hanghae.baedalfriend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class KakaoMemberService {
@@ -59,48 +57,58 @@ public class KakaoMemberService {
         KakaoMemberInfoDto kakaoMemberInfo = getKakaoMemberInfo(accessToken);
 
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        String email = kakaoMemberInfo.getEmail();
-        Member kakaoMember = memberRepository.findByEmail(email)
+        String nickname = kakaoMemberInfo.getNickname();
+        Member kakaoMember = memberRepository.findById(kakaoMemberInfo.getId())
                 .orElse(null);
 
         if (refreshTokenRepository.findByMember(kakaoMember).isPresent()) {
             //refreshTokenRepository.deleteByMember(kakaoMember);
         }
+
         if (kakaoMember == null) {
             // 회원가입
             String password = UUID.randomUUID().toString();
 //            String userId = UUID.randomUUID().toString().substring(0, 8);
             String encodedPassword = passwordEncoder.encode(password);
-            String profileURL = kakaoMemberInfo.getProfileURL();
-            String nickname = kakaoMemberInfo.getNickname();
-            Long kakaoId= kakaoMemberInfo.getId();
-            kakaoMember = new Member(email, encodedPassword, profileURL, nickname, kakaoId);
 
+            String profileURL = kakaoMemberInfo.getProfileURL();
+
+            //  String nickname = kakaoMemberInfo.getNickname();
+
+            Long kakaoId= kakaoMemberInfo.getId();
+
+            kakaoMember = new Member(encodedPassword, profileURL, nickname, kakaoId);
+
+            System.out.println(kakaoMember.getNickname());
+            log.info(kakaoMember.getNickname());
+            log.info(kakaoMember.getProfileURL());
+            System.out.println(kakaoMember.getProfileURL());
             memberRepository.save(kakaoMember);
+            System.out.println("=============================kakaoMember 저장 확인============================================");
         }
 
         // 4. 강제 로그인 처리
-        UserDetails userDetails = new UserDetailsImpl(kakaoMember);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        Member member = check.getMemberById(String.valueOf(kakaoMember.getId()));
-        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
-        tokenDto.tokenToHeaders(response);
+//        System.out.println("=============================강제 로그인 처리============================================");
+//        UserDetails userDetails = new UserDetailsImpl(kakaoMember);
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        Member member = check.getMemberById(String.valueOf(kakaoMember.getId()));
+//        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
+//        tokenDto.tokenToHeaders(response);
 
 //        if (member.isDelete()) {
 //            throw new MemberNotFoundException();
 //        }
 
+        System.out.println("=============================Return============================================");
         return ResponseDto.success(
                 MemberResponseDto.builder()
-                        .id(member.getId())
-                        .nickname(member.getNickname())
-                    /*    .userId(member.getUserId())*/
-                        .email(member.getEmail())
-                        .profileURL(member.getProfileURL())
-                        .createdAt(member.getCreatedAt())
-                        .modifiedAt(member.getModifiedAt())
+                        .id(kakaoMember.getId())
+                        .nickname(kakaoMember.getNickname())
+                        .profileURL(kakaoMember.getProfileURL())
+                        .createdAt(kakaoMember.getCreatedAt())
+                        .modifiedAt(kakaoMember.getModifiedAt())
                         .build()
         );
     }
@@ -117,6 +125,7 @@ public class KakaoMemberService {
         body.add("client_id", myKaKaoRestAplKey);
         body.add("redirect_uri", "http://localhost:3000/kakaoLogin");
         body.add("code", code);
+
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
@@ -159,12 +168,13 @@ public class KakaoMemberService {
         Long id = jsonNode.get("id").asLong();
         String nickname = jsonNode.get("kakao_account").get("profile")
                 .get("nickname").asText();
-        String email = jsonNode.get("kakao_account")
-                .get("email").asText();
+
+
         String profilePhoto = jsonNode.get("kakao_account").get("profile").get("profile_image_url").asText();
 
 
         System.out.println("카카오 사용자 정보: " + id + ", " + nickname);
-        return new KakaoMemberInfoDto(nickname, email, profilePhoto, id);
+
+        return new KakaoMemberInfoDto(nickname,  profilePhoto, id);
     }
 }

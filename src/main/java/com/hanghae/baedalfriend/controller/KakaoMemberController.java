@@ -7,22 +7,20 @@ import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.service.KakaoMemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/v1/kakao")
+@RequestMapping(value = "/v1/members/kakao")
 public class KakaoMemberController {
     private final KakaoMemberService kakaoMemberService;
 
-    @GetMapping("/callback")
+    @PostMapping("/callback")
     public ResponseDto<MemberResponseDto> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        log.info("카카오콜백 {}" + code  );
         return kakaoMemberService.kakaoLogin(code, response);
     }
 }
