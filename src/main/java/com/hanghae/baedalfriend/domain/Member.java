@@ -11,8 +11,8 @@ import java.util.Objects;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
-
 @AllArgsConstructor
 @Entity
 public class Member extends Timestamped {
@@ -20,10 +20,9 @@ public class Member extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = false)
+    //    @Column(nullable = false)
     private String email;
 
     @JsonIgnore
@@ -35,6 +34,14 @@ public class Member extends Timestamped {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Authority role;
+
+    public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId) {
+        this.nickname = nickname;
+        this.password = encodedPassword;
+        this.profileURL = profileURL;
+        this.id = kakaoId;
+        this.role = Authority.ROLE_MEMBER;
+    }
 
     @Override
     public boolean equals(Object object) {
