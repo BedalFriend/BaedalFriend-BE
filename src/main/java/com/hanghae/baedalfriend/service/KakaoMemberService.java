@@ -95,6 +95,7 @@ public class KakaoMemberService {
                         .profileURL(kakaoMember.getProfileURL())
                         .createdAt(kakaoMember.getCreatedAt())
                         .modifiedAt(kakaoMember.getModifiedAt())
+                        .role(kakaoMember.getRole())
                         .build()
         );
     }
