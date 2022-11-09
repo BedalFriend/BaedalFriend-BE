@@ -8,6 +8,7 @@ import com.hanghae.baedalfriend.domain.Check;
 
 import com.hanghae.baedalfriend.domain.Member;
 
+import com.hanghae.baedalfriend.dto.requestdto.TokenDto;
 import com.hanghae.baedalfriend.dto.responsedto.KakaoMemberInfoDto;
 import com.hanghae.baedalfriend.dto.responsedto.MemberResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
@@ -57,28 +58,22 @@ public class KakaoMemberService {
         KakaoMemberInfoDto kakaoMemberInfo = getKakaoMemberInfo(accessToken);
 
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        String nickname = kakaoMemberInfo.getNickname();
-        Member kakaoMember = memberRepository.findById(kakaoMemberInfo.getId())
+        String nickname = String.valueOf(kakaoMemberInfo.getNickname());
+        Member kakaoMember = memberRepository.findByKakaoId(kakaoMemberInfo.getId())
                 .orElse(null);
 
-        if (refreshTokenRepository.findByMember(kakaoMember).isPresent()) {
-            //refreshTokenRepository.deleteByMember(kakaoMember);
-        }
+        System.out.println(kakaoMember.getNickname());
+        log.info(kakaoMember.getNickname());
+        System.out.println(" ===================kakaoMember================================================");
+
 
         if (kakaoMember == null) {
             // 회원가입
             String password = UUID.randomUUID().toString();
-//            String userId = UUID.randomUUID().toString().substring(0, 8);
             String encodedPassword = passwordEncoder.encode(password);
-
             String profileURL = kakaoMemberInfo.getProfileURL();
-
-            //  String nickname = kakaoMemberInfo.getNickname();
-
             Long kakaoId= kakaoMemberInfo.getId();
-
             kakaoMember = new Member(encodedPassword, profileURL, nickname, kakaoId);
-
             System.out.println(kakaoMember.getNickname());
             log.info(kakaoMember.getNickname());
             log.info(kakaoMember.getProfileURL());
@@ -89,18 +84,9 @@ public class KakaoMemberService {
 
         // 4. 강제 로그인 처리
 //        System.out.println("=============================강제 로그인 처리============================================");
-//        UserDetails userDetails = new UserDetailsImpl(kakaoMember);
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        Member member = check.getMemberById(String.valueOf(kakaoMember.getId()));
-//        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
-//        tokenDto.tokenToHeaders(response);
-
-//        if (member.isDelete()) {
-//            throw new MemberNotFoundException();
-//        }
-
+        Member member = check.getMemberById(String.valueOf(kakaoMember.getId()));
+        TokenDto tokenDto = tokenProvider.generateTokenDto(kakaoMember);
+        tokenDto.tokenToHeaders(response);
         System.out.println("=============================Return============================================");
         return ResponseDto.success(
                 MemberResponseDto.builder()
@@ -113,8 +99,8 @@ public class KakaoMemberService {
         );
     }
 
-
     private String getAccessToken(String code) throws JsonProcessingException {
+
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -125,7 +111,6 @@ public class KakaoMemberService {
         body.add("client_id", myKaKaoRestAplKey);
         body.add("redirect_uri", "http://localhost:3000/kakaoLogin");
         body.add("code", code);
-
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
@@ -169,9 +154,7 @@ public class KakaoMemberService {
         String nickname = jsonNode.get("kakao_account").get("profile")
                 .get("nickname").asText();
 
-
         String profilePhoto = jsonNode.get("kakao_account").get("profile").get("profile_image_url").asText();
-
 
         System.out.println("카카오 사용자 정보: " + id + ", " + nickname);
 
