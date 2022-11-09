@@ -1,5 +1,4 @@
 package com.hanghae.baedalfriend.dto.responsedto;
-
 import lombok.Getter;
 
 @Getter

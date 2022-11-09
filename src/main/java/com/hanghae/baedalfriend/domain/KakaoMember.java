@@ -1,10 +1,8 @@
 package com.hanghae.baedalfriend.domain;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hanghae.baedalfriend.shared.Authority;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import javax.persistence.*;
 
 @Builder
@@ -35,11 +33,8 @@ public class KakaoMember extends Timestamped {
         return getClass().hashCode();
     }
 
-    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Authority role;
 
-    public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
-        return passwordEncoder.matches(password, this.password);
-    }
+
 }

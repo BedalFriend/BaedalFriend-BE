@@ -19,19 +19,19 @@ public class Member extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nickname;
 
-    //    @Column(nullable = false)
     private String email;
+
+    @Column(unique = true)
+    private Long kakaoId;
 
     @JsonIgnore
     @Column(nullable = false)
     private String password;
-    private String address;
+
     private String profileURL;
 
-    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Authority role;
 
@@ -39,7 +39,7 @@ public class Member extends Timestamped {
         this.nickname = nickname;
         this.password = encodedPassword;
         this.profileURL = profileURL;
-        this.id = kakaoId;
+        this.kakaoId = kakaoId;
         this.role = Authority.ROLE_MEMBER;
     }
 

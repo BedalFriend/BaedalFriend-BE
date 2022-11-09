@@ -20,7 +20,6 @@ import java.util.List;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
@@ -31,8 +30,8 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.basePackage("com.hanghae.baedalfriend")) // swagger
                 .paths(PathSelectors.any())
                 .build()
-                .apiInfo(apiInfo())
-                ;
+                .apiInfo(apiInfo());
+
     }
 
     private ApiInfo apiInfo() {
