@@ -63,6 +63,13 @@ public class SecurityConfiguration {
                 .antMatchers("/api/post/**").permitAll()
                 .antMatchers("/v1/members/**").permitAll()
                 .antMatchers("/api/comment/**").permitAll()
+                .antMatchers("/ws/chat").permitAll()
+                .antMatchers("/sub/**").permitAll()
+                .antMatchers("/pub/**").permitAll()
+                .antMatchers("/ws/**").permitAll()
+                .antMatchers("/stomp/**").permitAll()
+                .antMatchers("/websocket/**").permitAll()
+                .antMatchers("/chat/**").permitAll()
                 .antMatchers( "/v2/api-docs",
                         "/swagger-resources",
                         "/swagger-resources/**",
