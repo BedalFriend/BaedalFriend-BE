@@ -1,5 +1,6 @@
 package com.hanghae.baedalfriend.controller;
 
+import com.amazonaws.Response;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomRepository;
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
@@ -48,8 +49,8 @@ public class PostController {
     @GetMapping(value ="/posts/{id}")
     public ResponseDto<?> getPost(@PathVariable Long id) {
         return postService.getPost(id);
-
     }
+
     // 게시물 수정
     @PutMapping(value = "/auth/posts/{id}")
     public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto,
@@ -66,8 +67,16 @@ public class PostController {
         return postService.deletePost(id, request);
     }
 
+    // 카테고리 조회
     @RequestMapping(value="/category/show", method = RequestMethod.GET)
     public ResponseDto<?> showCategoryPost(){
         return postService.showCategoryPost();
     }
+
+    @RequestMapping(value = "/post/category/{category}", method = RequestMethod.GET)
+    public ResponseDto<?> finedCategoryPost(@PathVariable String category) {
+        return postService.findCategoryPost(category);
+    }
+
+
 }

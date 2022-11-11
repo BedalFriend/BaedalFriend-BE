@@ -231,4 +231,28 @@ public class PostService {
 
         return ResponseDto.success(categoryOnlyResponseDtos);
     }
+
+    @Transactional
+    public ResponseDto<?> findCategoryPost(String category) {
+        List<Post> postList = postRepository.findAllByCategory(category);
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+
+        for(Post post: postList) {
+            postResponseDtoList.add (
+                    PostResponseDto.builder()
+                            .postId(post.getId())
+                            .roomTitle(post.getRoomTitle())
+                            .nickname(post.getNickname())
+                            .imageUrl(post.getImageUrl())
+                            .content(post.getContent())
+                            .limitTime(post.getLimitTime())
+                            .category(post.getCategory())
+                           // .createdAt(post.getCreatedAt())
+                         //   .modifiedAt(post.getModifiedAt())
+                            .build()
+            );
+        }
+        return ResponseDto.success(postResponseDtoList);
+    }
+
 }
