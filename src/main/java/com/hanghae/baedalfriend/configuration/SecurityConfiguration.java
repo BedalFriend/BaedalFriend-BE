@@ -55,10 +55,10 @@ public class SecurityConfiguration {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/post/**").permitAll()
                 .antMatchers("/v1/members/**").permitAll()
-                .antMatchers("/api/comment/**").permitAll()
                 .antMatchers("/v1/kakao/**").permitAll()
+                .antMatchers("/v1/auth/**").permitAll()
+                .antMatchers("/v1/posts/**").permitAll()
                 .antMatchers( "/v2/api-docs",
                         "/swagger-resources",
                         "/swagger-resources/**",

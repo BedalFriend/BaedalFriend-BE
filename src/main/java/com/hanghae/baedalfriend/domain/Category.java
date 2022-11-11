@@ -1,31 +1,36 @@
 package com.hanghae.baedalfriend.domain;
 
-public enum Category {
+import lombok.Builder;
+import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
 
-    치킨(1),
+import javax.persistence.*;
 
-    피자(2),
+@Getter
+@Entity
+public class Category {
 
-    햄버거(3),
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    디저트(4);
-    private int num;
+    @Column(name = "category",nullable = false)
+    private String category;
 
-    Category(int num) {
-        this.num = num;
+    @Column(name = "viewerCnt",nullable = false)
+    @ColumnDefault("0")
+    private Long exposureNumber;
+
+    public Category(){}
+
+    @Builder
+    public Category(String category, Long exposureNumber){
+        this.category = category;
+        this.exposureNumber = exposureNumber;
     }
 
-    public static Category partsValue(int num) {
-        switch (num) {
-            case 1:
-                return 치킨;
-            case 2:
-                return 피자;
-            case 3:
-                return 햄버거;
-            case 4:
-                return 디저트;
-        }
-        return null;
+    public void updateExposureNumber(String cate){
+        this.category = cate;
+        this.exposureNumber += 1;
     }
 }
