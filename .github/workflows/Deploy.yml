@@ -55,4 +55,4 @@ jobs:
             docker pull kaifazhehj99/finalproject:latest
             docker stop finalproject
             docker rm finalproject
-            docker run -d --rm --name finalproject -p 80:8080 kaifazhehj99/finalproject:latest
+            docker run -d --rm --name finalproject -p 8080:8080 kaifazhehj99/finalproject:latest
