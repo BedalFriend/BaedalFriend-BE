@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -66,6 +67,8 @@ public class SecurityConfiguration {
                 .antMatchers("/v1/auth/**").permitAll()
                 .antMatchers("/v1/posts/**").permitAll()
                 .antMatchers("/api/comment/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/events}").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/events/{eventId}").permitAll()
                 .antMatchers("/ws/chat").permitAll()
                 .antMatchers("/sub/**").permitAll()
                 .antMatchers("/pub/**").permitAll()
