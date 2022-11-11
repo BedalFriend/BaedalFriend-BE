@@ -1,10 +1,8 @@
 package com.hanghae.baedalfriend.dto.requestdto;
-
 import com.hanghae.baedalfriend.shared.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -29,7 +27,6 @@ public class MemberRequestDto {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{4,32}$"
             , message = "비밀번호에 영어대소문자, 숫자, 특수문자를 모두 포함해주세요")
     private String password;
-    private String address;
     private String profileURL;
     private Authority role;
 
