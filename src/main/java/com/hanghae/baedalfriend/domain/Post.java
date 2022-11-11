@@ -54,6 +54,7 @@ public class Post extends Timestamped {
         this.target = postRequestDto.getTarget(); // 식당주소
         this.gather = postRequestDto.getGather(); // 집결지주소
         this.maxCapacity = postRequestDto.getMaxCapacity(); // 최대수용인원
+        this.category = postRequestDto.getCategory(); // 카테고리
     }
 
     // 멤버 유효성 체크
