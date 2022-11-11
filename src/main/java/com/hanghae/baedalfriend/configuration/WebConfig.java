@@ -1,5 +1,4 @@
 package com.hanghae.baedalfriend.configuration;
-
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,6 @@ public class WebConfig implements WebMvcConfigurer {
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
-
     @Override
     public Validator getValidator() {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();

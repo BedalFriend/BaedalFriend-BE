@@ -11,30 +11,37 @@ import java.util.Objects;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
-
 @AllArgsConstructor
 @Entity
 public class Member extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = false)
     private String email;
+
+    @Column(unique = true)
+    private Long kakaoId;
 
     @JsonIgnore
     @Column(nullable = false)
     private String password;
-    private String address;
+
     private String profileURL;
 
-    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Authority role;
+
+    public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId) {
+        this.nickname = nickname;
+        this.password = encodedPassword;
+        this.profileURL = profileURL;
+        this.kakaoId = kakaoId;
+        this.role = Authority.ROLE_MEMBER;
+    }
 
     @Override
     public boolean equals(Object object) {
