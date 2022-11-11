@@ -3,6 +3,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
 @Configuration
 public class CorsConfiguration {
     @Bean
@@ -16,6 +17,8 @@ public class CorsConfiguration {
         config.addAllowedMethod("*");
         config.addExposedHeader("*");
         source.registerCorsConfiguration("/v1/members/**",config);
+        source.registerCorsConfiguration("/v1/members/**",config);
+        source.registerCorsConfiguration("/**",config);
         return new CorsFilter(source);
     }
 }

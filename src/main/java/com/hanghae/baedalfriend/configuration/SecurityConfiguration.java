@@ -19,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -43,6 +45,7 @@ public class SecurityConfiguration {
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors();
+
         http.csrf().disable()
 
                 .exceptionHandling()
@@ -53,12 +56,23 @@ public class SecurityConfiguration {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
+
                 .and()
                 .authorizeRequests()
+//                .antMatchers("/api/member/**").permitAll()
+                .antMatchers("/api/post/**").permitAll()
                 .antMatchers("/v1/members/**").permitAll()
                 .antMatchers("/v1/kakao/**").permitAll()
                 .antMatchers("/v1/auth/**").permitAll()
                 .antMatchers("/v1/posts/**").permitAll()
+                .antMatchers("/api/comment/**").permitAll()
+                .antMatchers("/ws/chat").permitAll()
+                .antMatchers("/sub/**").permitAll()
+                .antMatchers("/pub/**").permitAll()
+                .antMatchers("/ws/**").permitAll()
+                .antMatchers("/stomp/**").permitAll()
+                .antMatchers("/websocket/**").permitAll()
+                .antMatchers("/chat/**").permitAll()
                 .antMatchers( "/v2/api-docs",
                         "/swagger-resources",
                         "/swagger-resources/**",
