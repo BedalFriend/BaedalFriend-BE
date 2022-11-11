@@ -10,38 +10,38 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/v1")
 @RestController
 public class EventController {
 
     private final EventService eventService;
 
     //공지사항(이벤트) 등록
-    @PostMapping("/event")
+    @PostMapping("/events")
     public ResponseDto<?> createEvent(@RequestBody EventRequestDto requestDto, HttpServletRequest request) {
         return eventService.createEvent(requestDto, request);
     }
 
     //공지사항(이벤트) 전체 조회
-    @GetMapping("/event")
+    @GetMapping("/events")
     public ResponseDto<?> getAllEvents(Pageable pageable) {
         return eventService.getAllEvents(pageable);
     }
 
     //공지사항(이벤트) 1개 조회
-    @GetMapping("/event/{eventId}")
+    @GetMapping("/events/{eventId}")
     public ResponseDto<?> getEvent(@PathVariable Long eventId) {
         return eventService.getEvent(eventId);
     }
 
     //공지사항(이벤트) 수정
-    @PutMapping("/event/{eventId}")
+    @PutMapping("/events/{eventId}")
     public ResponseDto<?> updateEvent(@PathVariable Long eventId,@RequestBody EventRequestDto requestDto, HttpServletRequest request) {
         return eventService.updateEvent(eventId, requestDto, request);
     }
 
     //공지사항(이벤트) 삭제
-    @DeleteMapping("/event/{eventId}")
+    @DeleteMapping("/events/{eventId}")
     public ResponseDto<?> deleteEvent(@PathVariable Long eventId, HttpServletRequest request) {
         return eventService.deleteEvent(eventId, request);
     }
