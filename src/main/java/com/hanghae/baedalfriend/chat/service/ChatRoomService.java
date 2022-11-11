@@ -9,6 +9,7 @@ import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomRepository;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.UserDetailsImpl;
+import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -75,23 +76,42 @@ public class ChatRoomService {
             return "";
     }
 
-//    // 채팅방 생성
-//
-//    public void createChatRoom(PostRequestDto requestDto,
-//                                          HttpServletRequest request) {
-//        Member writer = validateMember(request);
-//
-//
-//            String title=requestDto.getRoom_title
-//            ChatRoom chatRoom = new ChatRoom(writer,title);
-//            chatRoomRepository.save(chatRoom);
-//
-//
-//
-//    }
+    // 채팅방 생성
+
+    public void createChatRoom(PostRequestDto requestDto,
+                               HttpServletRequest request) {
+        Member writer = validateMember(request);
+
+
+            String title=requestDto.getRoomTitle();
+            ChatRoom chatRoom = new ChatRoom(writer,title);
+            chatRoomRepository.save(chatRoom);
+
+
+
+    }
 
     //채팅방 하나 불러오기
     public ResponseDto<?> findRoom(Long roomId, HttpServletRequest request) {
+
+
+        Member member = validateMember(request);
+
+
+
+        if (null == member) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND", "사용자를 찾을 수 없습니다.");
+        }
+
+        if (null == request.getHeader("Refresh_token")) {
+            return ResponseDto.fail("INVALID_TOKEN",
+                    "Token이 유효하지 않습니다.");
+        }
+
+        if (null == request.getHeader("Authorization")) {
+            return ResponseDto.fail("INVALID_TOKEN",
+                    "Token이 유효하지 않습니다.");
+        }
         Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
         if (chatRoom.isEmpty()) {
             return ResponseDto.fail("NO_EXIST", "존재하지 않는 채팅방입니다.");
@@ -100,7 +120,6 @@ public class ChatRoomService {
 
         ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto
                 .builder()
-                .chatRoomId(chatRoom.get().getRoomId())
                 .chatRoomMembers(chatRoomMembers)
                 .build();
 
