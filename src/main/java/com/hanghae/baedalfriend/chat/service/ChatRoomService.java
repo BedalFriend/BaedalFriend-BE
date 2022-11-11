@@ -112,11 +112,11 @@ public class ChatRoomService {
             return ResponseDto.fail("INVALID_TOKEN",
                     "Token이 유효하지 않습니다.");
         }
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
-        if (chatRoom.isEmpty()) {
-            return ResponseDto.fail("NO_EXIST", "존재하지 않는 채팅방입니다.");
-        }
-        List<ChatRoomMember> chatRoomMembers=chatRoomMemberRepository.findByChatRoomId(roomId);
+
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
+                () -> new NullPointerException("해당하는 채팅방이 없습니다.")
+        );
+        List<ChatRoomMember> chatRoomMembers=chatRoomMemberRepository.findAllByChatRoom(chatRoom);
 
         ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto
                 .builder()
@@ -128,12 +128,11 @@ public class ChatRoomService {
 
     public ResponseDto<?> enterRoom(Long roomId, HttpServletRequest request) {
         Member member = validateMember(request);
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
-        if (chatRoom.isEmpty()) {
-            return ResponseDto.fail("NO_EXIST", "존재하지 않는 채팅방입니다.");
-        }
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
+                () -> new NullPointerException("해당하는 채팅방이 없습니다.")
+        );
         ChatRoomMember chatRoomMember = ChatRoomMember.builder()
-                .chatRoom(chatRoom.get())
+                .chatRoom(chatRoom)
                 .member(member)
                 .build();
         chatRoomMemberRepository.save(chatRoomMember);
@@ -171,9 +170,9 @@ public class ChatRoomService {
 
 
         // 나간 유저를 채팅방 리스트에서 제거
-        chatRoomMemberRepository.deleteByMemberId(member.getId());
+        chatRoomMemberRepository.deleteByMember(member);
         // 현재 채팅룸에 한명이라도 남아있다면 퇴장메시지 전송
-        if (chatRoomMemberRepository.findByChatRoomId(roomId) != null) {
+        if (chatRoomMemberRepository.findAllByChatRoom(chatRoom) != null) {
             chatService.sendChatMessage(
                     ChatMessage.builder()
                             .type(ChatMessage.MessageType.QUIT)
