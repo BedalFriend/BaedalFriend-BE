@@ -19,6 +19,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -38,6 +39,10 @@ public class ChatRoomService {
     private final ChatService chatService;
 
     private final TokenProvider tokenProvider;
+
+    @Resource(name = "redisTemplate")
+    private HashOperations<String, String, ChatRoom> hashOpsChatRoom;
+    private static final String CHAT_ROOMS = "CHAT_ROOM"; // 채팅룸 저장
 
 
     @PostConstruct
@@ -78,12 +83,15 @@ public class ChatRoomService {
 
     public void createChatRoom(PostRequestDto requestDto,
                                HttpServletRequest request) {
+
         Member writer = validateMember(request);
+        String roomId = String.valueOf(requestDto.getId());
 
 
         String title = requestDto.getRoomTitle();
-        ChatRoom chatRoom = new ChatRoom(writer, title);
+        ChatRoom chatRoom = new ChatRoom(writer, title, roomId);
         chatRoomRepository.save(chatRoom);
+        hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
 
 
     }
@@ -173,8 +181,7 @@ public class ChatRoomService {
             chatService.sendChatMessage(
                     ChatMessage.builder()
                             .type(ChatMessage.MessageType.QUIT)
-                            .title(chatRoom.getTitle())
-                            .memberId(member.getId())
+//                            .title(chatRoom.getTitle())
                             .sender(member.getNickname())
                             .build()
             );

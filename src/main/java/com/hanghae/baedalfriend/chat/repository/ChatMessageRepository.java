@@ -35,10 +35,9 @@ public class ChatMessageRepository {
 
     public ChatMessageResponseDto save(ChatMessage chatMessage) {
         System.out.println("chatMessage is + " + chatMessage);
-        hashOpsChatMessage.put(chatMessage.getTitle(), chatMessage.getSender(),chatMessage);
+        hashOpsChatMessage.put(chatMessage.getRoomId(), chatMessage.getSender(),chatMessage);
 
         return  ChatMessageResponseDto.builder()
-                .title(chatMessage.getTitle())
                 .message(chatMessage.getMessage())
                 .sender(chatMessage.getSender())
                 .build();

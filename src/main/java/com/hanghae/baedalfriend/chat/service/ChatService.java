@@ -20,6 +20,7 @@ public class ChatService {
 
     private final ChannelTopic channelTopic;
     private final RedisTemplate redisTemplate;
+    private RedisSubscriber redisSubscriber;
 
 
     private final ChatMessageRepository chatMessageRepository;
@@ -35,7 +36,9 @@ public class ChatService {
         }else if (ChatMessage.MessageType.QUIT.equals(chatMessage.getType())) {
             chatMessage.setMessage("퇴장");
         }
+
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
+        redisSubscriber.sendMessage(chatMessage);
 
     }
 
@@ -44,9 +47,7 @@ public class ChatService {
         ChatMessage message = new ChatMessage();
         message.setType(chatRoomMessage.getType());
         message.setMessage(chatRoomMessage.getMessage());
-        message.setTitle(chatRoomMessage.getTitle());
         message.setMessage(chatRoomMessage.getMessage());
-        message.setCreatedAt(chatRoomMessage.getCreatedAt());
         message.setSender(chatRoomMessage.getSender());
 
         chatMessageRepository.save(message);
