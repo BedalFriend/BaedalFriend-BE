@@ -174,7 +174,7 @@ public class ChatRoomService {
                     ChatMessage.builder()
                             .type(ChatMessage.MessageType.QUIT)
                             .title(chatRoom.getTitle())
-                            .memberId(member.getId())
+                        //    .memberId(member.getId())
                             .sender(member.getNickname())
                             .build()
             );
