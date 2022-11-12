@@ -26,28 +26,13 @@ public class ChattingController {
     @MessageMapping("/chat/message")
     public void message(ChatMessageRequestDto messageRequestDto) {
 
-
-
-        // 메시지 생성 시간 정보
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-DD");
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-        String dateOutput = simpleDateFormat.format(date);
-        messageRequestDto.setCreatedAt(dateOutput);
-
         // dto로 채팅 메시지 객체 생성
         ChatMessage chatMessage = new ChatMessage(messageRequestDto);
-        log.info("chatMessage : {} " + "==============ChatMessage====================", messageRequestDto);
-
 
         // MySQL DB에 채팅 메시지 저장
         chatService.save(chatMessage);
-        log.info("chatMessage : {} " + "=================ChatMessage==================", chatMessage);
-        log.info("chatMessage : {} " + "====================ChatMessage================", messageRequestDto);
         // 웹소캣 통신으로 토픽 구독자들에게 메시지 전송
         chatService.sendChatMessage(chatMessage);
-        log.info("chatMessage : {} " + "=================ChatMessage==================", chatMessage);
-        log.info("chatMessage : {} " + "====================ChatMessage================", messageRequestDto);
+
     }
 }
