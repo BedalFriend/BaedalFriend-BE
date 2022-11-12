@@ -1,4 +1,4 @@
-package com.hanghae.baedalfriend.chat.dto;
+package com.hanghae.baedalfriend.chat.dto.response;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import lombok.Builder;

@@ -39,23 +39,12 @@ public class ChatService {
 
     }
 
-    // 알림 저장
-    private void saveNotification(ChatMessage chatRoomMessage) {
-        ChatMessage message = new ChatMessage();
-        message.setType(chatRoomMessage.getType());
-        message.setRoomId(chatRoomMessage.getRoomId());
-        message.setMemberId(chatRoomMessage.getMemberId());
-        message.setMessage(chatRoomMessage.getMessage());
-        message.setCreatedAt(chatRoomMessage.getCreatedAt());
-        chatMessageRepository.save(message);
-    }
     // 메시지 저장
     public void save(ChatMessage chatRoomMessage) {
         ChatMessage message = new ChatMessage();
         message.setType(chatRoomMessage.getType());
         message.setMessage(chatRoomMessage.getMessage());
-        message.setRoomId(chatRoomMessage.getRoomId());
-        message.setMemberId(chatRoomMessage.getMemberId());
+        message.setTitle(chatRoomMessage.getTitle());
         message.setMessage(chatRoomMessage.getMessage());
         message.setCreatedAt(chatRoomMessage.getCreatedAt());
         message.setSender(chatRoomMessage.getSender());

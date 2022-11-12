@@ -26,6 +26,8 @@ public class ChattingController {
     @MessageMapping("/chat/message")
     public void message(ChatMessageRequestDto messageRequestDto) {
 
+
+
         // 메시지 생성 시간 정보
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-DD");
         Calendar calendar = Calendar.getInstance();
