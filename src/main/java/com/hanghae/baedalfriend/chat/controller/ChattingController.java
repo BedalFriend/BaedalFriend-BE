@@ -3,7 +3,6 @@ package com.hanghae.baedalfriend.chat.controller;
 import com.hanghae.baedalfriend.chat.dto.request.ChatMessageRequestDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.service.ChatService;
-import com.hanghae.baedalfriend.chat.service.RedisPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,11 +20,10 @@ import java.util.TimeZone;
 @RequiredArgsConstructor
 @CrossOrigin
 public class ChattingController {
-    private final RedisPublisher redisPublisher;
     private final ChatService chatService;
 
     //pub/chat/message/ 에서 들어오는 메시지 처리
-    @MessageMapping("/v1/chat/message")
+    @MessageMapping("/chat/message")
     public void message(ChatMessageRequestDto messageRequestDto) {
 
         // 메시지 생성 시간 정보

@@ -10,6 +10,7 @@ import javax.persistence.Column;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonDeserialize
@@ -34,17 +35,12 @@ public class ChatMessage {
     @Column(nullable = false)
     private long memberId; // 보낸사람
 
+    @Column(nullable = false)
+    private String sender; // 보낸사람
 
 
 
-    @Builder
-    public ChatMessage(MessageType type, Long roomId, String message, String createdAt, Long memberId) {
-        this.type = type;
-        this.roomId = roomId;
-        this.message = message;
-        this.createdAt = createdAt;
-        this.memberId = memberId;
-    }
+
 
 
     @Builder
@@ -54,5 +50,6 @@ public class ChatMessage {
         this.message = chatMessageRequestDto.getMessage();
         this.createdAt = chatMessageRequestDto.getCreatedAt();
         this.memberId = chatMessageRequestDto.getMemberId();
+        this.sender = chatMessageRequestDto.getSender();
     }
 }

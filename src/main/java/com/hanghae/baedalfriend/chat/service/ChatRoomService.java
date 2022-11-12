@@ -5,6 +5,7 @@ import com.hanghae.baedalfriend.chat.dto.ChatRoomResponseDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
+import com.hanghae.baedalfriend.chat.repository.ChatMessageRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomRepository;
 import com.hanghae.baedalfriend.domain.Member;
@@ -35,6 +36,7 @@ public class ChatRoomService {
     private HashOperations<String, String, Long> hashOperationsEnterInfo;
     public static final String ENTER_INFO = "ENTER_INFO";  // 채팅룸에 입장한 USER의 sessionId와 채팅룸 id를 맵핑한 정보
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatService chatService;
@@ -83,10 +85,9 @@ public class ChatRoomService {
         Member writer = validateMember(request);
 
 
-            String title=requestDto.getRoomTitle();
-            ChatRoom chatRoom = new ChatRoom(writer,title);
-            chatRoomRepository.save(chatRoom);
-
+        String title = requestDto.getRoomTitle();
+        ChatRoom chatRoom = new ChatRoom(writer, title);
+        chatRoomRepository.save(chatRoom);
 
 
     }
@@ -96,7 +97,6 @@ public class ChatRoomService {
 
 
         Member member = validateMember(request);
-
 
 
         if (null == member) {
@@ -116,11 +116,13 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
                 () -> new NullPointerException("해당하는 채팅방이 없습니다.")
         );
-        List<ChatRoomMember> chatRoomMembers=chatRoomMemberRepository.findAllByChatRoom(chatRoom);
+        List<ChatRoomMember> chatRoomMembers = chatRoomMemberRepository.findAllByChatRoom(chatRoom);
+        List<ChatMessage> chatMessages = chatMessageRepository.findAllMessage(roomId);
 
         ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto
                 .builder()
                 .chatRoomMembers(chatRoomMembers)
+                .chatMessages(chatMessages)
                 .build();
 
         return ResponseDto.success(chatRoomResponseDto);
@@ -146,7 +148,6 @@ public class ChatRoomService {
     public ResponseDto<?> leaveChatRoom(Long roomId, HttpServletRequest request) {
 
         Member member = validateMember(request);
-
 
 
         if (null == member) {
@@ -178,7 +179,9 @@ public class ChatRoomService {
                             .type(ChatMessage.MessageType.QUIT)
                             .roomId(roomId)
                             .memberId(member.getId())
-                            .build());
+                            .build()
+            );
+
             return ResponseDto.success("퇴장메시지전송성공");
 
         } else {

@@ -49,5 +49,12 @@ public class ChatMessageRepository {
     public void delete(Long roomId) {
         opsHashOperationMessage.delete(CHAT_MESSAGE, roomId);
     }
+
+    public List<ChatMessage> findAllMessage(Long roomId) {
+        // Deserialize = 예시) MultiPartFile --> File
+        log.info("Data Passed");
+
+        return opsHashOperationMessage.get(CHAT_MESSAGE, roomId);
+    }
 }
 

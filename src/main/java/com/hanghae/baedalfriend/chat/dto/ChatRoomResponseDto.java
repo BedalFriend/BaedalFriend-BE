@@ -1,4 +1,5 @@
 package com.hanghae.baedalfriend.chat.dto;
+import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,8 @@ public class ChatRoomResponseDto {
 
 
     private List<ChatRoomMember> chatRoomMembers;
+    private List<ChatMessage> chatMessages;
+
 
 
 

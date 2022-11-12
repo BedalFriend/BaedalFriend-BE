@@ -5,7 +5,7 @@ import lombok.*;
 
 
 import javax.persistence.*;
-
+import java.util.List;
 
 
 @Getter
@@ -22,6 +22,8 @@ public class ChatRoom {
 
     @Column(nullable = false)
     private String writer;
+
+
 
 
     public ChatRoom(Member member, String title) {
