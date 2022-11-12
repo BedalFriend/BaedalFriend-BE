@@ -38,7 +38,7 @@ public class ChatService {
         }
 
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
-        redisSubscriber.sendMessage(chatMessage);
+
 
     }
 
