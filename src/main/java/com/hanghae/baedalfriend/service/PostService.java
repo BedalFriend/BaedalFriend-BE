@@ -1,5 +1,6 @@
 package com.hanghae.baedalfriend.service;
 
+import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.domain.Category;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
@@ -25,6 +26,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final TokenProvider tokenProvider;
+    private final ChatRoomService chatRoomService;
 
     // 게시글 등록
     @Transactional
@@ -59,6 +61,7 @@ public class PostService {
                 .maxCapacity(requestDto.getMaxCapacity()) // 최대수용인원
                 .build();
         postRepository.save(post);
+        chatRoomService.createChatRoom(post, request);
         return ResponseDto.success(
                 PostResponseDto.builder()
                         .postId(post.getId()) // 게시글 ID

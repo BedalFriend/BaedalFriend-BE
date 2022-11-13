@@ -34,7 +34,7 @@ public class PostController {
     @PostMapping(value = "/auth/posts")
     public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto,
                                      HttpServletRequest request) throws Exception {
-        chatRoomService.createChatRoom(requestDto, request);
+
         return postService.createPost(requestDto, request);
     }
 

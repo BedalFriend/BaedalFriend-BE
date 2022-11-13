@@ -9,6 +9,7 @@ import com.hanghae.baedalfriend.chat.repository.ChatMessageRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomRepository;
 import com.hanghae.baedalfriend.domain.Member;
+import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
@@ -83,15 +84,15 @@ public class ChatRoomService {
 
     // 채팅방 생성
 
-    public void createChatRoom(PostRequestDto requestDto,
+    public void createChatRoom(Post post,
                                HttpServletRequest request) {
 
         Member writer = validateMember(request);
-        String roomId = String.valueOf(requestDto.getId());
+        String roomId = String.valueOf(post.getId());
 
 
-        String title = requestDto.getRoomTitle();
-        ChatRoom chatRoom = new ChatRoom(writer, title, roomId);
+        String title = post.getRoomTitle();
+        ChatRoom chatRoom = new ChatRoom(writer, title, roomId,post);
         chatRoomRepository.save(chatRoom);
         hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomnum(), chatRoom);
 

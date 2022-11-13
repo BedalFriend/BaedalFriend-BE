@@ -6,6 +6,7 @@ import lombok.*;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatRoom {
+public class ChatRoom implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -38,10 +39,11 @@ public class ChatRoom {
 
 
 
-    public ChatRoom(Member member, String title, String roomnum) {
+    public ChatRoom(Member member, String title, String roomnum,Post post) {
         this.writer = member.getNickname();
         this.roomnum= roomnum;
         this.title = title;
+        this.post = post;
     }
 
 

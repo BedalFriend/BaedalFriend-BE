@@ -6,6 +6,7 @@ import com.hanghae.baedalfriend.chat.dto.request.ChatMessageRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @Builder
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class ChatMessage {
+public class ChatMessage implements Serializable {
 
 
 
