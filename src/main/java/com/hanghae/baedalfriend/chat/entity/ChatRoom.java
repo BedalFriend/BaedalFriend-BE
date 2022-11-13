@@ -32,7 +32,7 @@ public class ChatRoom implements Serializable {
     @Column(nullable = false)
     private String writer;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 

@@ -27,13 +27,12 @@ public class ChattingController {
     //pub/chat/message/ 에서 들어오는 메시지 처리
     @MessageMapping("/chat/message")
     public void message(ChatMessageRequestDto messageRequestDto) {
-        Optional<ChatRoom> chatroom=chatRoomRepository.findByRoomnum(messageRequestDto.getRoomId());
-        ChatRoom room=chatroom.get();
+
 
 
 
         // dto로 채팅 메시지 객체 생성
-        ChatMessage chatMessage = new ChatMessage(messageRequestDto,room);
+        ChatMessage chatMessage = new ChatMessage(messageRequestDto);
 
         // MySQL DB,레디스에 채팅 메시지 저장
         chatService.save(chatMessage);
