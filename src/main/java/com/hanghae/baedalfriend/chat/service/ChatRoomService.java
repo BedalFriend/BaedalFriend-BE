@@ -104,7 +104,12 @@ public class ChatRoomService {
 
 
         Member member = validateMember(request);
-        ChatRoom chatRoom = chatRoomRepository.findByRoomnum(roomId);
+        ChatRoom room=new ChatRoom();
+
+        List<ChatRoom> chatRoom = chatRoomRepository.findByRoomnum(roomId);
+        for (ChatRoom r : chatRoom){
+            room=r;
+        }
 
 
 
@@ -129,7 +134,7 @@ public class ChatRoomService {
 
 
 
-        ChatRoomMember chatRoomMembers = chatRoomMemberRepository.findAllByChatRoom(chatRoom);
+        ChatRoomMember chatRoomMembers = chatRoomMemberRepository.findAllByChatRoom(room);
         ChatMessage chatMessages = chatMessageRepository.findAllMessage(roomId,member.getNickname());
 
         ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto
