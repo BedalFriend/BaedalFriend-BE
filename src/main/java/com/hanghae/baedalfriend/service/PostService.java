@@ -53,7 +53,7 @@ public class PostService {
                 .roomTitle(requestDto.getRoomTitle()) // 채팅방 제목
                 .content(requestDto.getContent()) // 게시글 내용
                 .member(member)
-                .limitTime(Math.toIntExact(requestDto.getLimitTime())) // 게시글의 파티원 모집기간
+               // .limitTime(Math.toIntExact(requestDto.getLimitTime())) // 게시글의 파티원 모집기간
                 .gather(requestDto.getGather()) // 집결지 주소
                 .category(requestDto.getCategory()) //카테고리
                 .imageUrl(requestDto.getImageUrl()) // imageUrl
@@ -71,7 +71,7 @@ public class PostService {
                         .nickname(post.getMember().getNickname()) // 게시글 작성자 닉네임
                         .category(post.getCategory()) // 카테고리
                         .imageUrl(post.getImageUrl()) // s3 2022-11-11 merge 예정 대비
-                        .limitTime(post.getLimitTime()) //게시글의 파티원 모집기간
+                     //   .limitTime(post.getLimitTime()) //게시글의 파티원 모집기간
                         .target(post.getTarget()) // 식당 주소
                         .content(post.getContent()) // 게시글 내용
                         .maxCapacity(post.getMaxCapacity()) // 최대수용인원
@@ -100,7 +100,7 @@ public class PostService {
                             .content(post.getContent()) // 게시글 내용
                             .createdAt(post.getCreatedAt()) // 게시글 생성시간
                             .modifiedAt(post.getModifiedAt()) // 게시글 수정시간
-                            .limitTime(post.getLimitTime()) // 파티참여 모집시간
+                           // .limitTime(post.getLimitTime()) // 파티참여 모집시간
                             .build()
             );
         }
@@ -142,7 +142,7 @@ public class PostService {
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .content(post.getContent()) // 게시글 내용
                         .gather(post.getGather()) // 집결지주소
-                        .limitTime(post.getLimitTime()) // 게시글의 파티원 모집 마감시각
+                     //   .limitTime(post.getLimitTime()) // 게시글의 파티원 모집 마감시각
                         .category(post.getCategory()) // 카테고리
                         .target(post.getTarget()) // 식당
                         .nickname(post.getMember().getNickname()) // 게시글 작성자 닉네임
@@ -211,7 +211,7 @@ public class PostService {
                         .nickname(post.getMember().getNickname()) // 게시글 작성자 닉네임
                         .target(post.getTarget()) // 식당 주소
                         .gather(post.getGather()) // 집결지 주소
-                        .limitTime(post.getLimitTime()) //게시글의 파티원  모집 마감시각
+                     //   .limitTime(post.getLimitTime()) //게시글의 파티원  모집 마감시각
                         .category(post.getCategory()) // 카테고리
                         .content(post.getContent()) // 게시글 내용
                         .maxCapacity(post.getMaxCapacity()) // 최대수용인원

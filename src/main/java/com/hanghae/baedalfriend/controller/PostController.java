@@ -73,10 +73,10 @@ public class PostController {
         return postService.showCategoryPost();
     }
 
-    @RequestMapping(value = "/post/category/{category}", method = RequestMethod.GET)
-    public ResponseDto<?> finedCategoryPost(@PathVariable String category) {
-        return postService.findCategoryPost(category);
-    }
+//    @RequestMapping(value = "/post/category/{category}", method = RequestMethod.GET)
+//    public ResponseDto<?> finedCategoryPost(@PathVariable String category) {
+//        return postService.findCategoryPost(category);
+//    }
 
 
 }

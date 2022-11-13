@@ -14,7 +14,7 @@ public class PostRequestDto {
     private String nickname; // 게시글 작성자 닉네임
     private String content; // 게시글 내용
     private String target; // 식당 주소
-    private Long limitTime; // 마감시각
+    //private Long limitTime; // 마감시각
 
     private String gather; // 집결지 주소
 
