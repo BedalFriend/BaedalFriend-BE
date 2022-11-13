@@ -36,10 +36,10 @@ public class ChatMessage implements Serializable {
     private String message; // 메세지
 //    @Column(nullable = false)
 
+    @Column(nullable = false)
+    private String roomId; // 메세지
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "cr_id")
-    private ChatRoom chatRoom;
+
 
 
 //    @Column(nullable = false)
@@ -54,11 +54,11 @@ public class ChatMessage implements Serializable {
 
 
     @Builder
-    public ChatMessage(ChatMessageRequestDto chatMessageRequestDto,ChatRoom chatRoom) {
+    public ChatMessage(ChatMessageRequestDto chatMessageRequestDto) {
         this.type = chatMessageRequestDto.getType();
         this.message = chatMessageRequestDto.getMessage();
         this.sender =chatMessageRequestDto.getSender();
-        this.chatRoom=chatRoom;
+        this.roomId=chatMessageRequestDto.getRoomId();
 
 
     }

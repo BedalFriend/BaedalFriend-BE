@@ -49,8 +49,7 @@ public class ChatService {
         message.setMessage(chatRoomMessage.getMessage());
         message.setMessage(chatRoomMessage.getMessage());
         message.setSender(chatRoomMessage.getSender());
-
-
+        message.setRoomId(chatRoomMessage.getRoomId());
         chatMessageRepository.save(message);
 
     }
