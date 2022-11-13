@@ -15,5 +15,4 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMember, 
     ChatRoomMember findAllByChatRoom(ChatRoom chatRoom);
 
 
-
 }

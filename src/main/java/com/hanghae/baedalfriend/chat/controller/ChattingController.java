@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -30,11 +27,9 @@ public class ChattingController {
     //pub/chat/message/ 에서 들어오는 메시지 처리
     @MessageMapping("/chat/message")
     public void message(ChatMessageRequestDto messageRequestDto) {
-        List<ChatRoom> chatroom=chatRoomRepository.findByRoomnum(messageRequestDto.getRoomId());
-        ChatRoom room=new ChatRoom();
-        for (ChatRoom r : chatroom){
-            room=r;
-        }
+        Optional<ChatRoom> chatroom=chatRoomRepository.findByRoomnum(messageRequestDto.getRoomId());
+        ChatRoom room=chatroom.get();
+
 
 
         // dto로 채팅 메시지 객체 생성
