@@ -2,6 +2,8 @@ package com.hanghae.baedalfriend.chat.controller;
 
 import com.hanghae.baedalfriend.chat.dto.request.ChatMessageRequestDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
+import com.hanghae.baedalfriend.chat.entity.ChatRoom;
+import com.hanghae.baedalfriend.chat.repository.ChatRoomRepository;
 import com.hanghae.baedalfriend.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +23,15 @@ import java.util.TimeZone;
 @CrossOrigin
 public class ChattingController {
     private final ChatService chatService;
+    private final ChatRoomRepository chatRoomRepository;
 
     //pub/chat/message/ 에서 들어오는 메시지 처리
     @MessageMapping("/chat/message")
     public void message(ChatMessageRequestDto messageRequestDto) {
+        ChatRoom chatroom=chatRoomRepository.findByRoomnum(messageRequestDto.getRoomId());
 
         // dto로 채팅 메시지 객체 생성
-        ChatMessage chatMessage = new ChatMessage(messageRequestDto);
+        ChatMessage chatMessage = new ChatMessage(messageRequestDto,chatroom);
 
         // MySQL DB,레디스에 채팅 메시지 저장
         chatService.save(chatMessage);

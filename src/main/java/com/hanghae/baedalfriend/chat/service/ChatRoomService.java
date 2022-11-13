@@ -93,7 +93,7 @@ public class ChatRoomService {
         String title = requestDto.getRoomTitle();
         ChatRoom chatRoom = new ChatRoom(writer, title, roomId);
         chatRoomRepository.save(chatRoom);
-        hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
+        hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomnum(), chatRoom);
 
 
     }
@@ -103,7 +103,7 @@ public class ChatRoomService {
 
 
         Member member = validateMember(request);
-        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
+        ChatRoom chatRoom = chatRoomRepository.findByRoomnum(roomId);
 
 
 
