@@ -16,8 +16,8 @@ import java.util.List;
 public class ChatRoomResponseDto {
 
 
-    private List<ChatRoomMember> chatRoomMembers;
-    private List<ChatMessage> chatMessages;
+    private ChatRoomMember chatRoomMembers;
+    private ChatMessage chatMessages;
 
 
 

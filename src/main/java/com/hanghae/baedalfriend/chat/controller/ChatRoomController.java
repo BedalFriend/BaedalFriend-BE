@@ -36,7 +36,7 @@ public class ChatRoomController {
     // 특정 채팅방 조회
     @GetMapping("/room/{roomId}")
     @ResponseBody
-    public ResponseDto<?> roomInfo(@PathVariable Long roomId, HttpServletRequest request) {
+    public ResponseDto<?> roomInfo(@PathVariable String roomId, HttpServletRequest request) {
         return chatRoomService.findRoom(roomId, request);
     }
 

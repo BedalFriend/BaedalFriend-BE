@@ -15,6 +15,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @JsonDeserialize
 @Builder
+@Entity
 public class ChatMessage {
 
 
