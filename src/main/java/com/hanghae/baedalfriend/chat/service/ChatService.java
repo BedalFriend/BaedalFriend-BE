@@ -2,6 +2,7 @@ package com.hanghae.baedalfriend.chat.service;
 
 
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
+import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +27,7 @@ public class ChatService {
 
 
     private final ChatMessageRepository chatMessageRepository;
+    private final ChatMessageJpaRepository chatMessageJpaRepository;
 
 
 
@@ -43,14 +47,11 @@ public class ChatService {
     }
 
     // 메시지 저장
-    public void save(ChatMessage chatRoomMessage) {
-        ChatMessage message = new ChatMessage();
-        message.setType(chatRoomMessage.getType());
-        message.setMessage(chatRoomMessage.getMessage());
-        message.setMessage(chatRoomMessage.getMessage());
-        message.setSender(chatRoomMessage.getSender());
-        message.setRoomId(chatRoomMessage.getRoomId());
-        chatMessageRepository.save(message);
+    @Transactional
+    public void save(ChatMessage chatMessage) {
+        chatMessageJpaRepository.save(chatMessage);
+
+        chatMessageRepository.save(chatMessage);
 
     }
 
