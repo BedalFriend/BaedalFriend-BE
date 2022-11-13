@@ -37,7 +37,7 @@ public class ChatMessage {
 
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "chatroomId")
     private ChatRoom chatRoom;
 
     private String  roomId;
