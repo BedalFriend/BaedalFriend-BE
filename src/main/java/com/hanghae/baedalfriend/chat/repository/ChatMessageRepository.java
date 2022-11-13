@@ -29,7 +29,7 @@ public class ChatMessageRepository {
 
     public ChatMessageResponseDto save(ChatMessage chatMessage) {
         System.out.println("chatMessage is + " + chatMessage);
-        hashOpsChatMessage.put(chatMessage.getRoomId(), chatMessage.getSender(),chatMessage);
+        hashOpsChatMessage.put(chatMessage.getChatRoom().getRoomnum(), chatMessage.getSender(),chatMessage);
 
         return  ChatMessageResponseDto.builder()
                 .message(chatMessage.getMessage())

@@ -2,14 +2,15 @@ package com.hanghae.baedalfriend.chat.entity;
 
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Timestamped;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
+@Builder
 @Getter
+@Setter
+@Entity
+@AllArgsConstructor
 @NoArgsConstructor
 public class ChatRoomMember extends Timestamped {
 
@@ -20,11 +21,11 @@ public class ChatRoomMember extends Timestamped {
     @Id
     private Long id;
 
-    @JoinColumn(name = "chatRoomId")
+    @JoinColumn(name = "chatRoom_id")
     @ManyToOne
     private ChatRoom chatRoom;
 
-    @JoinColumn(name = "memebrId")
+    @JoinColumn(name = "memebr_id")
     @ManyToOne
     private Member member;
 
