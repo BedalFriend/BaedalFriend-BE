@@ -50,6 +50,7 @@ public class ChatService {
         message.setMessage(chatRoomMessage.getMessage());
         message.setSender(chatRoomMessage.getSender());
 
+
         chatMessageRepository.save(message);
 
     }

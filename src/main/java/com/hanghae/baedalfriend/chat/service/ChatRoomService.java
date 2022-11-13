@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -104,12 +105,11 @@ public class ChatRoomService {
 
 
         Member member = validateMember(request);
-        ChatRoom room=new ChatRoom();
 
-        List<ChatRoom> chatRoom = chatRoomRepository.findByRoomnum(roomId);
-        for (ChatRoom r : chatRoom){
-            room=r;
-        }
+
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByRoomnum(roomId);
+        ChatRoom room = chatRoom.get();
+
 
 
 
@@ -183,15 +183,14 @@ public class ChatRoomService {
         }
 
 
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
-                () -> new NullPointerException("해당하는 채팅방이 없습니다.")
-        );
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
+        ChatRoom room=chatRoom.get();
 
 
         // 나간 유저를 채팅방 리스트에서 제거
         chatRoomMemberRepository.deleteByMember(member);
         // 현재 채팅룸에 한명이라도 남아있다면 퇴장메시지 전송
-        if (chatRoomMemberRepository.findAllByChatRoom(chatRoom) != null) {
+        if (chatRoomMemberRepository.findAllByChatRoom(room) != null) {
             chatService.sendChatMessage(
                     ChatMessage.builder()
                             .type(ChatMessage.MessageType.QUIT)

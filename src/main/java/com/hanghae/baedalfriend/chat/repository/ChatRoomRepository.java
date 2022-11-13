@@ -5,10 +5,11 @@ import com.hanghae.baedalfriend.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-    List<ChatRoom> findByRoomnum (String roomId);
+    Optional<ChatRoom> findByRoomnum (String roomId);
 
 
 }
