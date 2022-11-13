@@ -7,14 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -22,15 +18,13 @@ import java.util.List;
 @Repository
 public class ChatMessageRepository {
     private final RedisTemplate<String, Object> redisTemplate;
-    private HashOperations<String, Long, List<ChatMessage>> opsHashOperationMessage;
-    private static final String CHAT_MESSAGE = "CHAT_MESSAGE";
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatMessage> hashOpsChatMessage;
 
     @PostConstruct
     private void init() {
-        opsHashOperationMessage = redisTemplate.opsForHash();
+        hashOpsChatMessage = redisTemplate.opsForHash();
     }
 
     public ChatMessageResponseDto save(ChatMessage chatMessage) {
@@ -43,15 +37,14 @@ public class ChatMessageRepository {
                 .build();
     }
 
-    public void delete(Long roomId) {
-        opsHashOperationMessage.delete(CHAT_MESSAGE, roomId);
-    }
+//    public void delete(ChatMessage chatMessage) {
+//        hashOpsChatMessage.delete(chatMessage.getRoomId(), chatMessage.getSender());
+//    }
 
-    public List<ChatMessage> findAllMessage(Long roomId) {
+    public ChatMessage findAllMessage(String roomId,String sender) {
         // Deserialize = 예시) MultiPartFile --> File
-        log.info("Data Passed");
 
-        return opsHashOperationMessage.get(CHAT_MESSAGE, roomId);
+        return hashOpsChatMessage.get(roomId,sender);
     }
 }
 

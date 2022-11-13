@@ -34,6 +34,7 @@ public class ChatRoomService {
     public static final String ENTER_INFO = "ENTER_INFO";  // 채팅룸에 입장한 USER의 sessionId와 채팅룸 id를 맵핑한 정보
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+//    private final RoomRepository roomRepository;
 
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatService chatService;
@@ -48,6 +49,7 @@ public class ChatRoomService {
     @PostConstruct
     private void init() {
         hashOperationsEnterInfo = redisTemplate.opsForHash();
+        hashOpsChatRoom = redisTemplate.opsForHash();
     }
 
     // 유저가 입장한 채팅방 ID와 유저 세션 ID 매핑 정보 저장
@@ -97,10 +99,12 @@ public class ChatRoomService {
     }
 
     //채팅방 하나 불러오기
-    public ResponseDto<?> findRoom(Long roomId, HttpServletRequest request) {
+    public ResponseDto<?> findRoom(String roomId, HttpServletRequest request) {
 
 
         Member member = validateMember(request);
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
+
 
 
         if (null == member) {
@@ -117,11 +121,15 @@ public class ChatRoomService {
                     "Token이 유효하지 않습니다.");
         }
 
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
-                () -> new NullPointerException("해당하는 채팅방이 없습니다.")
-        );
-        List<ChatRoomMember> chatRoomMembers = chatRoomMemberRepository.findAllByChatRoom(chatRoom);
-        List<ChatMessage> chatMessages = chatMessageRepository.findAllMessage(roomId);
+        if (null == chatRoom) {
+            return ResponseDto.fail("해당하는 채팅룸없음",
+                    "해당하는 채팅룸없음");
+        }
+
+
+
+        ChatRoomMember chatRoomMembers = chatRoomMemberRepository.findAllByChatRoom(chatRoom);
+        ChatMessage chatMessages = chatMessageRepository.findAllMessage(roomId,member.getNickname());
 
         ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto
                 .builder()

@@ -29,7 +29,7 @@ public class ChattingController {
         // dto로 채팅 메시지 객체 생성
         ChatMessage chatMessage = new ChatMessage(messageRequestDto);
 
-        // MySQL DB에 채팅 메시지 저장
+        // MySQL DB,레디스에 채팅 메시지 저장
         chatService.save(chatMessage);
         // 웹소캣 통신으로 토픽 구독자들에게 메시지 전송
         chatService.sendChatMessage(chatMessage);

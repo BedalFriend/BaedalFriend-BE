@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMember, Long> {
     ChatRoomMember deleteByMember (Member member);
 
-    List<ChatRoomMember> findAllByChatRoom(ChatRoom chatRoom);
+    ChatRoomMember findAllByChatRoom(ChatRoom chatRoom);
 
 
 
