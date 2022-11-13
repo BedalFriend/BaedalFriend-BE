@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -22,19 +23,18 @@ public class ChatMessageRepository {
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatMessage> hashOpsChatMessage;
 
+    @Resource(name = "redisTemplate")
+    private HashOperations<String, String, List<ChatMessage>> opsHashChatMessages;
+
     @PostConstruct
     private void init() {
-        hashOpsChatMessage = redisTemplate.opsForHash();
+        opsHashChatMessages = redisTemplate.opsForHash();
     }
 
-    public ChatMessageResponseDto save(ChatMessage chatMessage) {
+    public void save(ChatMessage chatMessage) {
         System.out.println("chatMessage is + " + chatMessage);
         hashOpsChatMessage.put(chatMessage.getRoomId(), chatMessage.getSender(),chatMessage);
 
-        return  ChatMessageResponseDto.builder()
-                .message(chatMessage.getMessage())
-                .sender(chatMessage.getSender())
-                .build();
     }
 
 //    public void delete(ChatMessage chatMessage) {
