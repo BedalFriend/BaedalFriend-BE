@@ -1,6 +1,6 @@
 package com.hanghae.baedalfriend.service;
 
-import com.hanghae.baedalfriend.chat.repository.ChatRoomRepository;
+import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.domain.Category;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
@@ -23,10 +23,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PostService {
-    private final ChatRoomRepository chatRoomRepository;
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final TokenProvider tokenProvider;
+    private final ChatRoomService chatRoomService;
 
     // 게시글 등록
     @Transactional
@@ -61,6 +61,7 @@ public class PostService {
                 .maxCapacity(requestDto.getMaxCapacity()) // 최대수용인원
                 .build();
         postRepository.save(post);
+        chatRoomService.createChatRoom(post, request);
         return ResponseDto.success(
                 PostResponseDto.builder()
                         .postId(post.getId()) // 게시글 ID
@@ -178,7 +179,6 @@ public class PostService {
             return ResponseDto.fail("BAD_REQUEST", "작성자만 삭제할 수 있습니다.");
         }
 
-        chatRoomRepository.deleteById(id);
         postRepository.delete(post);
         return ResponseDto.success("delete success");
     }
@@ -234,28 +234,4 @@ public class PostService {
 
         return ResponseDto.success(categoryOnlyResponseDtos);
     }
-
-    @Transactional
-    public ResponseDto<?> findCategoryPost(String category) {
-        List<Post> postList = postRepository.findAllByCategory(category);
-        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-
-        for(Post post: postList) {
-            postResponseDtoList.add (
-                    PostResponseDto.builder()
-                            .postId(post.getId())
-                            .roomTitle(post.getRoomTitle())
-                            .nickname(post.getNickname())
-                            .imageUrl(post.getImageUrl())
-                            .content(post.getContent())
-                            .limitTime(post.getLimitTime())
-                            .category(post.getCategory())
-                           // .createdAt(post.getCreatedAt())
-                         //   .modifiedAt(post.getModifiedAt())
-                            .build()
-            );
-        }
-        return ResponseDto.success(postResponseDtoList);
-    }
-
 }
