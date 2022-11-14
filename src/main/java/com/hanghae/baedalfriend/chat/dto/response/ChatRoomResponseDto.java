@@ -7,11 +7,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @ToString
 @Getter
 @Setter
 @Builder
 public class ChatRoomResponseDto {
-    private ChatRoomMember chatRoomMembers;
-    private ChatMessage chatMessages;
+    private List<ChatRoomMember> chatRoomMembers;
+    private Object chatMessages;
 }

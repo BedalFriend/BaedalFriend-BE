@@ -1,7 +1,6 @@
 package com.hanghae.baedalfriend.chat.repository;
 
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
-import com.hanghae.baedalfriend.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
@@ -19,7 +18,8 @@ public class ChatMessageRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Resource(name = "redisTemplate")
-    private HashOperations<String, Member, ChatMessage> hashOpsChatMessage;
+    private HashOperations<String, Long, ChatMessage> hashOpsChatMessage;
+    private static final String CHAT_MESSAGE = "CHAT_MESSAGE";
 
 
     @PostConstruct
@@ -29,14 +29,13 @@ public class ChatMessageRepository {
 
     public void save(ChatMessage chatMessage) {
         System.out.println("chatMessage is + " + chatMessage);
-        String roomId = String.valueOf(chatMessage.getRoomId());
-        hashOpsChatMessage.put(roomId, chatMessage.getMember(), chatMessage);
+        hashOpsChatMessage.put(CHAT_MESSAGE, chatMessage.getId(), chatMessage);
 
     }
 
 
-    public Object findAllMessage(String roomId, Member member) {
+    public Object findAllMessage(Long roomId) {
 
-        return hashOpsChatMessage.get(roomId, member);
+        return hashOpsChatMessage.get(CHAT_MESSAGE,roomId);
     }
 }

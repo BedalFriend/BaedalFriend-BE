@@ -23,8 +23,6 @@ public class ChatRoomRepository {
     private HashOperations<String, String, ChatRoom> hashOpsChatRoom;
 
     @Resource(name = "redisTemplate")
-    private HashOperations<String, String, String> hashOpsChatRoomUpdate;
-    @Resource(name = "redisTemplate")
     private HashOperations<String, String, String> hashOpsEnterInfo;
     @Resource(name = "redisTemplate")
     private ValueOperations<String, String> valueOps;
