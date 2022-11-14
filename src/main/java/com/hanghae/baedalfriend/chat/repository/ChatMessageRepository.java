@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.List;
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -18,29 +18,24 @@ public class ChatMessageRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Resource(name = "redisTemplate")
-    private HashOperations<String, String, ChatMessage> hashOpsChatMessage;
+    private HashOperations<String, Long, ChatMessage> hashOpsChatMessage;
+    private static final String CHAT_MESSAGE = "CHAT_MESSAGE";
 
-    @Resource(name = "redisTemplate")
-    private HashOperations<String, String, List<ChatMessage>> opsHashChatMessages;
 
     @PostConstruct
     private void init() {
-        opsHashChatMessages = redisTemplate.opsForHash();
+        hashOpsChatMessage = redisTemplate.opsForHash();
     }
 
     public void save(ChatMessage chatMessage) {
         System.out.println("chatMessage is + " + chatMessage);
-        hashOpsChatMessage.put(chatMessage.getRoomId(), chatMessage.getSender(), chatMessage);
+        hashOpsChatMessage.put(CHAT_MESSAGE, chatMessage.getId(), chatMessage);
 
     }
 
-//    public void delete(ChatMessage chatMessage) {
-//        hashOpsChatMessage.delete(chatMessage.getRoomId(), chatMessage.getSender());
-//    }
 
-    public ChatMessage findAllMessage(String roomId, String sender) {
-        // Deserialize = 예시) MultiPartFile --> File
+    public Object findAllMessage(Long roomId) {
 
-        return hashOpsChatMessage.get(roomId, sender);
+        return hashOpsChatMessage.get(CHAT_MESSAGE,roomId);
     }
 }

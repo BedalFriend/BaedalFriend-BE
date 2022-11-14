@@ -1,14 +1,14 @@
 package com.hanghae.baedalfriend.chat.entity;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.hanghae.baedalfriend.chat.dto.request.ChatMessageRequestDto;
+import com.hanghae.baedalfriend.domain.Member;
+import com.hanghae.baedalfriend.domain.Timestamped;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Builder
 @Getter
@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class ChatMessage implements Serializable {
+public class ChatMessage extends Timestamped implements Serializable {
 
 
     //메세지 타입: 입장, 채팅, 퇴장
@@ -32,26 +32,25 @@ public class ChatMessage implements Serializable {
     @Column(nullable = false)
     private MessageType type;// 메세지 타입
 
-    @Column(nullable = false)
+    @Column
     private String message; // 메세지
-//    @Column(nullable = false)
+
 
     @Column(nullable = false)
-    private String roomId; // 메세지
+    private Long roomId; // 채팅방번호
 
 
-    //    @Column(nullable = false)
-//    private long memberId; // 보낸사람
-    @Column(nullable = false)
-    private String sender; // 보낸사람
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
 
     @Builder
-    public ChatMessage(ChatMessageRequestDto chatMessageRequestDto) {
+    public ChatMessage(ChatMessageRequestDto chatMessageRequestDto, Member member) {
         this.type = chatMessageRequestDto.getType();
         this.message = chatMessageRequestDto.getMessage();
-        this.sender = chatMessageRequestDto.getSender();
         this.roomId = chatMessageRequestDto.getRoomId();
+        this.member = member;
 
 
     }

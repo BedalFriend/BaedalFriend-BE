@@ -1,6 +1,6 @@
 package com.hanghae.baedalfriend.chat.entity;
 
-import com.hanghae.baedalfriend.domain.Member;
+
 import com.hanghae.baedalfriend.domain.Post;
 import lombok.*;
 
@@ -14,26 +14,22 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatRoom implements Serializable {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    @Column(nullable = false)
-    private String title;
+
 
     @Column(nullable = false)
-    private String roomnum;
-
-    @Column(nullable = false)
-    private String writer;
+    private String founder;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public ChatRoom(Member member, String title, String roomnum, Post post) {
-        this.writer = member.getNickname();
-        this.roomnum = roomnum;
-        this.title = title;
+
+    public ChatRoom(String founder,Post post) {
+        this.founder =founder;
         this.post = post;
     }
 }
