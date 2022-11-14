@@ -1,13 +1,11 @@
 package com.hanghae.baedalfriend.chat.configuration;
 
 
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-
 
 
 @Configuration
@@ -17,8 +15,8 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/pub");
-        config.setApplicationDestinationPrefixes("/sub");
+        config.enableSimpleBroker("/sub"); // 2022-11-14 내용 위치 변경 /sub - > /pub
+        config.setApplicationDestinationPrefixes("/pub");
     }
 
     @Override

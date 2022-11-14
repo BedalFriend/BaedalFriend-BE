@@ -1,7 +1,5 @@
 package com.hanghae.baedalfriend.chat.repository;
 
-
-import com.hanghae.baedalfriend.chat.dto.response.ChatMessageResponseDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.List;
-
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,7 +30,7 @@ public class ChatMessageRepository {
 
     public void save(ChatMessage chatMessage) {
         System.out.println("chatMessage is + " + chatMessage);
-        hashOpsChatMessage.put(chatMessage.getRoomId(), chatMessage.getSender(),chatMessage);
+        hashOpsChatMessage.put(chatMessage.getRoomId(), chatMessage.getSender(), chatMessage);
 
     }
 
@@ -41,10 +38,9 @@ public class ChatMessageRepository {
 //        hashOpsChatMessage.delete(chatMessage.getRoomId(), chatMessage.getSender());
 //    }
 
-    public ChatMessage findAllMessage(String roomId,String sender) {
+    public ChatMessage findAllMessage(String roomId, String sender) {
         // Deserialize = 예시) MultiPartFile --> File
 
-        return hashOpsChatMessage.get(roomId,sender);
+        return hashOpsChatMessage.get(roomId, sender);
     }
 }
-
