@@ -27,6 +27,8 @@ public class Member extends Timestamped implements Serializable{
     @Column(unique = true)
     private Long kakaoId;
 
+    private String address;
+
     @JsonIgnore
     @Column(nullable = false)
     private String password;
