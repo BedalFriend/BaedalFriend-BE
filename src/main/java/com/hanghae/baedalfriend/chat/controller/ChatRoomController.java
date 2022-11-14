@@ -1,3 +1,5 @@
+//package com.hanghae.baedalfriend.chat.controller;
+//
 //import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 //import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 //import lombok.RequiredArgsConstructor;
@@ -15,11 +17,6 @@
 //
 //    private final ChatRoomService chatRoomService;
 //
-//    // 채팅방 입장
-//    @PostMapping("/enter/{roomId}")
-//    public ResponseDto<?> enterRoom(@PathVariable Long roomId, HttpServletRequest request) {
-//        return chatRoomService.enterRoom(roomId, request);
-//    }
 //
 //
 //    //채팅방 나가기

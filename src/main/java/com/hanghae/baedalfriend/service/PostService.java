@@ -1,5 +1,6 @@
 package com.hanghae.baedalfriend.service;
 
+import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.domain.Category;
 import com.hanghae.baedalfriend.domain.Member;
@@ -27,6 +28,7 @@ public class PostService {
     private final CategoryRepository categoryRepository;
     private final TokenProvider tokenProvider;
     private final ChatRoomService chatRoomService;
+    private final ChatRoomJpaRepository chatRoomRepository;
 
     // 게시글 등록
     @Transactional
@@ -178,6 +180,7 @@ public class PostService {
         if (post.validateMember(member)) {
             return ResponseDto.fail("BAD_REQUEST", "작성자만 삭제할 수 있습니다.");
         }
+        chatRoomRepository.deleteById(id);
 
         postRepository.delete(post);
         return ResponseDto.success("delete success");

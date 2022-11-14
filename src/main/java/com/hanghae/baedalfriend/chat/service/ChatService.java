@@ -1,30 +1,34 @@
 package com.hanghae.baedalfriend.chat.service;
 
 
+import com.hanghae.baedalfriend.chat.dto.request.ChatMessageRequestDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageRepository;
-import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberRepository;
+import com.hanghae.baedalfriend.domain.Member;
+import com.hanghae.baedalfriend.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class ChatService {
-    // 채팅방에 발행되는 메시지를 처리할 Listener
-    // 1:N 방식으로 topic처리 Listener
+
     private final ChannelTopic channelTopic;
     private final RedisTemplate redisTemplate;
-    private RedisSubscriber redisSubscriber;
+
 
     private final ChatMessageRepository chatMessageRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
+
+    private final TokenProvider tokenProvider;
 
     // 메시지 전송
     public void sendChatMessage(ChatMessage chatMessage) {
@@ -40,8 +44,25 @@ public class ChatService {
 
     // 메시지 저장
     @Transactional
-    public void save(ChatMessage chatMessage) {
+    public void save(ChatMessageRequestDto messageRequestDto, HttpServletRequest request) {
+
+        Member member =validateMember(request);
+
+        ChatMessage chatMessage = new ChatMessage(messageRequestDto,member);
+
         chatMessageJpaRepository.save(chatMessage);
         chatMessageRepository.save(chatMessage);
+
+        sendChatMessage(chatMessage);
     }
+
+
+    @Transactional
+    public Member validateMember(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh_token"))) {
+            return null;
+        }
+        return tokenProvider.getMemberFromAuthentication();
+    }
+
 }

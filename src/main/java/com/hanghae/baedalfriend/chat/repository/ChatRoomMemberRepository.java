@@ -5,8 +5,10 @@ import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import com.hanghae.baedalfriend.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMember, Long> {
     ChatRoomMember deleteByMember(Member member);
 
-    ChatRoomMember findAllByChatRoom(ChatRoom chatRoom);
+    List<ChatRoomMember> findAllByChatRoom(ChatRoom chatRoom);
 }

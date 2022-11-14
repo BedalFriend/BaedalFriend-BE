@@ -1,6 +1,7 @@
 package com.hanghae.baedalfriend.chat.repository;
 
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
+import com.hanghae.baedalfriend.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.List;
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -18,29 +19,24 @@ public class ChatMessageRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Resource(name = "redisTemplate")
-    private HashOperations<String, String, ChatMessage> hashOpsChatMessage;
+    private HashOperations<String, Member, ChatMessage> hashOpsChatMessage;
 
-    @Resource(name = "redisTemplate")
-    private HashOperations<String, String, List<ChatMessage>> opsHashChatMessages;
 
     @PostConstruct
     private void init() {
-        opsHashChatMessages = redisTemplate.opsForHash();
+        hashOpsChatMessage = redisTemplate.opsForHash();
     }
 
     public void save(ChatMessage chatMessage) {
         System.out.println("chatMessage is + " + chatMessage);
-        hashOpsChatMessage.put(chatMessage.getRoomId(), chatMessage.getSender(), chatMessage);
+        String roomId = String.valueOf(chatMessage.getRoomId());
+        hashOpsChatMessage.put(roomId, chatMessage.getMember(), chatMessage);
 
     }
 
-//    public void delete(ChatMessage chatMessage) {
-//        hashOpsChatMessage.delete(chatMessage.getRoomId(), chatMessage.getSender());
-//    }
 
-    public ChatMessage findAllMessage(String roomId, String sender) {
-        // Deserialize = 예시) MultiPartFile --> File
+    public Object findAllMessage(String roomId, Member member) {
 
-        return hashOpsChatMessage.get(roomId, sender);
+        return hashOpsChatMessage.get(roomId, member);
     }
 }

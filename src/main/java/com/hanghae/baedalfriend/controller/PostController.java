@@ -1,8 +1,5 @@
 package com.hanghae.baedalfriend.controller;
 
-import com.amazonaws.Response;
-import com.hanghae.baedalfriend.chat.repository.ChatRoomRepository;
-import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.service.PostService;
@@ -18,8 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/v1")
 public class PostController {
     private final PostService postService;
-    private final ChatRoomService chatRoomService;
-    private final ChatRoomRepository chatRoomRepository;
+
 
 
     @ApiImplicitParams({
@@ -62,7 +58,7 @@ public class PostController {
     @DeleteMapping(value = "/auth/posts/{id}")
     public ResponseDto<?> deletePost(@PathVariable Long id,
                                      HttpServletRequest request) {
-        chatRoomRepository.deleteById(id);
+
 
         return postService.deletePost(id, request);
     }
