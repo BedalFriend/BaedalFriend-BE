@@ -110,7 +110,7 @@ public class KakaoMemberService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", myKaKaoRestAplKey);
-        body.add("redirect_uri", "http://localhost:3000/kakaoLogin");
+        body.add("redirect_uri", "https://feat-chat.d25ifr3qhnz84w.amplifyapp.com/kakaoLogin");
         body.add("code", code);
 
         // HTTP 요청 보내기

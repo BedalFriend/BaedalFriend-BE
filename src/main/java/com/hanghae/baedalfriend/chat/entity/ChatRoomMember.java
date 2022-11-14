@@ -13,10 +13,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatRoomMember extends Timestamped {
-
-
-
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -29,10 +25,8 @@ public class ChatRoomMember extends Timestamped {
     @ManyToOne
     private Member member;
 
-
-
     @Builder
-    public ChatRoomMember (ChatRoom chatRoom, Member member) {
+    public ChatRoomMember(ChatRoom chatRoom, Member member) {
         this.member = member;
         this.chatRoom = chatRoom;
 

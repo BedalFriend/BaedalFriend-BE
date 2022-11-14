@@ -20,11 +20,11 @@ import java.util.List;
 public class ChatMessage implements Serializable {
 
 
-
     //메세지 타입: 입장, 채팅, 퇴장
     public enum MessageType {
-        ENTER, TALK ,QUIT
+        ENTER, TALK, QUIT
     }
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -40,25 +40,18 @@ public class ChatMessage implements Serializable {
     private String roomId; // 메세지
 
 
-
-
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
 //    private long memberId; // 보낸사람
     @Column(nullable = false)
     private String sender; // 보낸사람
-
-
-
-
-
 
 
     @Builder
     public ChatMessage(ChatMessageRequestDto chatMessageRequestDto) {
         this.type = chatMessageRequestDto.getType();
         this.message = chatMessageRequestDto.getMessage();
-        this.sender =chatMessageRequestDto.getSender();
-        this.roomId=chatMessageRequestDto.getRoomId();
+        this.sender = chatMessageRequestDto.getSender();
+        this.roomId = chatMessageRequestDto.getRoomId();
 
 
     }

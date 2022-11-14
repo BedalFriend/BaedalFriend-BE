@@ -7,10 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChatMessageRequestDto {
-
     private ChatMessage.MessageType type;
     private String roomId;
     private String message;
     private String sender;
-
 }

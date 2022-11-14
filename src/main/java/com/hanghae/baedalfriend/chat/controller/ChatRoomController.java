@@ -1,6 +1,3 @@
-
-////
-////
 //import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 //import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 //import lombok.RequiredArgsConstructor;

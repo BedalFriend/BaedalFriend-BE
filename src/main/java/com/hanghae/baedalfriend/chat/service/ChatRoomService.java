@@ -23,30 +23,23 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
-
     private final RedisTemplate<String, Object> redisTemplate;
     private HashOperations<String, String, Long> hashOperationsEnterInfo;
     public static final String ENTER_INFO = "ENTER_INFO";  // 채팅룸에 입장한 USER의 sessionId와 채팅룸 id를 맵핑한 정보
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
-//    private final RoomRepository roomRepository;
-
+    //    private final RoomRepository roomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatService chatService;
-
     private final TokenProvider tokenProvider;
-
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatRoom> hashOpsChatRoom;
     private static final String CHAT_ROOMS = "CHAT_ROOM"; // 채팅룸 저장
-
 
     @PostConstruct
     private void init() {
@@ -90,28 +83,17 @@ public class ChatRoomService {
 
         Member writer = validateMember(request);
         String roomId = String.valueOf(post.getId());
-
-
         String title = post.getRoomTitle();
-        ChatRoom chatRoom = new ChatRoom(writer, title, roomId,post);
+        ChatRoom chatRoom = new ChatRoom(writer, title, roomId, post);
         chatRoomRepository.save(chatRoom);
         hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomnum(), chatRoom);
-
-
     }
 
     //채팅방 하나 불러오기
     public ResponseDto<?> findRoom(String roomId, HttpServletRequest request) {
-
-
         Member member = validateMember(request);
-
-
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByRoomnum(roomId);
         ChatRoom room = chatRoom.get();
-
-
-
 
         if (null == member) {
             return ResponseDto.fail("MEMBER_NOT_FOUND", "사용자를 찾을 수 없습니다.");
@@ -132,17 +114,14 @@ public class ChatRoomService {
                     "해당하는 채팅룸없음");
         }
 
-
-
         ChatRoomMember chatRoomMembers = chatRoomMemberRepository.findAllByChatRoom(room);
-        ChatMessage chatMessages = chatMessageRepository.findAllMessage(roomId,member.getNickname());
+        ChatMessage chatMessages = chatMessageRepository.findAllMessage(roomId, member.getNickname());
 
         ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto
                 .builder()
                 .chatRoomMembers(chatRoomMembers)
                 .chatMessages(chatMessages)
                 .build();
-
         return ResponseDto.success(chatRoomResponseDto);
     }
 
@@ -167,7 +146,6 @@ public class ChatRoomService {
 
         Member member = validateMember(request);
 
-
         if (null == member) {
             return ResponseDto.fail("MEMBER_NOT_FOUND", "사용자를 찾을 수 없습니다.");
         }
@@ -182,10 +160,8 @@ public class ChatRoomService {
                     "Token이 유효하지 않습니다.");
         }
 
-
         Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
-        ChatRoom room=chatRoom.get();
-
+        ChatRoom room = chatRoom.get();
 
         // 나간 유저를 채팅방 리스트에서 제거
         chatRoomMemberRepository.deleteByMember(member);
@@ -198,7 +174,6 @@ public class ChatRoomService {
                             .sender(member.getNickname())
                             .build()
             );
-
             return ResponseDto.success("퇴장메시지전송성공");
 
         } else {

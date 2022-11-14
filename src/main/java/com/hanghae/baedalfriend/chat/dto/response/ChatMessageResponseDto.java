@@ -8,19 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ChatMessageResponseDto {
-
-
     private String sender;
-    private  String message;
+    private String message;
     private String title;
 
-
-
-    public ChatMessageResponseDto(String sender,String message,String title){
-
+    public ChatMessageResponseDto(String sender, String message, String title) {
         this.sender = sender;
-        this.title =title;
-        this.message=message;
-
+        this.title = title;
+        this.message = message;
     }
 }
