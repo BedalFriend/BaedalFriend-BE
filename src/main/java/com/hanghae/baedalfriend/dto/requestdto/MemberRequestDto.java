@@ -29,6 +29,7 @@ public class MemberRequestDto {
     private String password;
     private String profileURL;
     private Authority role;
+    private String address;
 
     @NotBlank
     public String passwordConfirm;
