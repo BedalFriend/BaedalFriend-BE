@@ -7,6 +7,7 @@ import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Builder
@@ -15,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Member extends Timestamped {
+public class Member extends Timestamped implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,6 +26,8 @@ public class Member extends Timestamped {
 
     @Column(unique = true)
     private Long kakaoId;
+
+    private String address;
 
     @JsonIgnore
     @Column(nullable = false)

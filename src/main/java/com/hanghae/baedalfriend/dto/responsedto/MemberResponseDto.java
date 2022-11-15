@@ -17,7 +17,7 @@ public class MemberResponseDto  {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private String email;
-
+    private String address;
     private String profileURL;
     private Authority role;
 }
