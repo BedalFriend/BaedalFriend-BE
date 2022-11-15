@@ -17,24 +17,26 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
+    @PostMapping("/channel/{roomId}")
+    public ResponseDto<?> roomInfo(@PathVariable Long roomId, HttpServletRequest request) {
 
-
+        return chatRoomService.enterRoom(roomId, request);
+    }
 
 
     //채팅방 나가기
     @DeleteMapping("/channel/{roomId}")
     @ResponseBody
-    public ResponseDto<?> deleteChatRoom(@PathVariable Long roomId, HttpServletRequest request){
-        return chatRoomService.leaveChatRoom(roomId,request);
+    public ResponseDto<?> leaveChatRoom(@PathVariable Long roomId, HttpServletRequest request) {
+        return chatRoomService.leaveChatRoom(roomId, request);
     }
 
     // 특정 채팅방 조회
     @GetMapping("/room/{roomId}")
     @ResponseBody
-    public ResponseDto<?> roomInfo(@PathVariable String roomId, HttpServletRequest request) {
+    public ResponseDto<?> findRoom(@PathVariable Long roomId, HttpServletRequest request) {
         return chatRoomService.findRoom(roomId, request);
     }
-
 
 
 }
