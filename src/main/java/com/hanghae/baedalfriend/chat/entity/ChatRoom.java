@@ -1,33 +1,35 @@
 package com.hanghae.baedalfriend.chat.entity;
 
-import com.hanghae.baedalfriend.domain.Member;
+
+import com.hanghae.baedalfriend.domain.Post;
 import lombok.*;
 
-
 import javax.persistence.*;
+import java.io.Serializable;
 
-
-
+@Builder
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
-public class ChatRoom {
+public class ChatRoom implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Long roomId;
+    private Long id;
+
+
     @Column(nullable = false)
-    private String title;
+    private String founder;
 
-    @Column(nullable = false)
-    private String writer;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
 
 
-    public ChatRoom(Member member, String title) {
-        this.writer = member.getNickname();
-        this.title = title;
+    public ChatRoom(String founder,Post post) {
+        this.founder =founder;
+        this.post = post;
     }
-
-
 }

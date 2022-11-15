@@ -26,7 +26,7 @@ public class PostResponseDto {
     private String imageUrl; // 이미지url
 
     private boolean isDone; // 모집중
-    private Long limitTime; // 게시글의 파티원 모집 기간
+  //  private Long limitTime; // 게시글의 파티원 모집 기간
   //  private LocalDateTime limitTime; //파티참여 마감시각
 
 //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

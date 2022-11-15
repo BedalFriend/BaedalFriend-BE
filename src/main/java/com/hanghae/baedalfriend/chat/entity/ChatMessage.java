@@ -1,58 +1,57 @@
 package com.hanghae.baedalfriend.chat.entity;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.hanghae.baedalfriend.chat.dto.request.ChatMessageRequestDto;
+import com.hanghae.baedalfriend.domain.Member;
+import com.hanghae.baedalfriend.domain.Timestamped;
 import lombok.*;
 
-import javax.persistence.Column;
+import javax.persistence.*;
+import java.io.Serializable;
 
 
+@Builder
 @Getter
 @Setter
-@NoArgsConstructor
+@Entity
 @AllArgsConstructor
-@JsonDeserialize
-public class ChatMessage {
+@NoArgsConstructor
 
+public class ChatMessage extends Timestamped implements Serializable {
 
 
     //메세지 타입: 입장, 채팅, 퇴장
     public enum MessageType {
-        ENTER, TALK ,QUIT
+        ENTER, TALK, QUIT
     }
-    @Column(nullable = false)
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
+
+    @Column(nullable = false)
     private MessageType type;// 메세지 타입
-    @Column(nullable = false)
-    private long roomId; // 방 번호
-    @Column(nullable = false)
+
+    @Column
     private String message; // 메세지
+
+
     @Column(nullable = false)
-    private String createdAt; // 생성일자
-
-    @Column(nullable = false)
-    private long memberId; // 보낸사람
+    private Long roomId; // 채팅방번호
 
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
 
     @Builder
-    public ChatMessage(MessageType type, Long roomId, String message, String createdAt, Long memberId) {
-        this.type = type;
-        this.roomId = roomId;
-        this.message = message;
-        this.createdAt = createdAt;
-        this.memberId = memberId;
-    }
-
-
-    @Builder
-    public ChatMessage(ChatMessageRequestDto chatMessageRequestDto) {
+    public ChatMessage(ChatMessageRequestDto chatMessageRequestDto, Member member) {
         this.type = chatMessageRequestDto.getType();
-        this.roomId = chatMessageRequestDto.getRoomId();
         this.message = chatMessageRequestDto.getMessage();
-        this.createdAt = chatMessageRequestDto.getCreatedAt();
-        this.memberId = chatMessageRequestDto.getMemberId();
+        this.roomId = chatMessageRequestDto.getRoomId();
+        this.member = member;
+
+
     }
 }

@@ -22,7 +22,7 @@ public class GetAllPostResponseDto {
     private LocalDateTime modifiedAt; // 게시글 수정시간
     private int maxCapacity; // 최대 수용 인원
     private String imageUrl; // imageUrl
-    private Long limitTime; // 게시글의 모집 마감시각
+  ///  private Long limitTime; // 게시글의 모집 마감시각
   //  private String category;
    public  String category;
 }

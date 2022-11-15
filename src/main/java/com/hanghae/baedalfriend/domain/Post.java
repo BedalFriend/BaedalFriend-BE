@@ -5,6 +5,7 @@ import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Builder
 @Getter
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post extends Timestamped {
+public class Post extends Timestamped implements Serializable {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,9 +40,9 @@ public class Post extends Timestamped {
     @Column
     private int maxCapacity; // 최대수용인원
 
-    @Column(nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private long limitTime; // 파티모집 마감시간
+//    @Column(nullable = false)
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   // private long limitTime; // 파티모집 마감시간
 
     @Column(nullable = false)
     private String content; // 게시글 내용

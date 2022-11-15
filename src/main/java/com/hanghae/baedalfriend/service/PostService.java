@@ -1,5 +1,7 @@
 package com.hanghae.baedalfriend.service;
 
+import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
+import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.domain.Category;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
@@ -25,6 +27,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final TokenProvider tokenProvider;
+    private final ChatRoomService chatRoomService;
+    private final ChatRoomJpaRepository chatRoomRepository;
 
     // 게시글 등록
     @Transactional
@@ -51,7 +55,7 @@ public class PostService {
                 .roomTitle(requestDto.getRoomTitle()) // 채팅방 제목
                 .content(requestDto.getContent()) // 게시글 내용
                 .member(member)
-                .limitTime(Math.toIntExact(requestDto.getLimitTime())) // 게시글의 파티원 모집기간
+               // .limitTime(Math.toIntExact(requestDto.getLimitTime())) // 게시글의 파티원 모집기간
                 .gather(requestDto.getGather()) // 집결지 주소
                 .category(requestDto.getCategory()) //카테고리
                 .imageUrl(requestDto.getImageUrl()) // imageUrl
@@ -59,6 +63,7 @@ public class PostService {
                 .maxCapacity(requestDto.getMaxCapacity()) // 최대수용인원
                 .build();
         postRepository.save(post);
+        chatRoomService.createChatRoom(post, request);
         return ResponseDto.success(
                 PostResponseDto.builder()
                         .postId(post.getId()) // 게시글 ID
@@ -68,7 +73,7 @@ public class PostService {
                         .nickname(post.getMember().getNickname()) // 게시글 작성자 닉네임
                         .category(post.getCategory()) // 카테고리
                         .imageUrl(post.getImageUrl()) // s3 2022-11-11 merge 예정 대비
-                        .limitTime(post.getLimitTime()) //게시글의 파티원 모집기간
+                     //   .limitTime(post.getLimitTime()) //게시글의 파티원 모집기간
                         .target(post.getTarget()) // 식당 주소
                         .content(post.getContent()) // 게시글 내용
                         .maxCapacity(post.getMaxCapacity()) // 최대수용인원
@@ -97,7 +102,7 @@ public class PostService {
                             .content(post.getContent()) // 게시글 내용
                             .createdAt(post.getCreatedAt()) // 게시글 생성시간
                             .modifiedAt(post.getModifiedAt()) // 게시글 수정시간
-                            .limitTime(post.getLimitTime()) // 파티참여 모집시간
+                           // .limitTime(post.getLimitTime()) // 파티참여 모집시간
                             .build()
             );
         }
@@ -139,7 +144,7 @@ public class PostService {
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .content(post.getContent()) // 게시글 내용
                         .gather(post.getGather()) // 집결지주소
-                        .limitTime(post.getLimitTime()) // 게시글의 파티원 모집 마감시각
+                     //   .limitTime(post.getLimitTime()) // 게시글의 파티원 모집 마감시각
                         .category(post.getCategory()) // 카테고리
                         .target(post.getTarget()) // 식당
                         .nickname(post.getMember().getNickname()) // 게시글 작성자 닉네임
@@ -175,6 +180,7 @@ public class PostService {
         if (post.validateMember(member)) {
             return ResponseDto.fail("BAD_REQUEST", "작성자만 삭제할 수 있습니다.");
         }
+        chatRoomRepository.deleteById(id);
 
         postRepository.delete(post);
         return ResponseDto.success("delete success");
@@ -208,7 +214,7 @@ public class PostService {
                         .nickname(post.getMember().getNickname()) // 게시글 작성자 닉네임
                         .target(post.getTarget()) // 식당 주소
                         .gather(post.getGather()) // 집결지 주소
-                        .limitTime(post.getLimitTime()) //게시글의 파티원  모집 마감시각
+                     //   .limitTime(post.getLimitTime()) //게시글의 파티원  모집 마감시각
                         .category(post.getCategory()) // 카테고리
                         .content(post.getContent()) // 게시글 내용
                         .maxCapacity(post.getMaxCapacity()) // 최대수용인원
