@@ -67,7 +67,7 @@ public class SecurityConfiguration {
                 .antMatchers("/v1/auth/**").permitAll()
                 .antMatchers("/v1/posts/**").permitAll()
                 .antMatchers("/api/comment/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/v1/events}").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/events").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/events/{eventId}").permitAll()
                 .antMatchers("/ws/chat").permitAll()
                 .antMatchers("/sub/**").permitAll()
