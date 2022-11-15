@@ -13,4 +13,5 @@ public class EventResponseDto {
     private Long eventId;
     private String title;
     private String content;
+    private String imageUrl;
 }

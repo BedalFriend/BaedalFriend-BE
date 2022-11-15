@@ -2,7 +2,9 @@ package com.hanghae.baedalfriend.service;
 
 import com.hanghae.baedalfriend.domain.Event;
 import com.hanghae.baedalfriend.domain.Member;
+import com.hanghae.baedalfriend.dto.PhotoDto;
 import com.hanghae.baedalfriend.dto.requestdto.EventRequestDto;
+import com.hanghae.baedalfriend.dto.requestdto.EventUpRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.EventResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,11 +28,11 @@ import static com.hanghae.baedalfriend.shared.Authority.ROLE_ADMIN;
 public class EventService {
 
     private final EventRepository eventRepository;
-
     private final TokenProvider tokenProvider;
+    private final S3Service s3Service;
 
     @Transactional
-    public ResponseDto<?> createEvent(EventRequestDto requestDto, HttpServletRequest request) {
+    public ResponseDto<?> createEvent(EventRequestDto requestDto, List<PhotoDto> photoDtos, HttpServletRequest request) {
 
         //현재 토큰이 유효한지?, 관리자 권한인지 확인
         Member member = validateMember(request);
@@ -40,9 +43,12 @@ public class EventService {
         }
 
         //게시글 등록(save)
+//        String imageUrl = s3Service.uploadImage(multipartFile).toString();
+//        System.out.println("imageUrl : " + imageUrl);
         Event event = Event.builder()
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
+                .imageUrl(photoDtos.get(0).getPath())
                 .member(member)
                 .build();
         eventRepository.save(event);
@@ -60,6 +66,7 @@ public class EventService {
                             .eventId(event.getId())
                             .title(event.getTitle())
                             .content(event.getContent())
+                            .imageUrl(event.getImageUrl())
                             .build()
             );
         }
@@ -80,12 +87,13 @@ public class EventService {
                         .eventId(event.getId())
                         .title(event.getTitle())
                         .content(event.getContent())
+                        .imageUrl(event.getImageUrl())
                         .build()
         );
     }
 
     @Transactional
-    public ResponseDto<?> updateEvent(Long eventId, EventRequestDto requestDto, HttpServletRequest request) {
+    public ResponseDto<?> updateEvent(Long eventId, EventUpRequestDto requestDto, List<PhotoDto> photoDtos, HttpServletRequest request) {
         //현재 토큰이 유효한지?, 관리자 권한인지 확인
         Member member = validateMember(request);
         if (null == member) {
@@ -102,14 +110,14 @@ public class EventService {
         if (event.validateMember(member)) {
             return ResponseDto.fail("BAD_REQUEST", "작성자만 삭제할 수 있습니다.");
         }
-        //게시글 수정(update)
-        event.update(requestDto);
-        //"수정 성공"
+        s3Service.deleteImage(event.getImageUrl());
+
+        event.update(requestDto, photoDtos);
         return ResponseDto.success("수정 성공");
     }
 
     @Transactional
-    public ResponseDto<?> deleteEvent(Long eventId, HttpServletRequest request) {
+    public ResponseDto<?> deleteEvent(Long eventId, HttpServletRequest request){
         //현재 토큰이 유효한지?, 관리자 권한인지 확인
         Member member = validateMember(request);
         if (null == member) {
@@ -127,6 +135,9 @@ public class EventService {
             return ResponseDto.fail("BAD_REQUEST", "작성자만 삭제할 수 있습니다.");
         }
         //게시글 삭제(delete)
+        String imageUrl = event.getImageUrl();
+        s3Service.deleteImage(imageUrl);
+
         eventRepository.deleteById(eventId);
         //"삭제 성공"
         return ResponseDto.success("삭제 성공");
