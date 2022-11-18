@@ -35,7 +35,6 @@ public class ChatMessageRepository {
 
 
     public Object findAllMessage(Long roomId) {
-
         return hashOpsChatMessage.get(CHAT_MESSAGE,roomId);
     }
 }

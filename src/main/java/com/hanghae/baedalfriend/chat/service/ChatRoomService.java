@@ -12,6 +12,7 @@ import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
+import com.hanghae.baedalfriend.repository.MemberRepository;
 import com.hanghae.baedalfriend.shared.ChatRoomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
@@ -39,6 +40,7 @@ public class ChatRoomService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     private final ChatService chatService;
+    private final MemberRepository memberRepository;
 
 
     @PostConstruct
@@ -98,7 +100,7 @@ public class ChatRoomService {
         );
 
         chatRoomMemberJpaRepository.findByMember(member).orElseThrow(
-                () -> new ChatRoomException("중복입장을 불가능합니다.")
+                () -> new ChatRoomException("중복입장 불가능합니다.")
         );
 
 
@@ -145,6 +147,8 @@ public class ChatRoomService {
                     ChatMessage.builder()
                             .type(ChatMessage.MessageType.QUIT)
                             .roomId(roomId)
+                            .sender(member.getNickname())
+                            .member(member)
                             .build()
             );
             return ResponseDto.success("퇴장메시지 전송 성공");
@@ -182,11 +186,14 @@ public class ChatRoomService {
 
         List<ChatRoomMember> chatRoomMembers = chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom);
         Object chatMessages = chatMessageRepository.findAllMessage(roomId);
+        String title=chatRoom.getPost().getRoomTitle();
+
 
         ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto
                 .builder()
                 .chatRoomMembers(chatRoomMembers)
                 .chatMessages(chatMessages)
+                .title(title)
                 .build();
         return ResponseDto.success(chatRoomResponseDto);
     }

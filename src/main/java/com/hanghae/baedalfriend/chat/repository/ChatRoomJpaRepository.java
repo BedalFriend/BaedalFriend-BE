@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ChatRoomJpaRepository extends JpaRepository<ChatRoom, Long> {
 
+
 }
