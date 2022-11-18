@@ -63,7 +63,9 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-
+    //S3
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.332'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-aws', version: '2.2.6.RELEASE', ext: 'pom'
 
 }
 

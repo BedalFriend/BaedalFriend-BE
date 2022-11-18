@@ -1,16 +1,15 @@
-package com.hanghae.baedalfriend.dto.responsedto;
+package com.hanghae.baedalfriend.dto.requestdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventResponseDto {
-    private Long eventId;
+public class EventUpRequestDto {
     private String title;
     private String content;
     private String imageUrl;
