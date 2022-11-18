@@ -39,18 +39,22 @@ public class ChatMessage extends Timestamped implements Serializable {
     @Column(nullable = false)
     private Long roomId; // 채팅방번호
 
+    @Column(nullable = false)
+    private String sender; //보내는 사람
 
+    @JoinColumn(name = "member_Id", nullable = false)
     @ManyToOne
-    @JoinColumn(name = "member_id")
     private Member member;
 
 
+
+
     @Builder
-    public ChatMessage(ChatMessageRequestDto chatMessageRequestDto, Member member) {
+    public ChatMessage(ChatMessageRequestDto chatMessageRequestDto) {
         this.type = chatMessageRequestDto.getType();
         this.message = chatMessageRequestDto.getMessage();
         this.roomId = chatMessageRequestDto.getRoomId();
-        this.member = member;
+        this.sender = chatMessageRequestDto.getSender();
 
 
     }

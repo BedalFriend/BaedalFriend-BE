@@ -1,12 +1,12 @@
 package com.hanghae.baedalfriend.chat.service;
 
 
-import com.hanghae.baedalfriend.chat.dto.request.ChatMessageRequestDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageRepository;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
+import com.hanghae.baedalfriend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +28,7 @@ public class ChatService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
+    private final MemberRepository memberRepository;
 
     private final TokenProvider tokenProvider;
 
@@ -44,16 +46,20 @@ public class ChatService {
 
     // 메시지 저장
     @Transactional
-    public void save(ChatMessageRequestDto messageRequestDto, HttpServletRequest request) {
+    public void save(ChatMessage chatMessage) {
 
-        Member member =validateMember(request);
+        Member member=memberRepository.findByNickname(chatMessage.getSender()).get();
+        ChatMessage message = new ChatMessage();
+        message.setType(chatMessage.getType());
+        message.setMessage(chatMessage.getMessage());
+        message.setRoomId(chatMessage.getRoomId());
+        message.setSender(chatMessage.getSender());
+        message.setMember(member);
 
-        ChatMessage chatMessage = new ChatMessage(messageRequestDto,member);
+        chatMessageRepository.save(message);
+        chatMessageJpaRepository.save(message);
 
-        chatMessageJpaRepository.save(chatMessage);
-        chatMessageRepository.save(chatMessage);
 
-        sendChatMessage(chatMessage);
     }
 
 

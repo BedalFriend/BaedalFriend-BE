@@ -6,12 +6,14 @@ import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageRepository;
-import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberRepository;
+import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
+import com.hanghae.baedalfriend.repository.MemberRepository;
+import com.hanghae.baedalfriend.shared.ChatRoomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -34,10 +36,11 @@ public class ChatRoomService {
 
     private final TokenProvider tokenProvider;
 
-    private final ChatRoomJpaRepository chatRoomRepository;
+    private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     private final ChatService chatService;
+    private final MemberRepository memberRepository;
 
 
     @PostConstruct
@@ -67,13 +70,13 @@ public class ChatRoomService {
 
         ChatRoom chatRoom = new ChatRoom(founder, post);
 
-        chatRoomRepository.save(chatRoom);
+        chatRoomJpaRepository.save(chatRoom);
 
         hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getId(), chatRoom);
     }
 
 
-    public ResponseDto<?> enterRoom(Long roomId, HttpServletRequest request) {
+    public ResponseDto<?> enterRoom(Long roomId, HttpServletRequest request) throws ChatRoomException {
 
         Member member = validateMember(request);
 
@@ -92,14 +95,21 @@ public class ChatRoomService {
                     "Token이 유효하지 않습니다.");
         }
 
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
+        ChatRoom chatRoom = chatRoomJpaRepository.findById(roomId).orElseThrow(
                 () -> new NullPointerException("해당하는 채팅방이 없습니다.")
         );
+
+        chatRoomMemberJpaRepository.findByMember(member).orElseThrow(
+                () -> new ChatRoomException("중복입장 불가능합니다.")
+        );
+
+
+
         ChatRoomMember chatRoomMember = ChatRoomMember.builder()
                 .chatRoom(chatRoom)
                 .member(member)
                 .build();
-        chatRoomMemberRepository.save(chatRoomMember);
+        chatRoomMemberJpaRepository.save(chatRoomMember);
         return ResponseDto.success("채팅방입장");
     }
 
@@ -124,19 +134,21 @@ public class ChatRoomService {
             return ResponseDto.fail("INVALID_TOKEN",
                     "Token이 유효하지 않습니다.");
         }
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
+        ChatRoom chatRoom = chatRoomJpaRepository.findById(roomId).orElseThrow(
                 () -> new NullPointerException("해당하는 채팅방이 없습니다.")
         );
 
 
         // 나간 유저를 채팅방 리스트에서 제거
-        chatRoomMemberRepository.deleteByMember(member);
+        chatRoomMemberJpaRepository.deleteByMember(member);
         // 현재 채팅룸에 한명이라도 남아있다면 퇴장메시지 전송
-        if (chatRoomMemberRepository.findAllByChatRoom(chatRoom) != null) {
+        if (chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom) != null) {
             chatService.sendChatMessage(
                     ChatMessage.builder()
                             .type(ChatMessage.MessageType.QUIT)
                             .roomId(roomId)
+                            .sender(member.getNickname())
+                            .member(member)
                             .build()
             );
             return ResponseDto.success("퇴장메시지 전송 성공");
@@ -153,7 +165,7 @@ public class ChatRoomService {
 
         Member member = validateMember(request);
 
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
+        ChatRoom chatRoom = chatRoomJpaRepository.findById(roomId).orElseThrow(
                 () -> new NullPointerException("해당하는 채팅방이 없습니다.")
         );
 
@@ -172,13 +184,16 @@ public class ChatRoomService {
         }
 
 
-        List<ChatRoomMember> chatRoomMembers = chatRoomMemberRepository.findAllByChatRoom(chatRoom);
+        List<ChatRoomMember> chatRoomMembers = chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom);
         Object chatMessages = chatMessageRepository.findAllMessage(roomId);
+        String title=chatRoom.getPost().getRoomTitle();
+
 
         ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto
                 .builder()
                 .chatRoomMembers(chatRoomMembers)
                 .chatMessages(chatMessages)
+                .title(title)
                 .build();
         return ResponseDto.success(chatRoomResponseDto);
     }

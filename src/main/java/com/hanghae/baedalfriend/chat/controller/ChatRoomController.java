@@ -2,6 +2,7 @@ package com.hanghae.baedalfriend.chat.controller;
 
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
+import com.hanghae.baedalfriend.shared.ChatRoomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,10 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
+    //채팅방입장
+
     @PostMapping("/channel/{roomId}")
-    public ResponseDto<?> roomInfo(@PathVariable Long roomId, HttpServletRequest request) {
+    public ResponseDto<?> enterRoom(@PathVariable Long roomId, HttpServletRequest request) throws ChatRoomException {
 
         return chatRoomService.enterRoom(roomId, request);
     }
@@ -32,7 +35,7 @@ public class ChatRoomController {
     }
 
     // 특정 채팅방 조회
-    @GetMapping("/room/{roomId}")
+    @GetMapping("/channel/{roomId}")
     @ResponseBody
     public ResponseDto<?> findRoom(@PathVariable Long roomId, HttpServletRequest request) {
         return chatRoomService.findRoom(roomId, request);

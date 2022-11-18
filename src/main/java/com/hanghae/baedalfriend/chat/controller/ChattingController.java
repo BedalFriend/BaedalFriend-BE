@@ -1,6 +1,8 @@
 package com.hanghae.baedalfriend.chat.controller;
 
 import com.hanghae.baedalfriend.chat.dto.request.ChatMessageRequestDto;
+
+import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +21,11 @@ public class ChattingController {
 
     //pub/chat/message/ 에서 들어오는 메시지 처리
     @MessageMapping("/chat/message")
-    public void message(ChatMessageRequestDto messageRequestDto, HttpServletRequest request) {
-        chatService.save(messageRequestDto,request);
+    public void message(ChatMessageRequestDto messageRequestDto) {
+
+        ChatMessage chatMessage = new ChatMessage(messageRequestDto);
+
+        chatService.save(chatMessage);
+        chatService.sendChatMessage(chatMessage);
     }
 }

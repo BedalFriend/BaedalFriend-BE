@@ -14,6 +14,8 @@ import java.util.List;
 @Setter
 @Builder
 public class ChatRoomResponseDto {
+    private String roomName;
     private List<ChatRoomMember> chatRoomMembers;
     private Object chatMessages;
+    private String title;
 }
