@@ -26,6 +26,5 @@ public class ChattingController {
         ChatMessage chatMessage = new ChatMessage(messageRequestDto);
 
         chatService.save(chatMessage);
-        chatService.sendChatMessage(chatMessage);
     }
 }

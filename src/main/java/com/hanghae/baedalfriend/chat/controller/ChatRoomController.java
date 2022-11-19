@@ -21,7 +21,8 @@ public class ChatRoomController {
     //채팅방입장
 
     @PostMapping("/channel/{roomId}")
-    public ResponseDto<?> enterRoom(@PathVariable Long roomId, HttpServletRequest request) throws ChatRoomException {
+    @ResponseBody
+    public ResponseDto<?> enterRoom(@PathVariable Long roomId, HttpServletRequest request)  {
 
         return chatRoomService.enterRoom(roomId, request);
     }
