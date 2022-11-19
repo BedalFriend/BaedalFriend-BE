@@ -56,8 +56,10 @@ public class ChatService {
         message.setSender(chatMessage.getSender());
         message.setMember(member);
 
+
         chatMessageRepository.save(message);
         chatMessageJpaRepository.save(message);
+        sendChatMessage(message);
 
 
     }

@@ -5,15 +5,14 @@ import com.hanghae.baedalfriend.chat.dto.response.ChatRoomResponseDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
-import com.hanghae.baedalfriend.chat.repository.ChatMessageRepository;
+import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
-import com.hanghae.baedalfriend.repository.MemberRepository;
-import com.hanghae.baedalfriend.shared.ChatRoomException;
+import com.hanghae.baedalfriend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,6 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -35,12 +35,13 @@ public class ChatRoomService {
     private static final String CHAT_ROOMS = "CHAT_ROOM"; // 채팅룸 저장
 
     private final TokenProvider tokenProvider;
+    private final PostRepository postRepository;
 
     private final ChatRoomJpaRepository chatRoomJpaRepository;
-    private final ChatMessageRepository chatMessageRepository;
+
     private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
+    private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final ChatService chatService;
-    private final MemberRepository memberRepository;
 
 
     @PostConstruct
@@ -76,7 +77,7 @@ public class ChatRoomService {
     }
 
 
-    public ResponseDto<?> enterRoom(Long roomId, HttpServletRequest request) throws ChatRoomException {
+    public ResponseDto<?> enterRoom(Long roomId, HttpServletRequest request) {
 
         Member member = validateMember(request);
 
@@ -98,19 +99,21 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomJpaRepository.findById(roomId).orElseThrow(
                 () -> new NullPointerException("해당하는 채팅방이 없습니다.")
         );
+        List<ChatRoomMember> isnull = chatRoomMemberJpaRepository.findByMember(member);
+        System.out.println(isnull);
 
-        chatRoomMemberJpaRepository.findByMember(member).orElseThrow(
-                () -> new ChatRoomException("중복입장 불가능합니다.")
-        );
+        if (isnull.size() == 0) {
+            ChatRoomMember chatRoomMember = ChatRoomMember.builder()
+                    .chatRoom(chatRoom)
+                    .member(member)
+                    .build();
+            chatRoomMemberJpaRepository.save(chatRoomMember);
+            return ResponseDto.success("채팅방입장");
 
+        } else {
+            return ResponseDto.fail("채팅방입장 불가", "채팅방입장 불가");
 
-
-        ChatRoomMember chatRoomMember = ChatRoomMember.builder()
-                .chatRoom(chatRoom)
-                .member(member)
-                .build();
-        chatRoomMemberJpaRepository.save(chatRoomMember);
-        return ResponseDto.success("채팅방입장");
+        }
     }
 
     // 특정 채팅방 나가기
@@ -142,7 +145,7 @@ public class ChatRoomService {
         // 나간 유저를 채팅방 리스트에서 제거
         chatRoomMemberJpaRepository.deleteByMember(member);
         // 현재 채팅룸에 한명이라도 남아있다면 퇴장메시지 전송
-        if (chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom) != null) {
+        if (chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom).size() == 0) {
             chatService.sendChatMessage(
                     ChatMessage.builder()
                             .type(ChatMessage.MessageType.QUIT)
@@ -185,15 +188,15 @@ public class ChatRoomService {
 
 
         List<ChatRoomMember> chatRoomMembers = chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom);
-        Object chatMessages = chatMessageRepository.findAllMessage(roomId);
-        String title=chatRoom.getPost().getRoomTitle();
+        List<ChatMessage> chatMessages = chatMessageJpaRepository.findAllByRoomId(roomId);
+        Post post = postRepository.findById(roomId).get();
 
 
         ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto
                 .builder()
                 .chatRoomMembers(chatRoomMembers)
                 .chatMessages(chatMessages)
-                .title(title)
+                .post(post)
                 .build();
         return ResponseDto.success(chatRoomResponseDto);
     }

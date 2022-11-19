@@ -2,7 +2,7 @@ package com.hanghae.baedalfriend.chat.configuration.handler;
 
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 
-import com.hanghae.baedalfriend.chat.repository.ChatRoomRepository;
+//import com.hanghae.baedalfriend.chat.repository.ChatRoomRepository;
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.chat.service.ChatService;
 import com.hanghae.baedalfriend.domain.Member;
@@ -26,7 +26,7 @@ public class StompHandler implements ChannelInterceptor {
 
     private final TokenProvider tokenProvider;
 
-    private final ChatRoomRepository chatRoomRepository;
+//    private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomService chatRoomService;
     private final ChatService chatService;
 
