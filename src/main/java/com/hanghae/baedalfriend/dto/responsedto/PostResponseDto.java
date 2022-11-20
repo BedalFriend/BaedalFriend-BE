@@ -1,6 +1,7 @@
 package com.hanghae.baedalfriend.dto.responsedto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import com.hanghae.baedalfriend.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Getter
@@ -35,6 +37,7 @@ public class PostResponseDto {
     private LocalDateTime modifiedAt; // 게시글 수정시간
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime limitTime;  // 마감시각
+    private List<ChatRoomMember> chatRoomMembers;
     public Page<PostResponseDto> toDtoList(Page<Post> postList) {
         Page<PostResponseDto> ResponsePostList = postList.map(m -> PostResponseDto.builder()
                 .postId(m.getId())

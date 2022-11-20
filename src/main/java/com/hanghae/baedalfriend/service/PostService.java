@@ -1,6 +1,7 @@
 package com.hanghae.baedalfriend.service;
 
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
+import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.domain.Category;
 import com.hanghae.baedalfriend.domain.Member;
@@ -29,6 +30,7 @@ public class PostService {
     private final TokenProvider tokenProvider;
     private final ChatRoomService chatRoomService;
     private final ChatRoomJpaRepository chatRoomRepository;
+    private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
 
     // 게시글 등록
     @Transactional
@@ -171,6 +173,7 @@ public class PostService {
                             .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                             .createdAt(post.getCreatedAt()) // 생성일
                             .modifiedAt(post.getModifiedAt()) // 수정일
+                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllById(post.getId())) //참여중인 유저목록
                             .build()
             );
         }
@@ -203,6 +206,7 @@ public class PostService {
                             .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                             .createdAt(post.getCreatedAt()) // 생성일
                             .modifiedAt(post.getModifiedAt()) // 수정일
+                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllById(post.getId())) //참여중인 유저목록
                             .build()
             );
         }
@@ -342,6 +346,7 @@ public class PostService {
                         .createdAt(post.getCreatedAt()) // 생성일
                         .modifiedAt(post.getModifiedAt()) // 수정일
                         .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllById(post.getId())) //참여중인 유저목록
                         .build()
         );
     }
