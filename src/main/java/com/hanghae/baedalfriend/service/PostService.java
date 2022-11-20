@@ -1,6 +1,8 @@
 package com.hanghae.baedalfriend.service;
 
+import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
+import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.domain.Category;
 import com.hanghae.baedalfriend.domain.Member;
@@ -29,6 +31,7 @@ public class PostService {
     private final TokenProvider tokenProvider;
     private final ChatRoomService chatRoomService;
     private final ChatRoomJpaRepository chatRoomRepository;
+    private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
 
     // 게시글 등록
     @Transactional
@@ -88,6 +91,7 @@ public class PostService {
         List<Post> allPosts = postRepository.findAllByOrderByModifiedAtDesc();
         List<GetAllPostResponseDto> getAllPostResponseDtoList = new ArrayList<>();
 
+
         for(Post post : allPosts) {
             getAllPostResponseDtoList.add(
                     GetAllPostResponseDto.builder()
@@ -103,6 +107,7 @@ public class PostService {
                             .createdAt(post.getCreatedAt()) // 게시글 생성시간
                             .modifiedAt(post.getModifiedAt()) // 게시글 수정시간
                            // .limitTime(post.getLimitTime()) // 파티참여 모집시간
+                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllById(post.getId()))
                             .build()
             );
         }
@@ -207,6 +212,8 @@ public class PostService {
             return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 ID 입니다.");
         }
 
+        List<ChatRoomMember> chatRoomMembers=chatRoomMemberJpaRepository.findAllById(id);
+
         return ResponseDto.success(
                 PostResponseDto.builder()
                         .postId(post.getId())
@@ -218,6 +225,7 @@ public class PostService {
                         .category(post.getCategory()) // 카테고리
                         .content(post.getContent()) // 게시글 내용
                         .maxCapacity(post.getMaxCapacity()) // 최대수용인원
+                        .chatRoomMembers(chatRoomMembers)
                         .build()
         );
     }

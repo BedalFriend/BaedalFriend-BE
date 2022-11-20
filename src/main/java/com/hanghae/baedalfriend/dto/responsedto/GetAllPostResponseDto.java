@@ -1,11 +1,13 @@
 package com.hanghae.baedalfriend.dto.responsedto;
 
+import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Getter
@@ -25,4 +27,5 @@ public class GetAllPostResponseDto {
   ///  private Long limitTime; // 게시글의 모집 마감시각
   //  private String category;
    public  String category;
+    private List<ChatRoomMember> chatRoomMembers;
 }
