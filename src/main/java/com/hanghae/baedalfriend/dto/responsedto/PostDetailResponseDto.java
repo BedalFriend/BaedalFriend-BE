@@ -1,20 +1,18 @@
 package com.hanghae.baedalfriend.dto.responsedto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Builder
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class GetAllPostResponseDto {
-    private Long postId; // 게시글 아이디
-    private Long memberId; // 회원 번호
+@Setter
+@Builder
+public class PostDetailResponseDto {
+    private Long postId;
+    private Long memberId;
     private String roomTitle; // 채팅방 제목
     private boolean isDone; // 모집중
     private String category; // 카테고리
@@ -33,4 +31,5 @@ public class GetAllPostResponseDto {
     private LocalDateTime modifiedAt; // 게시글 수정시간
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime limitTime;  // 마감시각
+
 }
