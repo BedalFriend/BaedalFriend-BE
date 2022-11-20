@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 public class PostController {
     private final PostService postService;
 
-
-
     @ApiImplicitParams({
             @ApiImplicitParam(
                     name = "Refresh_Token",
@@ -29,9 +27,7 @@ public class PostController {
 
     // 게시물 등록
     @PostMapping(value = "/auth/posts")
-    public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto,
-                                     HttpServletRequest request) throws Exception {
-
+    public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) throws Exception {
         return postService.createPost(requestDto, request);
     }
 
@@ -47,32 +43,27 @@ public class PostController {
         return postService.getPost(id);
     }
 
+    // 게시물 상세 조회
+    @RequestMapping(value = "/posts/detail/{postId}", method = RequestMethod.GET)
+    public ResponseDto<?> getDetailPost(@PathVariable Long postId, HttpServletRequest request){
+        return postService.getDetailPost(postId,request);
+    }
+
     // 게시물 수정
     @PutMapping(value = "/auth/posts/{id}")
-    public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto,
-                                     HttpServletRequest request) {
+    public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto, HttpServletRequest request) {
         return postService.updatePost(id, postRequestDto, request);
     }
 
     // 게시물 삭제
     @DeleteMapping(value = "/auth/posts/{id}")
-    public ResponseDto<?> deletePost(@PathVariable Long id,
-                                     HttpServletRequest request) {
-
-
+    public ResponseDto<?> deletePost(@PathVariable Long id, HttpServletRequest request) {
         return postService.deletePost(id, request);
     }
 
-    // 카테고리 조회
-    @RequestMapping(value="/category/show", method = RequestMethod.GET)
-    public ResponseDto<?> showCategoryPost(){
-        return postService.showCategoryPost();
+    // 특정 카테고리 조회
+    @RequestMapping(value = "/posts/category/{category}", method = RequestMethod.GET)
+    public ResponseDto<?> findCategoryPost(@PathVariable String category) {
+        return postService.findCategoryPost(category);
     }
-
-//    @RequestMapping(value = "/post/category/{category}", method = RequestMethod.GET)
-//    public ResponseDto<?> finedCategoryPost(@PathVariable String category) {
-//        return postService.findCategoryPost(category);
-//    }
-
-
 }

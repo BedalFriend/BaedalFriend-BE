@@ -9,28 +9,27 @@ import javax.persistence.*;
 @Getter
 @Entity
 public class Category {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "category",nullable = false)
+    @Column(name = "category", nullable = false)
     private String category;
 
-    @Column(name = "viewerCnt",nullable = false)
+    @Column(name = "hits", nullable = false)
     @ColumnDefault("0")
-    private Long exposureNumber;
+    private Long hits;
 
     public Category(){}
 
     @Builder
-    public Category(String category, Long exposureNumber){
+    public Category(String category, Long hits){
         this.category = category;
-        this.exposureNumber = exposureNumber;
+        this.hits = hits;
     }
 
-    public void updateExposureNumber(String cate){
+    public void updateCateHits(String cate){
         this.category = cate;
-        this.exposureNumber += 1;
+        this.hits += 1;
     }
 }
