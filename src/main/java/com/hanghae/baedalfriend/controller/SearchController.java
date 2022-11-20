@@ -47,15 +47,15 @@ public class SearchController {
     }
 
     // 인기 검색
-    @RequestMapping(value = "/popularSearchWord", method = RequestMethod.GET)
-    public ResponseDto<?> getSearchPopular(){
-        return searchService.getSearchPopular();
-    }
+//    @RequestMapping(value = "/popularSearchWord", method = RequestMethod.GET)
+//    public ResponseDto<?> getSearchPopular(){
+//        return searchService.getSearchPopular();
+//    }
 
     // 최근 검색
-    @RequestMapping(value = "/recentSearchTerms", method = RequestMethod.GET)
-    public ResponseDto<?> getSearchRecentTerms(HttpServletRequest request){
-        return searchService.getSearchRecentTerms(request);
-    }
+//    @RequestMapping(value = "/recentSearchTerms", method = RequestMethod.GET)
+//    public ResponseDto<?> getSearchRecentTerms(HttpServletRequest request){
+//        return searchService.getSearchRecentTerms(request);
+//    }
 
 }
