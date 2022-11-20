@@ -9,9 +9,9 @@ import com.hanghae.baedalfriend.dto.responsedto.PostResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.RecentSearchTermsResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
-import com.hanghae.baedalfriend.repository.PopularSearchWordRepository;
+//import com.hanghae.baedalfriend.repository.PopularSearchWordRepository;
 import com.hanghae.baedalfriend.repository.PostRepository;
-import com.hanghae.baedalfriend.repository.RecentSearchTermsRepository;
+//import com.hanghae.baedalfriend.repository.RecentSearchTermsRepository;
 import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,8 +34,8 @@ public class SearchService {
     private PostRepository postRepository;
     private TokenProvider tokenProvider;
     private PostService postService;
-    private PopularSearchWordRepository popularSearchWordRepository;
-    private RecentSearchTermsRepository recentSearchTermsRepository;
+//    private PopularSearchWordRepository popularSearchWordRepository;
+//    private RecentSearchTermsRepository recentSearchTermsRepository;
 
     public SearchService(PostRepository postRepository, TokenProvider tokenProvider, PostService postService) {
         this.postRepository = postRepository;
@@ -124,59 +124,59 @@ public class SearchService {
                             .build()
             );
         }
-        if(!popularSearchWordRepository.existsBySearchWord(keyword)) {
-            PopularSearchWord popularSearchWord = new PopularSearchWord(keyword);
-            popularSearchWordRepository.save(popularSearchWord);
-        }else {
-            PopularSearchWord popularSearchWord = popularSearchWordRepository.findBySearchWord(keyword);
-            popularSearchWord.updateCount();
-            popularSearchWordRepository.save(popularSearchWord);
-        }
+//        if(!popularSearchWordRepository.existsBySearchWord(keyword)) {
+//            PopularSearchWord popularSearchWord = new PopularSearchWord(keyword);
+//            popularSearchWordRepository.save(popularSearchWord);
+//        }else {
+//            PopularSearchWord popularSearchWord = popularSearchWordRepository.findBySearchWord(keyword);
+//            popularSearchWord.updateCount();
+//            popularSearchWordRepository.save(popularSearchWord);
+//        }
         return ResponseDto.success(postResponseDtoList);
     }
 
 
     // 인기 검색
-    @Transactional
-    public ResponseDto<?> getSearchPopular() {
-        List<PopularSearchWord> popularSearchWords = popularSearchWordRepository.findAllByOrderBySearchWordHitsDesc();
-        List<PopularSearchWordResponseDto> popularSearchWordResponseDto = new ArrayList<>();
-
-        for (PopularSearchWord popularSearchWord : popularSearchWords) {
-            popularSearchWordResponseDto.add(
-                    PopularSearchWordResponseDto.builder()
-                            .searchWord(popularSearchWord.getSearchWord())
-                            .searchWordHits(popularSearchWord.getSearchWordHits())
-                            .build()
-            );
-
-            if (popularSearchWordResponseDto.size() >= 5) break;
-        }
-        return ResponseDto.success(popularSearchWordResponseDto);
-    }
+//    @Transactional
+//    public ResponseDto<?> getSearchPopular() {
+//        List<PopularSearchWord> popularSearchWords = popularSearchWordRepository.findAllByOrderBySearchWordHitsDesc();
+//        List<PopularSearchWordResponseDto> popularSearchWordResponseDto = new ArrayList<>();
+//
+//        for (PopularSearchWord popularSearchWord : popularSearchWords) {
+//            popularSearchWordResponseDto.add(
+//                    PopularSearchWordResponseDto.builder()
+//                            .searchWord(popularSearchWord.getSearchWord())
+//                            .searchWordHits(popularSearchWord.getSearchWordHits())
+//                            .build()
+//            );
+//
+//            if (popularSearchWordResponseDto.size() >= 5) break;
+//        }
+//        return ResponseDto.success(popularSearchWordResponseDto);
+//    }
 
     // 최근 검색
-    public ResponseDto<?> getSearchRecentTerms(HttpServletRequest request) {
-        // 회원인지 체크
-        Member member = validateMember(request);
-        if (member == null) {
-            return ResponseDto.success("회원에게만 제공되는 서비스입니다.");
-        }
-
-        List<RecentSearchTerms> recentSearchTerms = recentSearchTermsRepository.findAllByIdOrderByModifiedAtDesc(member.getId());
-        List<RecentSearchTermsResponseDto> recentSearchTermsResponseDto = new ArrayList<>();
-
-        for (RecentSearchTerms recentSearchTerm : recentSearchTerms) {
-            recentSearchTermsResponseDto.add(
-                    RecentSearchTermsResponseDto.builder()
-                            .searchWord(recentSearchTerm.getSearchWord())
-                            .searchTime(recentSearchTerm.getModifiedAt())
-                            .build()
-            );
-            if (recentSearchTermsResponseDto.size() >= 10) break;
-        }
-        return ResponseDto.success(recentSearchTermsResponseDto);
-    }
+//    public ResponseDto<?> getSearchRecentTerms(HttpServletRequest request) {
+//        // 회원인지 체크
+//        Member member = validateMember(request);
+//        if (member == null) {
+//            return ResponseDto.success("회원에게만 제공되는 서비스입니다.");
+//        }
+//
+//        List<RecentSearchTerms> recentSearchTerms = recentSearchTermsRepository.findAllByIdOrderByModifiedAtDesc(member.getId());
+//        List<RecentSearchTermsResponseDto> recentSearchTermsResponseDto = new ArrayList<>();
+//
+//        for (RecentSearchTerms recentSearchTerm : recentSearchTerms) {
+//            recentSearchTermsResponseDto.add(
+//                    RecentSearchTermsResponseDto.builder()
+//                            .searchWord(recentSearchTerm.getSearchWord())
+//                            .searchTime(recentSearchTerm.getModifiedAt())
+//                            .build()
+//            );
+//            if (recentSearchTermsResponseDto.size() >= 10) break;
+//        }
+//        return ResponseDto.success(recentSearchTermsResponseDto);
+//    }
 
     @Transactional
     public Member validateMember(HttpServletRequest request) {
