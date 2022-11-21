@@ -38,6 +38,9 @@ public class Member extends Timestamped implements Serializable{
     @Enumerated(value = EnumType.STRING)
     private Authority role;
 
+
+    private Long ongoingRoomId;
+
     public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId) {
         this.nickname = nickname;
         this.password = encodedPassword;
@@ -66,4 +69,10 @@ public class Member extends Timestamped implements Serializable{
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
+
+    public void ongoingRoomId(Long roomId) {
+        this.ongoingRoomId = roomId;
+    }
+
+
 }

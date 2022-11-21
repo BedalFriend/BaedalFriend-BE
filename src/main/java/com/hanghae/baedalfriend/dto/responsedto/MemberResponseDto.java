@@ -20,4 +20,5 @@ public class MemberResponseDto  {
     private String address;
     private String profileURL;
     private Authority role;
+    private long roomId;
 }
