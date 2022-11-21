@@ -21,7 +21,7 @@ public class PostDetailResponseDto {
     private String targetAddress; // 식당 주소
     private String targetName; // 식당이름
     private String region; // 지역
-    private String maxCapacity; // 최대인원
+    private Long maxCapacity; // 최대인원
     private Long targetAmount; // 목표금액
     private String deliveryTime; // 배달시간
     private Long deliveryFee; // 배달요금
