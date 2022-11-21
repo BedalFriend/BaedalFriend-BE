@@ -27,6 +27,7 @@ public class PostResponseDto {
     private Long targetAmount; // 목표금액
     private String deliveryTime; // 배달시간
     private Long deliveryFee; // 배달요금
+    private String maxCapacity; // 최대인원
     private int participantNumber; // 참여자수
     private String gatherName; // 모이는 장소 이름
     private String gatherAddress; // 모이는 장소 주소

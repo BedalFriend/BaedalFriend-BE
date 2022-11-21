@@ -49,6 +49,9 @@ public class Post extends Timestamped implements Serializable {
     private LocalDateTime limitTime; // 파티모집 마감시각
 
     @Column(nullable = false)
+    private String maxCapacity; // 최대인원
+
+    @Column(nullable = false)
     private String region; // 지역
 
     private String keyword; // 검색어

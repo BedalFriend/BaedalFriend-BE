@@ -37,6 +37,9 @@ public class PostRequestDto {
     private String deliveryTime; //  배달시간
 
     @NotBlank(message = "공백은 허용하지 않습니다.")
+    private String maxCapacity; // 최대인원
+
+    @NotBlank(message = "공백은 허용하지 않습니다.")
     private Long deliveryFee; // 배달요금
 
     @NotBlank(message = "공백은 허용하지 않습니다.")

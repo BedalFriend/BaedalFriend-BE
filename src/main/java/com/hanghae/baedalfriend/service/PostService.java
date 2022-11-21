@@ -143,19 +143,19 @@ public class PostService {
             regionRepository.save(region12);
         }
 
-
         //게시글 등록
         Post post = Post.builder()
                 .roomTitle(requestDto.getRoomTitle()) // 채팅방 제목
                 .member(member)
                 .isDone(requestDto.isDone())// 모집중
                 .category(requestDto.getCategory()) //카테고리
+                .maxCapacity(requestDto.getMaxCapacity()) // 최대 인원
                 .region(requestDto.getRegion()) // 지역
                 .targetAddress(requestDto.getTargetAddress()) // 식당주소
                 .targetName(requestDto.getTargetName())// 식당이름
                 .targetAmount(requestDto.getTargetAmount())// 목표금액
                 .deliveryTime(requestDto.getDeliveryTime()) // 배달시간
-                .deliveryFee(requestDto.getDeliveryFee()) // 배달요금kakao_member
+                .deliveryFee(requestDto.getDeliveryFee()) // 배달요금
                 .participantNumber(requestDto.getParticipantNumber()) // 참여자수
                 .gatherName(requestDto.getGatherName()) // 모이는 장소 이름
                 .gatherAddress(requestDto.getGatherAddress()) // 모이는 장소 주소
@@ -172,6 +172,7 @@ public class PostService {
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .isDone(post.isDone())// 모집중
                         .category(post.getCategory()) //카테고리
+                        .maxCapacity(post.getMaxCapacity()) // 최대인원
                         .region(post.getRegion()) // 지역
                         .targetAddress(post.getTargetAddress()) // 식당주소
                         .targetName(post.getTargetName())// 식당이름
@@ -203,6 +204,7 @@ public class PostService {
                             .isDone(post.isDone())// 모집중
                             .region(post.getRegion()) // 지역
                             .category(post.getCategory()) //카테고리
+                            .maxCapacity(post.getMaxCapacity()) // 최대인원
                             .targetAddress(post.getTargetAddress()) // 식당주소
                             .targetName(post.getTargetName())// 식당이름
                             .targetAmount(post.getTargetAmount())// 목표금액
@@ -237,6 +239,7 @@ public class PostService {
                             .region(post.getRegion()) // 지역
                             .isDone(post.isDone())// 모집중
                             .category(post.getCategory()) //카테고리
+                            .maxCapacity(post.getMaxCapacity()) // 최대인원
                             .targetAddress(post.getTargetAddress()) // 식당주소
                             .targetName(post.getTargetName())// 식당이름
                             .targetAmount(post.getTargetAmount())// 목표금액
@@ -297,6 +300,7 @@ public class PostService {
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
+                        .maxCapacity(post.getMaxCapacity()) // 최대인원
                         .category(post.getCategory()) //카테고리
                         .targetAddress(post.getTargetAddress()) // 식당주소
                         .targetName(post.getTargetName())// 식당이름
@@ -379,6 +383,7 @@ public class PostService {
                         .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
                         .category(post.getCategory()) //카테고리
+                        .maxCapacity(post.getMaxCapacity()) // 최대인원
                         .targetAddress(post.getTargetAddress()) // 식당주소
                         .targetName(post.getTargetName())// 식당이름
                         .targetAmount(post.getTargetAmount())// 목표금액
@@ -445,6 +450,7 @@ public class PostService {
                         .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
                         .category(post.getCategory()) //카테고리
+                        .maxCapacity(post.getMaxCapacity()) // 최대인원
                         .targetAddress(post.getTargetAddress()) // 식당주소
                         .targetName(post.getTargetName())// 식당이름
                         .targetAmount(post.getTargetAmount())// 목표금액
