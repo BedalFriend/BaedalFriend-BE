@@ -1,11 +1,13 @@
 package com.hanghae.baedalfriend.service;
 
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
+import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.domain.Category;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.domain.Region;
+import com.hanghae.baedalfriend.dto.requestdto.LoginRequestDto;
 import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.*;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
@@ -32,6 +34,10 @@ public class PostService {
     private final TokenProvider tokenProvider;
     private final ChatRoomService chatRoomService;
     private final ChatRoomJpaRepository chatRoomRepository;
+    private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
+    private final ChatRoomJpaRepository chatRoomJpaRepository;
+
+
 
     // 게시글 등록
     @Transactional
@@ -149,7 +155,7 @@ public class PostService {
                 .targetName(requestDto.getTargetName())// 식당이름
                 .targetAmount(requestDto.getTargetAmount())// 목표금액
                 .deliveryTime(requestDto.getDeliveryTime()) // 배달시간
-                .deliveryFee(requestDto.getDeliveryFee()) // 배달요금
+                .deliveryFee(requestDto.getDeliveryFee()) // 배달요금kakao_member
                 .participantNumber(requestDto.getParticipantNumber()) // 참여자수
                 .gatherName(requestDto.getGatherName()) // 모이는 장소 이름
                 .gatherAddress(requestDto.getGatherAddress()) // 모이는 장소 주소
@@ -157,6 +163,7 @@ public class PostService {
                 .limitTime(requestDto.getLimitTime()) // 파티모집 마감 시각
                 .build();
         postRepository.save(post);
+        //채팅방 자동생성
         chatRoomService.createChatRoom(post, request);
         return ResponseDto.success(
                 PostResponseDto.builder()
@@ -208,6 +215,7 @@ public class PostService {
                             .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                             .createdAt(post.getCreatedAt()) // 생성일
                             .modifiedAt(post.getModifiedAt()) // 수정일
+                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
                             .build()
             );
         }
@@ -241,6 +249,7 @@ public class PostService {
                             .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                             .createdAt(post.getCreatedAt()) // 생성일
                             .modifiedAt(post.getModifiedAt()) // 수정일
+                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
                             .build()
             );
         }
@@ -382,6 +391,7 @@ public class PostService {
                         .createdAt(post.getCreatedAt()) // 생성일
                         .modifiedAt(post.getModifiedAt()) // 수정일
                         .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
                         .build()
         );
     }
@@ -447,6 +457,7 @@ public class PostService {
                         .createdAt(post.getCreatedAt()) // 생성일
                         .modifiedAt(post.getModifiedAt()) // 수정일
                         .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
                         .build()
         );
     }

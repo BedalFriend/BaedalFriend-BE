@@ -1,5 +1,6 @@
 package com.hanghae.baedalfriend.repository;
 
+import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface PostRepository extends JpaRepository<Post,Long> {
@@ -24,4 +26,5 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     // 지역 검색 + 정렬
     @Query(value="SELECT * FROM post WHERE concat(room_title, category,region) like concat('%',:region,'%') ORDER BY :sortBy" , nativeQuery= true)
     Page<Post> findByRegion(String region, String sortBy, Pageable pageable);
+    List<Post> findByMember(Member member);
 }

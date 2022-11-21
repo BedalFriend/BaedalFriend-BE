@@ -1,11 +1,13 @@
 package com.hanghae.baedalfriend.dto.responsedto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,5 +34,6 @@ public class PostDetailResponseDto {
     private LocalDateTime modifiedAt; // 게시글 수정시간
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime limitTime;  // 마감시각
+    private List<ChatRoomMember> chatRoomMembers;
 
 }
