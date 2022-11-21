@@ -106,7 +106,7 @@ public class MemberService {
                         .email(member.getEmail())
                         .role(member.getRole())
                         .profileURL(member.getProfileURL())
-                        .roomId(roomId)
+                        .onGoing(roomId)
                         .build()
         );
     }
@@ -168,7 +168,7 @@ public class MemberService {
                         .profileURL(member.getProfileURL())
                         .role(member.getRole())
                         .email(member.getEmail())
-                        .roomId(roomId)
+                        .onGoing(roomId)
                         .build()
         );
     }
