@@ -51,4 +51,6 @@ public class PostRequestDto {
     private Long hits; // 조회수
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime limitTime; // 마감시각
+
+   private String region; //지역
 }

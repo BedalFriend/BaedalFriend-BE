@@ -5,6 +5,7 @@ import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.domain.Category;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
+import com.hanghae.baedalfriend.domain.Region;
 import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.*;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
@@ -26,6 +27,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
+
+    private final RegionRepository regionRepository;
     private final TokenProvider tokenProvider;
     private final ChatRoomService chatRoomService;
     private final ChatRoomJpaRepository chatRoomRepository;
@@ -104,12 +107,44 @@ public class PostService {
             categoryRepository.save(category15);
         }
 
+        // 지역
+        if (regionRepository.count() == 0) {
+            Region region0 = new Region("서울", 0L);
+            regionRepository.save(region0);
+            Region region1 = new Region("경기", 0L);
+            regionRepository.save(region1);
+            Region region2 = new Region("인천", 0L);
+            regionRepository.save(region2);
+            Region region3 = new Region("강원", 0L);
+            regionRepository.save(region3);
+            Region region4 = new Region("충북", 0L);
+            regionRepository.save(region4);
+            Region region5 = new Region("충남", 0L);
+            regionRepository.save(region5);
+            Region region6 = new Region("충남", 0L);
+            regionRepository.save(region6);
+            Region region7 = new Region("전북", 0L);
+            regionRepository.save(region7);
+            Region region8 = new Region("전남", 0L);
+            regionRepository.save(region8);
+            Region region9 = new Region("전북", 0L);
+            regionRepository.save(region9);
+            Region region10 = new Region("경북", 0L);
+            regionRepository.save(region10);
+            Region region11 = new Region("경남", 0L);
+            regionRepository.save(region11);
+            Region region12 = new Region("제주", 0L);
+            regionRepository.save(region12);
+        }
+
+
         //게시글 등록
         Post post = Post.builder()
                 .roomTitle(requestDto.getRoomTitle()) // 채팅방 제목
                 .member(member)
                 .isDone(requestDto.isDone())// 모집중
                 .category(requestDto.getCategory()) //카테고리
+                .region(requestDto.getRegion()) // 지역
                 .targetAddress(requestDto.getTargetAddress()) // 식당주소
                 .targetName(requestDto.getTargetName())// 식당이름
                 .targetAmount(requestDto.getTargetAmount())// 목표금액
@@ -130,6 +165,7 @@ public class PostService {
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .isDone(post.isDone())// 모집중
                         .category(post.getCategory()) //카테고리
+                        .region(post.getRegion()) // 지역
                         .targetAddress(post.getTargetAddress()) // 식당주소
                         .targetName(post.getTargetName())// 식당이름
                         .targetAmount(post.getTargetAmount())// 목표금액
@@ -158,6 +194,7 @@ public class PostService {
                             .memberId(post.getMember().getId()) // 게시글 ID
                             .roomTitle(post.getRoomTitle()) // 채팅방 제목
                             .isDone(post.isDone())// 모집중
+                            .region(post.getRegion()) // 지역
                             .category(post.getCategory()) //카테고리
                             .targetAddress(post.getTargetAddress()) // 식당주소
                             .targetName(post.getTargetName())// 식당이름
@@ -189,6 +226,7 @@ public class PostService {
                             .postId(post.getId()) // 게시글 번호
                             .memberId(post.getMember().getId()) // 회원 번호
                             .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                            .region(post.getRegion()) // 지역
                             .isDone(post.isDone())// 모집중
                             .category(post.getCategory()) //카테고리
                             .targetAddress(post.getTargetAddress()) // 식당주소
@@ -248,6 +286,7 @@ public class PostService {
                         .postId(post.getId()) // 게시글 번호
                         .memberId(post.getMember().getId()) // 회원 번호
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                        .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
                         .category(post.getCategory()) //카테고리
                         .targetAddress(post.getTargetAddress()) // 식당주소
@@ -328,6 +367,7 @@ public class PostService {
                         .postId(post.getId()) //게시글 아이디
                         .memberId(post.getMember().getId()) // 게시글 ID
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                        .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
                         .category(post.getCategory()) //카테고리
                         .targetAddress(post.getTargetAddress()) // 식당주소
@@ -392,6 +432,7 @@ public class PostService {
                         .postId(post.getId()) //게시글 아이디
                         .memberId(post.getMember().getId()) // 게시글 ID
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                        .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
                         .category(post.getCategory()) //카테고리
                         .targetAddress(post.getTargetAddress()) // 식당주소

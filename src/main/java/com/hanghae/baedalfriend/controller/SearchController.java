@@ -46,6 +46,19 @@ public class SearchController {
         }
     }
 
+   // 지역별 검색 + 정렬 기능
+    @RequestMapping(value= "/region/search", method = RequestMethod.GET)
+    public ResponseDto<?> getRegionSearch(@RequestParam("page") int page,
+                                    @RequestParam("size") int size,
+                                    @RequestParam("keyword") String keyword,
+                                    @RequestParam("sortBy") String sortBy,
+                                    @RequestParam("isAsc") boolean isAsc) {
+        {
+            page = page - 1;
+            return searchService.getRegionSearch(keyword, page, size, sortBy, isAsc);
+        }
+    }
+
     // 인기 검색
 //    @RequestMapping(value = "/popularSearchWord", method = RequestMethod.GET)
 //    public ResponseDto<?> getSearchPopular(){
