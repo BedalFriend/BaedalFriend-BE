@@ -48,6 +48,12 @@ public class Post extends Timestamped implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime limitTime; // 파티모집 마감시각
 
+    @Column(nullable = false)
+    private String maxCapacity; // 최대인원
+
+    @Column(nullable = false)
+    private String region; // 지역
+
     private String keyword; // 검색어
 
     @Column
@@ -59,6 +65,7 @@ public class Post extends Timestamped implements Serializable {
         this.roomTitle = postRequestDto.getRoomTitle(); // 채팅방제목
         this.category = postRequestDto.getCategory(); // 카테고리
         this.targetName = postRequestDto.getTargetName(); // 식당이름
+        this.region = postRequestDto.getRegion(); // 지역
         this.targetAddress = postRequestDto.getTargetAddress(); // 식당주소
         this.targetAmount = postRequestDto.getTargetAmount(); // 목표금액
         this.deliveryTime = postRequestDto.getDeliveryTime(); // 배달시간

@@ -5,7 +5,7 @@ import com.hanghae.baedalfriend.dto.requestdto.EventRequestDto;
 import com.hanghae.baedalfriend.dto.requestdto.EventUpRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.service.EventService;
-//import com.hanghae.baedalfriend.service.S3Service;
+import com.hanghae.baedalfriend.service.S3Service;
 import com.hanghae.baedalfriend.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

@@ -21,7 +21,7 @@ public class SearchController {
     }
 
     // 제목 + 키워드 검색 + 정렬 기능
-    @RequestMapping(value= "/search", method = RequestMethod.GET)
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ResponseDto<?> getSearch(@RequestParam("page") int page,
                                     @RequestParam("size") int size,
                                     @RequestParam("keyword") String keyword,
@@ -34,15 +34,28 @@ public class SearchController {
     }
 
     // 카테고리 검색 + 정렬 기능
-    @RequestMapping(value= "/category/search", method = RequestMethod.GET)
+    @RequestMapping(value = "/category/search", method = RequestMethod.GET)
     public ResponseDto<?> getCategorySearch(@RequestParam("page") int page,
-                                    @RequestParam("size") int size,
-                                    @RequestParam("keyword") String keyword,
-                                    @RequestParam("sortBy") String sortBy,
-                                    @RequestParam("isAsc") boolean isAsc) {
+                                            @RequestParam("size") int size,
+                                            @RequestParam("keyword") String keyword,
+                                            @RequestParam("sortBy") String sortBy,
+                                            @RequestParam("isAsc") boolean isAsc) {
         {
             page = page - 1;
             return searchService.getCategorySearch(keyword, page, size, sortBy, isAsc);
+        }
+    }
+
+    // 지역별 검색 + 정렬 기능
+    @RequestMapping(value = "/region/search", method = RequestMethod.GET)
+    public ResponseDto<?> getRegionSearch(@RequestParam("page") int page,
+                                          @RequestParam("size") int size,
+                                          @RequestParam("keyword") String keyword,
+                                          @RequestParam("sortBy") String sortBy,
+                                          @RequestParam("isAsc") boolean isAsc) {
+        {
+            page = page - 1;
+            return searchService.getRegionSearch(keyword, page, size, sortBy, isAsc);
         }
     }
 

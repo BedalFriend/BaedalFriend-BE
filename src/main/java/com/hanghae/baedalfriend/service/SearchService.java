@@ -65,6 +65,7 @@ public class SearchService {
                             .memberId(post.getMember().getId())
                             .roomTitle(post.getRoomTitle()) // 채팅방 제목
                             .isDone(post.isDone()) // 모집중
+                            .region(post.getRegion()) // 지역
                             .category(post.getCategory()) //카테고리
                             .targetAddress(post.getTargetAddress()) // 식당주소
                             .targetName(post.getTargetName()) // 식당이름
@@ -108,6 +109,7 @@ public class SearchService {
                             .memberId(post.getMember().getId())
                             .roomTitle(post.getRoomTitle()) // 채팅방 제목
                             .isDone(post.isDone()) // 모집중
+                            .region(post.getRegion()) // 지역
                             .category(post.getCategory()) //카테고리
                             .targetAddress(post.getTargetAddress()) // 식당주소
                             .targetName(post.getTargetName()) // 식당이름
@@ -184,5 +186,48 @@ public class SearchService {
             return null;
         }
         return tokenProvider.getMemberFromAuthentication();
+    }
+
+    // 지역검색 + 키워드
+    public ResponseDto<?> getRegionSearch(String keyword, int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Post> posts = postRepository.findByRegion(keyword, sortBy, pageable);
+
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+
+        LocalDateTime now = LocalDateTime.now();
+        for (Post post : posts) {
+            if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
+                post.isDone(false);
+                postRepository.save(post);
+            }
+            postResponseDtoList.add(
+                    PostResponseDto.builder()
+                            .postId(post.getId())
+                            .memberId(post.getMember().getId())
+                            .region(post.getRegion()) // 지역
+                            .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                            .isDone(post.isDone()) // 모집중
+                            .category(post.getCategory()) //카테고리
+                            .targetAddress(post.getTargetAddress()) // 식당주소
+                            .targetName(post.getTargetName()) // 식당이름
+                            .targetAmount(post.getTargetAmount()) // 목표금액
+                            .deliveryTime(post.getDeliveryTime()) // 배달시간
+                            .deliveryFee(post.getDeliveryFee()) // 배달요금
+                            .participantNumber(post.getParticipantNumber()) // 참여자수
+                            .gatherName(post.getGatherName()) // 모이는 장소 이름
+                            .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
+                            .hits(post.getHits()) // 조회수
+                            .createdAt(post.getCreatedAt()) // 생성일
+                            .modifiedAt(post.getModifiedAt()) // 수정일
+                            .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                            .build()
+            );
+        }
+        return ResponseDto.success(postResponseDtoList);
     }
 }
