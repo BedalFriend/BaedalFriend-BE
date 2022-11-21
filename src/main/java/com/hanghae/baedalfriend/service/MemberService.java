@@ -8,6 +8,7 @@ import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
 import com.hanghae.baedalfriend.repository.MemberRepository;
+import com.hanghae.baedalfriend.repository.PostRepository;
 import com.hanghae.baedalfriend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final PostRepository postRepository;
 
     @Transactional
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
@@ -84,6 +86,16 @@ public class MemberService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         tokenToHeaders(tokenDto, response);
 
+        //해당 유저가 진행중인 게시글(공구) id가 포함되는지
+        long roomId=0;
+
+        if(postRepository.findByMember(member).size()==0){
+            System.out.println("공구x");
+        }else{
+            roomId=postRepository.findByMember(member).get(0).getId();
+        }
+
+
         return ResponseDto.success(
                 MemberResponseDto.builder()
                         .id(member.getId())
@@ -94,6 +106,7 @@ public class MemberService {
                         .email(member.getEmail())
                         .role(member.getRole())
                         .profileURL(member.getProfileURL())
+                        .roomId(roomId)
                         .build()
         );
     }
@@ -131,7 +144,18 @@ public class MemberService {
             return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
         }
 
+        //해당 유저가 진행중인 게시글(공구) id가 포
+
+
+       long roomId=0;
+
         Member member = refreshTokenRepository.findByValue(request.getHeader("Refresh_Token")).get().getMember();
+        if(postRepository.findByMember(member).size()==0){
+            System.out.println("공구x");
+        }else{
+            roomId=postRepository.findByMember(member).get(0).getId();
+        }
+
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         tokenToHeaders(tokenDto, response);
         return ResponseDto.success(
@@ -144,6 +168,7 @@ public class MemberService {
                         .profileURL(member.getProfileURL())
                         .role(member.getRole())
                         .email(member.getEmail())
+                        .roomId(roomId)
                         .build()
         );
     }
