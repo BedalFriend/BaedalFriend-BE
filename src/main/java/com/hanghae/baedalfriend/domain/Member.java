@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hanghae.baedalfriend.shared.Authority;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
@@ -16,6 +18,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE member SET is_deleted = true where id = ?")
 public class Member extends Timestamped implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +42,8 @@ public class Member extends Timestamped implements Serializable{
     @Enumerated(value = EnumType.STRING)
     private Authority role;
 
+    @JsonIgnore
+    private boolean isDeleted = Boolean.FALSE;
 
     private Long ongoingRoomId;
 
@@ -74,5 +80,8 @@ public class Member extends Timestamped implements Serializable{
         this.ongoingRoomId = roomId;
     }
 
-
+    //비밀번호 변경
+    public void updateUserPassword(String password) {
+        this.password = password;
+    }
 }

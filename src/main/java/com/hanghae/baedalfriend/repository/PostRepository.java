@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface PostRepository extends JpaRepository<Post,Long> {
@@ -27,4 +26,10 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     @Query(value="SELECT * FROM post WHERE concat(room_title, category,region) like concat('%',:region,'%') ORDER BY :sortBy" , nativeQuery= true)
     Page<Post> findByRegion(String region, String sortBy, Pageable pageable);
     List<Post> findByMember(Member member);
+
+    //내가 쓴 게시글 찾기
+    List<Post> findAllByMemberIdOrderByIdDesc(Long memberId);
+
+    //내가 쓴 게시글(채팅방) 찾기 (마이페이지)
+    Post findAllByMemberId(Long memberId);
 }
