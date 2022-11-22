@@ -12,11 +12,11 @@ import com.hanghae.baedalfriend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,8 +31,11 @@ public class MemberService {
     // 회원가입 전 닉네임 인증 체크
     @Transactional
     public ResponseDto<?> nickname(@Valid NicknameAuthRequestDto requestDto) {
-        if(null != isPresentEmail(requestDto.getNickname())) {
+        if(null != isPresentNickname(requestDto.getNickname())) {
             return ResponseDto.fail("DUPLICATED_NICKNAME","중복된 닉네임이에요!");
+        }
+        if (requestDto.getNickname().equals("")) {
+            return ResponseDto.success("닉네임을 입력해주세요.");
         }
         Member member = Member.builder()
                 .nickname(requestDto.getNickname())
@@ -46,7 +49,7 @@ public class MemberService {
 
     // 닉네임 인증
     @Transactional
-    public Object isPresentEmail(String nickname) {
+    public Object isPresentNickname(String nickname) {
         Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElse(null);
     }
@@ -58,12 +61,17 @@ public class MemberService {
         if (null != isPresentMember(requestDto.getEmail())) {
             return ResponseDto.fail("DUPLICATED_EMAIL",
                     "중복된 이메일이에요!");
-
-            // 유효하지 않은 이메일 길이
-        } else if (null != isEmailAuth(requestDto.getEmail()) ) {
-            return ResponseDto.fail("INVALID_EMAIL_LENGTH",
-                    "8자이상, 30자미만");
         }
+
+        if(!requestDto.getEmail().contains("@")) {
+            return ResponseDto.fail("INVALID_EMAIL",
+                    "이메일 형식이 아니에요!");
+        }
+
+        if (requestDto.getEmail().equals("")) {
+            return ResponseDto.success("이메일을 입력해주세요.");
+        }
+
         Member member = Member.builder()
                 .email(requestDto.getEmail())
                 .build();
@@ -74,21 +82,26 @@ public class MemberService {
         );
     }
 
-    // 이메일 인증
-    @Transactional
-    public Member isEmailAuth(String email) {
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        return optionalMember.orElse(null);
-    }
-
     // 회원가입
     @Transactional
-    public ResponseDto<?> createMember(MemberRequestDto requestDto) {
+    public ResponseDto<?> createMember(MemberRequestDto requestDto) throws IOException {
 
         //이메일 중복 체크
         if (null != isPresentMember(requestDto.getEmail())) {
             return ResponseDto.fail("DUPLICATED_EMAIL",
                     "중복된 이메일 입니다.");
+        }
+
+        // 이메일 형식 체크
+        if(!requestDto.getEmail().contains("@")) {
+            return ResponseDto.fail("INVALID_EMAIL",
+                    "이메일 형식이 아니에요!");
+        }
+
+        // 닉네임 중복 체크
+        if(null != isPresentNickname(requestDto.getNickname())) {
+            return ResponseDto.fail("INVALID_NICKNAME",
+                    "중복된 닉네임 입니다.");
         }
 
         //패스워드 일치 체크
@@ -141,13 +154,11 @@ public class MemberService {
 
         //해당 유저가 진행중인 게시글(공구) id가 포함되는지
         long roomId=0;
-
         if(postRepository.findByMember(member).size()==0){
             System.out.println("공구x");
         }else{
             roomId=postRepository.findByMember(member).get(0).getId();
         }
-
         return ResponseDto.success(
                 MemberResponseDto.builder()
                         .id(member.getId())

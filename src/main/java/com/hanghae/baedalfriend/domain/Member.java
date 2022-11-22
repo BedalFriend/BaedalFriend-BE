@@ -20,25 +20,22 @@ public class Member extends Timestamped implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String nickname;
 
+    @Column(unique = true)
     private String email;
 
     @Column(unique = true)
     private Long kakaoId;
 
     private String address;
-
     @JsonIgnore
     @Column(nullable = false)
     private String password;
-
     private String profileURL;
-
     @Enumerated(value = EnumType.STRING)
     private Authority role;
-
-
     public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId) {
         this.nickname = nickname;
         this.password = encodedPassword;
@@ -67,8 +64,4 @@ public class Member extends Timestamped implements Serializable{
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
-
-
-
-
 }

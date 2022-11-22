@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,7 +36,7 @@ public class MemberController {
 
     //회원가입
     @PostMapping(value="/signup")
-    public ResponseDto<?> signup(@RequestBody @Valid MemberRequestDto requestDto) {
+    public ResponseDto<?> signup(@RequestBody @Valid MemberRequestDto requestDto) throws IOException {
         return memberService.createMember(requestDto);
     }
 
