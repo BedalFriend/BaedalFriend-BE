@@ -39,7 +39,7 @@ public class Member extends Timestamped implements Serializable{
     private Authority role;
 
 
-    private Long ongoingRoomId;
+
 
     public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId) {
         this.nickname = nickname;
@@ -70,9 +70,7 @@ public class Member extends Timestamped implements Serializable{
         return passwordEncoder.matches(password, this.password);
     }
 
-    public void ongoingRoomId(Long roomId) {
-        this.ongoingRoomId = roomId;
-    }
+
 
 
 }
