@@ -1,4 +1,5 @@
 package com.hanghae.baedalfriend.service;
+import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.dto.responsedto.EmailAuthResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.NicknameAuthResponseDto;
 import com.hanghae.baedalfriend.dto.requestdto.*;
@@ -27,7 +28,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final PostRepository postRepository;
+    private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     // 회원가입 전 닉네임 인증 체크
     @Transactional
     public ResponseDto<?> nickname(@Valid NicknameAuthRequestDto requestDto) {
@@ -152,12 +153,14 @@ public class MemberService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         tokenToHeaders(tokenDto, response);
 
+
+
         //해당 유저가 진행중인 게시글(공구) id가 포함되는지
         long roomId=0;
-        if(postRepository.findByMember(member).size()==0){
+        if(chatRoomMemberJpaRepository.findByMember(member).size()==0){
             System.out.println("공구x");
         }else{
-            roomId=postRepository.findByMember(member).get(0).getId();
+            roomId=chatRoomMemberJpaRepository.findByMember(member).get(0).getChatRoom().getId();
         }
         return ResponseDto.success(
                 MemberResponseDto.builder()
@@ -208,14 +211,14 @@ public class MemberService {
             return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
         }
 
-        //해당 유저가 진행중인 게시글(공구) id가 포함되는지
-       long roomId=0;
 
         Member member = refreshTokenRepository.findByValue(request.getHeader("Refresh_Token")).get().getMember();
-        if(postRepository.findByMember(member).size()==0){
+        //해당 유저가 진행중인 게시글(공구) id가 포함되는지
+        long roomId=0;
+        if(chatRoomMemberJpaRepository.findByMember(member).size()==0){
             System.out.println("공구x");
         }else{
-            roomId=postRepository.findByMember(member).get(0).getId();
+            roomId=chatRoomMemberJpaRepository.findByMember(member).get(0).getChatRoom().getId();
         }
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
