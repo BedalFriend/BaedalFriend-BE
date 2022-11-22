@@ -20,5 +20,6 @@ public class MemberResponseDto  {
     private String email;
     private String address;
     private String profileURL;
+    private Long onGoing;
     private Authority role;
 }
