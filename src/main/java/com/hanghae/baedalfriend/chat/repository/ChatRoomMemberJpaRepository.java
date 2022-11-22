@@ -6,7 +6,6 @@ import com.hanghae.baedalfriend.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ChatRoomMemberJpaRepository extends JpaRepository<ChatRoomMember, Long> {
     void deleteByMember(Member member);
