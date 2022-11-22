@@ -35,6 +35,14 @@ public class ChatRoomController {
         return chatRoomService.leaveChatRoom(roomId, request);
     }
 
+
+    //채팅방 나가기
+    @DeleteMapping("/channel/founder/{roomId}")
+    @ResponseBody
+    public ResponseDto<?> leaveChatRoomFounder(@PathVariable Long roomId, HttpServletRequest request) {
+        return chatRoomService.leaveChatRoomFounder(roomId, request);
+    }
+
     // 특정 채팅방 조회
     @GetMapping("/channel/{roomId}")
     @ResponseBody
