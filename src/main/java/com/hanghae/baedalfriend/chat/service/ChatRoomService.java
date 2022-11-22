@@ -99,20 +99,26 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomJpaRepository.findById(roomId).orElseThrow(
                 () -> new NullPointerException("해당하는 채팅방이 없습니다.")
         );
-        List<ChatRoomMember> isnull = chatRoomMemberJpaRepository.findByMember(member);
-        System.out.println(isnull);
+        int num = chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom).size();
 
-        if (isnull.size() == 0) {
-            ChatRoomMember chatRoomMember = ChatRoomMember.builder()
-                    .chatRoom(chatRoom)
-                    .member(member)
-                    .build();
-            chatRoomMemberJpaRepository.save(chatRoomMember);
-            return ResponseDto.success("채팅방입장");
+        if (chatRoom.getPost().getMaxCapacity() > num) {
+            List<ChatRoomMember> chatRoomMembers = chatRoomMemberJpaRepository.findByMember(member);
 
+
+            if (chatRoomMembers.size() == 0) {
+                ChatRoomMember chatRoomMember = ChatRoomMember.builder()
+                        .chatRoom(chatRoom)
+                        .member(member)
+                        .build();
+                chatRoomMemberJpaRepository.save(chatRoomMember);
+                return ResponseDto.success("채팅방입장");
+
+            } else {
+                return ResponseDto.fail("No_Admittance", "채팅방입장 불가");
+
+            }
         } else {
-            return ResponseDto.fail("채팅방입장 불가", "채팅방입장 불가");
-
+            return ResponseDto.fail("No_Admittance", "채팅방입장 불가");
         }
     }
 
@@ -161,6 +167,37 @@ public class ChatRoomService {
 
         }
 
+    }
+
+    // 특정 채팅방 나가기
+    // 방장
+    @Transactional
+    public ResponseDto<?> leaveChatRoomFounder(Long roomId, HttpServletRequest request) {
+
+        Member member = validateMember(request);
+
+        if (null == member) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND", "사용자를 찾을 수 없습니다.");
+        }
+
+        if (null == request.getHeader("Refresh_token")) {
+            return ResponseDto.fail("INVALID_TOKEN",
+                    "Token이 유효하지 않습니다.");
+        }
+
+        if (null == request.getHeader("Authorization")) {
+            return ResponseDto.fail("INVALID_TOKEN",
+                    "Token이 유효하지 않습니다.");
+        }
+        ChatRoom chatRoom = chatRoomJpaRepository.findById(roomId).orElseThrow(
+                () -> new NullPointerException("해당하는 채팅방이 없습니다.")
+        );
+
+
+
+        chatRoomMemberJpaRepository.deleteAllByChatRoom(chatRoom);
+
+        return ResponseDto.success("채팅방에 아무도 없음");
     }
 
     //채팅방 하나 불러오기
