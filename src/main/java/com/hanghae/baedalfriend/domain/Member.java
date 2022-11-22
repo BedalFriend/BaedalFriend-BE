@@ -24,8 +24,10 @@ public class Member extends Timestamped implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String nickname;
 
+    @Column(unique = true)
     private String email;
 
     @Column(unique = true)
@@ -44,8 +46,6 @@ public class Member extends Timestamped implements Serializable{
 
     @JsonIgnore
     private boolean isDeleted = Boolean.FALSE;
-
-    private Long ongoingRoomId;
 
     public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId) {
         this.nickname = nickname;
@@ -74,10 +74,6 @@ public class Member extends Timestamped implements Serializable{
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
-    }
-
-    public void ongoingRoomId(Long roomId) {
-        this.ongoingRoomId = roomId;
     }
 
     //비밀번호 변경

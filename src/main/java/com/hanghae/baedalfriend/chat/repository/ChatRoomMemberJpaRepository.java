@@ -9,9 +9,11 @@ import java.util.List;
 
 public interface ChatRoomMemberJpaRepository extends JpaRepository<ChatRoomMember, Long> {
     void deleteByMember(Member member);
+    void deleteAllByChatRoom(ChatRoom chatRoom);
 
     List<ChatRoomMember> findAllByChatRoom(ChatRoom chatRoom);
 
     List<ChatRoomMember> findByMember(Member member);
+
 
 }

@@ -59,10 +59,14 @@ public class KakaoMemberService {
 
         // DB 에 중복된 Kakao Id 가 있는지 확인
         String nickname = String.valueOf(kakaoMemberInfo.getNickname());
+
         Member kakaoMember = memberRepository.findByKakaoId(kakaoMemberInfo.getId())
                 .orElse(null);
 
+        log.info("kakaoMember + {} " ,kakaoMember);
+
         System.out.println(kakaoMember.getNickname());
+
         log.info(kakaoMember.getNickname());
         System.out.println(" ===================kakaoMember================================================");
 

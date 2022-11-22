@@ -13,12 +13,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MemberResponseDto  {
     private Long id;
+    private Long memberId;
     private String nickname;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private String email;
     private String address;
     private String profileURL;
+    private Long onGoing;
     private Authority role;
-    private long onGoing;
 }
