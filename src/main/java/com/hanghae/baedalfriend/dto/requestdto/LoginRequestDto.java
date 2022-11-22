@@ -8,10 +8,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginRequestDto {
-
-    @NotBlank
+    @NotBlank(message = "이메일과 비밀번호를 모두 입력해 주세요!")
     private String email;
-
-    @NotBlank
+    @NotBlank(message = "이메일과 비밀번호를 모두 입력해 주세요!")
     private String password;
 }
