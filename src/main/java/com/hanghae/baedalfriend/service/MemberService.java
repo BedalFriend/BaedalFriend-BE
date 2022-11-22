@@ -1,8 +1,7 @@
 package com.hanghae.baedalfriend.service;
-
-import com.hanghae.baedalfriend.dto.requestdto.LoginRequestDto;
-import com.hanghae.baedalfriend.dto.requestdto.MemberRequestDto;
-import com.hanghae.baedalfriend.dto.requestdto.TokenDto;
+import com.hanghae.baedalfriend.dto.responsedto.EmailAuthResponseDto;
+import com.hanghae.baedalfriend.dto.responsedto.NicknameAuthResponseDto;
+import com.hanghae.baedalfriend.dto.requestdto.*;
 import com.hanghae.baedalfriend.dto.responsedto.MemberResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.domain.Member;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,7 +28,60 @@ public class MemberService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PostRepository postRepository;
+    // 회원가입 전 닉네임 인증 체크
+    @Transactional
+    public ResponseDto<?> nickname(@Valid NicknameAuthRequestDto requestDto) {
+        if(null != isPresentEmail(requestDto.getNickname())) {
+            return ResponseDto.fail("DUPLICATED_NICKNAME","중복된 닉네임이에요!");
+        }
+        Member member = Member.builder()
+                .nickname(requestDto.getNickname())
+                .build();
+        return ResponseDto.success(
+                    NicknameAuthResponseDto.builder()
+                        .nickname(member.getNickname())
+                        .build()
+        );
+    }
 
+    // 닉네임 인증
+    @Transactional
+    public Object isPresentEmail(String nickname) {
+        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
+        return optionalMember.orElse(null);
+    }
+
+    // 이메일 인증
+    @Transactional
+    public ResponseDto<?> emailAuth(EmailAuthRequestDto requestDto) {
+        //이메일 중복 체크
+        if (null != isPresentMember(requestDto.getEmail())) {
+            return ResponseDto.fail("DUPLICATED_EMAIL",
+                    "중복된 이메일이에요!");
+
+            // 유효하지 않은 이메일 길이
+        } else if (null != isEmailAuth(requestDto.getEmail()) ) {
+            return ResponseDto.fail("INVALID_EMAIL_LENGTH",
+                    "8자이상, 30자미만");
+        }
+        Member member = Member.builder()
+                .email(requestDto.getEmail())
+                .build();
+        return ResponseDto.success(
+                EmailAuthResponseDto.builder()
+                        .email(member.getEmail())
+                        .build()
+        );
+    }
+
+    // 이메일 인증
+    @Transactional
+    public Member isEmailAuth(String email) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        return optionalMember.orElse(null);
+    }
+
+    // 회원가입
     @Transactional
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
 
@@ -95,7 +148,6 @@ public class MemberService {
             roomId=postRepository.findByMember(member).get(0).getId();
         }
 
-
         return ResponseDto.success(
                 MemberResponseDto.builder()
                         .id(member.getId())
@@ -106,11 +158,11 @@ public class MemberService {
                         .email(member.getEmail())
                         .role(member.getRole())
                         .profileURL(member.getProfileURL())
-                        .onGoing(roomId)
                         .build()
         );
     }
 
+    // 회원 이메일 유효성 인증
     @Transactional
     public Member isPresentMember(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
@@ -144,9 +196,7 @@ public class MemberService {
             return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
         }
 
-        //해당 유저가 진행중인 게시글(공구) id가 포
-
-
+        //해당 유저가 진행중인 게시글(공구) id가 포함되는지
        long roomId=0;
 
         Member member = refreshTokenRepository.findByValue(request.getHeader("Refresh_Token")).get().getMember();
@@ -168,7 +218,6 @@ public class MemberService {
                         .profileURL(member.getProfileURL())
                         .role(member.getRole())
                         .email(member.getEmail())
-                        .onGoing(roomId)
                         .build()
         );
     }
