@@ -39,8 +39,6 @@ public class Member extends Timestamped implements Serializable{
     private Authority role;
 
 
-
-
     public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId) {
         this.nickname = nickname;
         this.password = encodedPassword;

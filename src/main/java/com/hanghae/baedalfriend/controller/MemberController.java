@@ -1,7 +1,9 @@
 package com.hanghae.baedalfriend.controller;
 
+import com.hanghae.baedalfriend.dto.requestdto.EmailAuthRequestDto;
 import com.hanghae.baedalfriend.dto.requestdto.LoginRequestDto;
 import com.hanghae.baedalfriend.dto.requestdto.MemberRequestDto;
+import com.hanghae.baedalfriend.dto.requestdto.NicknameAuthRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,17 @@ import javax.validation.Valid;
 @RequestMapping(value = "/v1/members")
 public class MemberController {
     private final MemberService memberService;
+    // 이메일 인증
+    @PostMapping(value="/email")
+    public ResponseDto<?> email(@RequestBody @Valid EmailAuthRequestDto requestDto) {
+        return memberService.emailAuth(requestDto);
+    }
+
+    // 닉네임 인증
+    @PostMapping(value = "/nickname")
+    public ResponseDto<?> nickname(@RequestBody @Valid NicknameAuthRequestDto requestDto) {
+        return memberService.nickname(requestDto);
+    }
 
     //회원가입
     @PostMapping(value="/signup")

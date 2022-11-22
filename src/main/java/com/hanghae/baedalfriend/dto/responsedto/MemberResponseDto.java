@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MemberResponseDto  {
     private Long id;
+    private Long memberId;
     private String nickname;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -20,5 +21,4 @@ public class MemberResponseDto  {
     private String address;
     private String profileURL;
     private Authority role;
-    private long onGoing;
 }
