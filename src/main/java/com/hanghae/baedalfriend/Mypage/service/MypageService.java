@@ -14,8 +14,10 @@ import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.domain.UserDetailsImpl;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
+import com.hanghae.baedalfriend.repository.EventRepository;
 import com.hanghae.baedalfriend.repository.MemberRepository;
 import com.hanghae.baedalfriend.repository.PostRepository;
+import com.hanghae.baedalfriend.repository.RefreshTokenRepository;
 import com.hanghae.baedalfriend.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,8 +37,8 @@ public class MypageService {
 
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
-//    private final EventRepository eventRepository;
-//    private final RefreshTokenRepository refreshTokenRepository;
+    private final EventRepository eventRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
@@ -189,32 +191,34 @@ public class MypageService {
     }
 
     //회원 탈퇴
+    @Transactional
     public ResponseDto<?> withdrawMember(Long memberId, PasswordDeleteRequestDto passwordDeleteRequestDto,
                                          UserDetailsImpl userDetails) {
         Member member = memberRepository.findById(userDetails.getMember().getId()).orElseThrow(
                 () -> new IllegalArgumentException("등록되지 않은 회원입니다.")
         );
+        Post post = postRepository.findAllByMemberId(memberId);
+        ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
 
         //hard Delete
-//        refreshTokenRepository.deleteByMemberId(memberId);
-//        postRepository.deleteByMemberId(memberId);
-//        eventRepository.deleteByMemberId(memberId);
-//        chatRoomMemberJpaRepository.deleteByMemberId(memberId);
-//        chatMessageJpaRepository.deleteByMemberId(memberId);
+        refreshTokenRepository.deleteByMemberId(memberId);
+        chatRoomMemberJpaRepository.deleteByMemberId(memberId);
+        chatRoomMemberJpaRepository.deleteAllByChatRoom(chatRoom);
+        chatRoomJpaRepository.deleteByPost(post);
+        chatMessageJpaRepository.deleteByMemberId(memberId);
+        postRepository.deleteByMemberId(memberId);
+        eventRepository.deleteByMemberId(memberId);
 
-        String defaultImg = "https://sprtbucket.s3.ap-northeast-2.amazonaws.com/image/default.jpg";
-        if(!Objects.equals(member.getProfileURL(), defaultImg)){
+        if(member.getProfileURL() != null){
             String fileName = member.getProfileURL();
-
             s3Service.deleteImage(fileName);
         }
-
 
         if (passwordEncoder.matches(passwordDeleteRequestDto.getPassword(), member.getPassword())) {
             memberRepository.deleteById(memberId);
             SecurityContextHolder.clearContext();
         } else {
-            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+            return ResponseDto.fail("PASSWORD_NOT_MATCH","패스워드가 일치하지 않습니다");
         }
         return ResponseDto.success("회원 탈퇴 완료");
     }
