@@ -10,7 +10,9 @@ import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
-import com.hanghae.baedalfriend.domain.*;
+import com.hanghae.baedalfriend.domain.Member;
+import com.hanghae.baedalfriend.domain.Post;
+import com.hanghae.baedalfriend.domain.UserDetailsImpl;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.repository.MemberRepository;
 import com.hanghae.baedalfriend.repository.PostRepository;
@@ -114,6 +116,11 @@ public class MypageService {
     public ResponseDto<?> getMemberInfo(Long memberId, UserDetailsImpl userDetails) {
         Member member = findMember(memberId, userDetails);
 
+        if (null == member) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "사용자를 찾을 수 없습니다.");
+        }
+
         MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
         return ResponseDto.success(mypageResponseDto);
     }
@@ -122,6 +129,12 @@ public class MypageService {
     @Transactional
     public ResponseDto<?> getMyPost(Long memberId, UserDetailsImpl userDetails) {
         findMember(memberId, userDetails);
+
+        Post Post = postRepository.findAllByMemberId(memberId);
+        if (null == Post) {
+            return ResponseDto.fail("POST_NOT_FOUND",
+                    "게시글이 존재하지 않습니다.");
+        }
 
         List<Post> postList = postRepository.findAllByMemberIdOrderByIdDesc(memberId);
         return ResponseDto.success(postList);
@@ -133,14 +146,30 @@ public class MypageService {
         findMember(memberId, userDetails);
 
         Post post = postRepository.findAllByMemberId(memberId);
-        List<ChatRoom> chatRoomList = chatRoomJpaRepository.findAllByPost(post);
+        ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
         List<ChatMessage> chatMessages = chatMessageJpaRepository.findAllByMemberId(memberId);
-        MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
-                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //멤버
-                .chatMessages(chatMessages)
-                .chatRooms(chatRoomList) //방장
-                .build();
-        return ResponseDto.success(mypageChatResponseDto);
+
+        if(post == null) {
+            if(chatRoom != null) {
+                MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
+                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId))
+                        .chatMessages(chatMessages)
+                        .build();
+                return ResponseDto.success(mypageChatResponseDto);
+            } else {
+                return ResponseDto.fail("CHATROOM_NOT_FOUND","채팅방이 존재하지 않습니다");
+            }
+        } else {
+            if(chatRoom != null) {
+                MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
+                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()))
+                        .chatMessages(chatMessages)
+                        .build();
+                return ResponseDto.success(mypageChatResponseDto);
+            } else {
+                return ResponseDto.fail("CHATROOM_NOT_FOUND","채팅방이 존재하지 않습니다");
+            }
+        }
     }
 
     //비밀번호 변경
