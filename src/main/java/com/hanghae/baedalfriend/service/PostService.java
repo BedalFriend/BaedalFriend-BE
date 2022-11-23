@@ -3,10 +3,7 @@ package com.hanghae.baedalfriend.service;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
-import com.hanghae.baedalfriend.domain.Category;
-import com.hanghae.baedalfriend.domain.Member;
-import com.hanghae.baedalfriend.domain.Post;
-import com.hanghae.baedalfriend.domain.Region;
+import com.hanghae.baedalfriend.domain.*;
 import com.hanghae.baedalfriend.dto.requestdto.LoginRequestDto;
 import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.*;
@@ -26,6 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostService {
     private final HitsRepository hitsRepository;
+    private final RecentSearchRepository recentSearchRepository;
 
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
@@ -475,5 +473,26 @@ public class PostService {
     public Category isPresentCategory(String category) {
         Optional<Category> optionalCategory = categoryRepository.findByCategory(category);
         return optionalCategory.orElse(null);
+    }
+
+    // 최근 검색어
+    @Transactional
+    public ResponseDto<?> getRecentPosts(HttpServletRequest request) {
+        Member member = validateMember(request);
+        if(member == null) {
+            return ResponseDto.success("로그인을 해주세요.");
+        }
+        List<RecentSearch> recentSearches = recentSearchRepository.findAllByIdOrderByModifiedAtDesc(member.getId());
+        List<RecentSearchResponseDto> recentSearchResponseDtos =new ArrayList<>();
+        for (RecentSearch recentSearch : recentSearches) {
+            recentSearchResponseDtos.add(
+                    RecentSearchResponseDto.builder()
+                            .searchWord(recentSearch.getSearchWord())
+                            .searchTime(recentSearch.getModifiedAt())
+                            .build()
+            );
+            if(recentSearchResponseDtos.size() >= 10) break;
+        }
+        return ResponseDto.success(recentSearchResponseDtos);
     }
 }
