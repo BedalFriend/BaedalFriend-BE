@@ -23,8 +23,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostService {
     private final HitsRepository hitsRepository;
-    private final RecentSearchRepository recentSearchRepository;
-
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
 
@@ -489,24 +487,4 @@ public class PostService {
         return optionalCategory.orElse(null);
     }
 
-    // 최근 검색어
-    @Transactional
-    public ResponseDto<?> getRecentPosts(HttpServletRequest request) {
-        Member member = validateMember(request);
-        if(member == null) {
-            return ResponseDto.success("로그인을 해주세요.");
-        }
-        List<RecentSearch> recentSearches = recentSearchRepository.findAllByIdOrderByModifiedAtDesc(member.getId());
-        List<RecentSearchResponseDto> recentSearchResponseDtos =new ArrayList<>();
-        for (RecentSearch recentSearch : recentSearches) {
-            recentSearchResponseDtos.add(
-                    RecentSearchResponseDto.builder()
-                            .searchWord(recentSearch.getSearchWord())
-                            .searchTime(recentSearch.getModifiedAt())
-                            .build()
-            );
-            if(recentSearchResponseDtos.size() >= 10) break;
-        }
-        return ResponseDto.success(recentSearchResponseDtos);
-    }
 }
