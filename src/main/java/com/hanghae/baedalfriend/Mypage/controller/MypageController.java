@@ -41,7 +41,7 @@ public class MypageController {
     }
 
     //유저 정보 조회 (nickname. profileURL, email. address)
-    @GetMapping("/mypage/info/{memberId}")
+    @GetMapping("/mypages/info/{memberId}")
     public ResponseDto<?> getMemberInfo(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return mypageService.getMemberInfo(memberId, userDetails);
     }
