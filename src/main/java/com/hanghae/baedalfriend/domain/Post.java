@@ -20,7 +20,7 @@ public class Post extends Timestamped implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member; // 회원
     @Column(nullable = false)
@@ -39,6 +39,8 @@ public class Post extends Timestamped implements Serializable {
     private String deliveryTime; //  배달시간
     @Column(nullable = false)
     private int participantNumber; // 참여자수
+    @Column
+    @ColumnDefault("0")
     private Long deliveryFee; //배달요금
     @Column(nullable = false)
     private String gatherName; // 모이는 장소 이름
@@ -48,6 +50,7 @@ public class Post extends Timestamped implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime limitTime; // 파티모집 마감시각
 
+
     @Column(nullable = false)
     private Long maxCapacity; // 최대인원
 
@@ -56,6 +59,9 @@ public class Post extends Timestamped implements Serializable {
 
     private String keyword; // 검색어
 
+    private String nickname; // 닉네임
+
+    private String profileURL; //프로필 이미지 URL
     @Column
     @ColumnDefault("0")
     private Long hits = 0L; // 조회수

@@ -66,4 +66,10 @@ public class PostController {
     public ResponseDto<?> findCategoryPost(@PathVariable String category) {
         return postService.findCategoryPost(category);
     }
+
+    // 인기검색어
+    @RequestMapping(value="/posts/recent", method = RequestMethod.GET)
+    public ResponseDto<?> getRecentPost(HttpServletRequest request) {
+        return postService.getRecentPosts(request);
+    }
 }
