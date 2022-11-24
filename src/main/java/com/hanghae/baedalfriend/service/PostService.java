@@ -159,6 +159,8 @@ public class PostService {
                 .gatherAddress(requestDto.getGatherAddress()) // 모이는 장소 주소
                 .hits(requestDto.getHits()) // 조회수
                 .limitTime(requestDto.getLimitTime()) // 파티모집 마감 시각
+                .nickname(requestDto.getNickname()) // 닉네임
+                .profileURL(requestDto.getProfileURL()) // 프로필 사진
                 .build();
         postRepository.save(post);
         //채팅방 자동생성
@@ -184,6 +186,8 @@ public class PostService {
                         .hits(post.getHits()) // 조회수
                         .createdAt(post.getCreatedAt()) // 생성일
                         .modifiedAt(post.getModifiedAt()) // 수정일
+                        .nickname(post.getMember().getNickname()) // 작성자 닉네임
+                        .profileURL(post.getMember().getProfileURL()) // 작성자 프로필 사진
                         .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                         .build()
         );
@@ -216,6 +220,8 @@ public class PostService {
                             .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                             .createdAt(post.getCreatedAt()) // 생성일
                             .modifiedAt(post.getModifiedAt()) // 수정일
+                            .nickname(post.getMember().getNickname()) // 작성자 닉네임
+                            .profileURL(post.getMember().getProfileURL()) // 작성자 프로필 사진
                             .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
                             .build()
             );
@@ -251,6 +257,8 @@ public class PostService {
                             .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                             .createdAt(post.getCreatedAt()) // 생성일
                             .modifiedAt(post.getModifiedAt()) // 수정일
+                            .nickname(post.getMember().getNickname()) // 작성자 닉네임
+                            .profileURL(post.getMember().getProfileURL()) // 작성자 프로필 사진
                             .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
                             .build()
             );
@@ -313,6 +321,8 @@ public class PostService {
                         .hits(post.getHits()) // 조회수
                         .createdAt(post.getCreatedAt()) // 생성일
                         .modifiedAt(post.getModifiedAt()) // 수정일
+                        .nickname(post.getMember().getNickname()) // 작성자 닉네임
+                        .profileURL(post.getMember().getProfileURL()) // 작성자 프로필 사진
                         .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                         .build()
         );
@@ -395,6 +405,8 @@ public class PostService {
                         .hits(post.getHits()) // 조회수
                         .createdAt(post.getCreatedAt()) // 생성일
                         .modifiedAt(post.getModifiedAt()) // 수정일
+                        .nickname(post.getMember().getNickname()) // 작성자 닉네임
+                        .profileURL(post.getMember().getProfileURL()) // 작성자 프로필 사진
                         .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                         .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
                         .build()
@@ -462,6 +474,8 @@ public class PostService {
                         .hits(post.getHits()) // 조회수
                         .createdAt(post.getCreatedAt()) // 생성일
                         .modifiedAt(post.getModifiedAt()) // 수정일
+                        .nickname(post.getMember().getNickname()) // 작성자 닉네임
+                        .profileURL(post.getMember().getProfileURL()) // 작성자 프로필 사진
                         .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                         .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
                         .build()

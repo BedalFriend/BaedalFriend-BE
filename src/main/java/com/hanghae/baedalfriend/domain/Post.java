@@ -50,6 +50,7 @@ public class Post extends Timestamped implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime limitTime; // 파티모집 마감시각
 
+
     @Column(nullable = false)
     private Long maxCapacity; // 최대인원
 
@@ -58,6 +59,9 @@ public class Post extends Timestamped implements Serializable {
 
     private String keyword; // 검색어
 
+    private String nickname; // 닉네임
+
+    private String profileURL; //프로필 이미지 URL
     @Column
     @ColumnDefault("0")
     private Long hits = 0L; // 조회수

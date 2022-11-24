@@ -29,6 +29,8 @@ public class PostDetailResponseDto {
     private String gatherName; // 모이는 장소 이름
     private String gatherAddress; // 모이는 장소 주소
     private Long hits; // 조회수
+    private String nickname; // 닉네임
+    private String profileURL; // 프로필사진
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt; // 게시글 생성시간
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -41,7 +41,7 @@ public class SearchService {
         this.postService = postService;
     }
 
-    // 카테고리별 검색 + 정렬
+    //특정 카테고리별 검색 + 정렬
     @Transactional
     public ResponseDto<?> getCategorySearch(String keyword, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -132,9 +132,9 @@ public class SearchService {
         return ResponseDto.success(postResponseDtoList); // 검색결과 반환
     }
 
-    // 제목 , 지역 검색 + 정렬
+    //제목 , 지역 검색 + 정렬
     @Transactional
-    public ResponseDto<?> getRegionRoomTitleSearch(String keyword, String region ,int page, int size, String sortBy, boolean isAsc) {
+    public ResponseDto<?> getRegionSearch(String keyword, String region ,int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
 
@@ -179,22 +179,12 @@ public class SearchService {
         return ResponseDto.success(postResponseDtoList); // 검색결과 반환
     }
 
+    // 지역 검색  (전체 카테고리) + 정렬 ( 로그인 후 )
     @Transactional
-    public Member validateMember(HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Refresh_Token"))) {
-            return null;
-        }
-        return tokenProvider.getMemberFromAuthentication();
-    }
-
-
-    // 지역검색 + 키워드
-    public ResponseDto<?> getRegionSearch(String keyword, int page, int size, String sortBy, boolean isAsc) {
+    public ResponseDto<?> getRegionEntireCategory(String keyword, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
-
         Pageable pageable = PageRequest.of(page, size, sort);
-
         Page<Post> posts = postRepository.findByRegion(keyword, sortBy, pageable);
 
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
@@ -233,14 +223,15 @@ public class SearchService {
         return ResponseDto.success(postResponseDtoList);
     }
 
-    // 지역 , 카테고리별 검색 + 정렬 기능 ( 로그인 후 현재 위치를 입력한 사용자 )
-    public ResponseDto<?> getRegionCategorySearch(String keyword, String region, int page, int size, String sortBy, boolean isAsc) {
+//    (전체 카테고리) 검색 + 정렬
+    @Transactional
+    public ResponseDto<?> getEntireCategory(String keyword,int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<Post> posts = postRepository.findByCategoryAndRegion(keyword, region, sortBy, pageable);
+        Page<Post> posts = postRepository.findByRoomTitle(keyword, sortBy,pageable);
 
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
 
@@ -278,14 +269,15 @@ public class SearchService {
         return ResponseDto.success(postResponseDtoList);
     }
 
-    // 지역 + 전체카테고리 검색 + 정렬 기능 ( 로그인 후 현재 위치를 입력한 사용자 )
-    public ResponseDto<?> getEntireRegionCategorySearch(String keyword, String region, int page, int size, String sortBy, boolean isAsc) {
+    //지역 , 카테고리별 검색 + 정렬 기능 ( 로그인 후 현재 위치를 입력한 사용자 )
+    @Transactional
+    public ResponseDto<?> getRegionCategorySearch(String keyword, String region, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<Post> posts = postRepository.findByEntireCategoryAndRegion(keyword, region, sortBy, pageable);
+        Page<Post> posts = postRepository.findByCategoryAndRegion(keyword, region, sortBy, pageable);
 
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
 
