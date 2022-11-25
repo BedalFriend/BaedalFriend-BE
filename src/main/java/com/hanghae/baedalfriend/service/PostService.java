@@ -154,7 +154,7 @@ public class PostService {
                 .targetAmount(requestDto.getTargetAmount())// 목표금액
                 .deliveryTime(requestDto.getDeliveryTime()) // 배달시간
                 .deliveryFee(requestDto.getDeliveryFee()) // 배달요금
-                .participantNumber(0) // 참여자수
+                .participantNumber(1) // 참여자수
                 .gatherName(requestDto.getGatherName()) // 모이는 장소 이름
                 .gatherAddress(requestDto.getGatherAddress()) // 모이는 장소 주소
                 .hits(requestDto.getHits()) // 조회수
@@ -168,10 +168,12 @@ public class PostService {
         chatRoomService.createChatRoom(post, request);
 
         //게시글작성자 자동입장
+        //게시글작성자 자동입장
         chatRoomService.enterRoom(post.getId(),request);
 
+
         return ResponseDto.success(
-                PostResponseDto.builder()
+        PostResponseDto.builder()
                         .postId(post.getId()) //게시글 번호
                         .memberId(post.getMember().getId()) // 회원 번호
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
