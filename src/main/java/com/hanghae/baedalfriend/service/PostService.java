@@ -1,5 +1,6 @@
 package com.hanghae.baedalfriend.service;
 
+import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
@@ -32,6 +33,7 @@ public class PostService {
     private final ChatRoomJpaRepository chatRoomRepository;
     private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
+
 
 
 
@@ -161,8 +163,13 @@ public class PostService {
                 .profileURL(requestDto.getProfileURL()) // 프로필 사진
                 .build();
         postRepository.save(post);
+
         //채팅방 자동생성
         chatRoomService.createChatRoom(post, request);
+
+        //게시글작성자 자동입장
+        chatRoomService.enterRoom(post.getId(),request);
+
         return ResponseDto.success(
                 PostResponseDto.builder()
                         .postId(post.getId()) //게시글 번호
@@ -357,8 +364,13 @@ public class PostService {
         if (post.validateMember(member)) {
             return ResponseDto.fail("BAD_REQUEST", "작성자만 삭제할 수 있습니다.");
         }
+        ChatRoom chatRoom=chatRoomRepository.findById(id).get();
+
+        chatRoomMemberJpaRepository.deleteAllByChatRoom(chatRoom); //채팅방안 멤버 모두 삭제
 
         chatRoomRepository.deleteById(id);  // 채팅방도 같이 삭제
+
+
         postRepository.delete(post);   // 게시글 삭제
         return ResponseDto.success("delete success");
     }
