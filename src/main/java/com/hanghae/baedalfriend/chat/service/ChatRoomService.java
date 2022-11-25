@@ -102,10 +102,6 @@ public class ChatRoomService {
         int num = chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom).size();
 
         if (chatRoom.getPost().getMaxCapacity() > num) {
-            List<ChatRoomMember> chatRoomMembers = chatRoomMemberJpaRepository.findByMember(member);
-
-
-            if (chatRoomMembers.size() == 0) {
                 ChatRoomMember chatRoomMember = ChatRoomMember.builder()
                         .chatRoom(chatRoom)
                         .member(member)
@@ -113,10 +109,6 @@ public class ChatRoomService {
                 chatRoomMemberJpaRepository.save(chatRoomMember);
                 return ResponseDto.success("채팅방입장");
 
-            } else {
-                return ResponseDto.fail("No_Admittance", "채팅방입장 불가");
-
-            }
         } else {
             return ResponseDto.fail("No_Admittance", "채팅방입장 불가");
         }
