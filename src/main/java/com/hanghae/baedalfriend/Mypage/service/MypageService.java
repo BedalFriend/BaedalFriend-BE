@@ -28,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service
@@ -151,26 +150,25 @@ public class MypageService {
         ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
         List<ChatMessage> chatMessages = chatMessageJpaRepository.findAllByMemberId(memberId);
 
-        if(post == null) {
-            if(chatRoom != null) {
-                MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
-                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId))
-                        .chatMessages(chatMessages)
-                        .build();
-                return ResponseDto.success(mypageChatResponseDto);
-            } else {
-                return ResponseDto.fail("CHATROOM_NOT_FOUND","채팅방이 존재하지 않습니다");
-            }
+        if(chatRoom == null) { //채팅방 미참가자
+            return ResponseDto.fail("CHATROOM_NOT_FOUND",
+                    "채팅방이 존재하지 않습니다.");
+        }
+
+        if(post == null) { //채팅 참가자
+            MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
+                    .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId).get(0).getChatRoom().getMemberList())
+                    .chatMessages(chatMessages)
+                    .build();
+            return ResponseDto.success(mypageChatResponseDto);
+        } else if(chatRoom != null){ //방장
+            MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
+                    .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId).get(0).getChatRoom().getMemberList())
+                    .chatMessages(chatMessages)
+                    .build();
+            return ResponseDto.success(mypageChatResponseDto);
         } else {
-            if(chatRoom != null) {
-                MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
-                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()))
-                        .chatMessages(chatMessages)
-                        .build();
-                return ResponseDto.success(mypageChatResponseDto);
-            } else {
-                return ResponseDto.fail("CHATROOM_NOT_FOUND","채팅방이 존재하지 않습니다");
-            }
+            return ResponseDto.fail("CHATROOM_NOT_FOUND","채팅방이 존재하지 않습니다");
         }
     }
 

@@ -23,11 +23,6 @@ public class ChatRoomMember extends Timestamped {
     @ManyToOne
     private ChatRoom chatRoom;
 
-    @JsonIgnore
-    @JoinColumn(name = "post_id")
-    @ManyToOne
-    private Post post;
-
     @JoinColumn(name = "memebr_id")
     @ManyToOne
     private Member member;
