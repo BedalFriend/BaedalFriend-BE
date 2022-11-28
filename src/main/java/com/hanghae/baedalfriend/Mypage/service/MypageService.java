@@ -57,13 +57,13 @@ public class MypageService {
             nickname = member.getNickname();
         } else {
             if(nickname.equals("")){
-                throw new IllegalArgumentException("닉네임을 입력해주세요");
+                return ResponseDto.fail("BAD_REQUEST","닉네임을 입력해주세요.");
             } else if(memberRepository.findByNickname(nickname).isPresent()){
-                throw new IllegalArgumentException("중복된 닉네임이 존재합니다");
+                return ResponseDto.fail("BAD_REQUEST","중복된 닉네임이 존재합니다.");
             } else if( 2 > nickname.length() || 40 < nickname.length()) {
-                throw new IllegalArgumentException("닉네임은 2자 이상 40자 이하이어야 합니다.");
+                return ResponseDto.fail("BAD_REQUEST","닉네임은 2자 이상 40자 이하이어야 합니다.");
             } else if(!Pattern.matches(nicknamePattern, nickname)) {
-                throw new IllegalArgumentException("닉네임은 영문, 한글, 숫자만 가능합니다.");
+                return ResponseDto.fail("BAD_REQUEST","닉네임은 영문, 한글, 숫자만 가능합니다.");
             }
         }
 
@@ -173,7 +173,7 @@ public class MypageService {
         Member member = userDetails.getMember();
 
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호를 다시 확인해 주세요.");
+            return ResponseDto.fail("BAD_REQUEST","비밀번호를 다시 확인해 주세요.");
         }
         String password = passwordEncoder.encode(requestDto.getNewPassword());
 
@@ -191,12 +191,10 @@ public class MypageService {
                 () -> new IllegalArgumentException("등록되지 않은 회원입니다.")
         );
         Post post = postRepository.findAllByMemberId(memberId);
-        ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
 
         //hard Delete
         refreshTokenRepository.deleteByMemberId(memberId);
         chatRoomMemberJpaRepository.deleteByMemberId(memberId);
-        chatRoomMemberJpaRepository.deleteAllByChatRoom(chatRoom);
         chatRoomJpaRepository.deleteByPost(post);
         chatMessageJpaRepository.deleteByMemberId(memberId);
         postRepository.deleteByMemberId(memberId);
