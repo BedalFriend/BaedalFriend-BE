@@ -5,6 +5,7 @@ import com.hanghae.baedalfriend.chat.dto.response.ChatRoomResponseDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
+import com.hanghae.baedalfriend.chat.entity.ParticipantNumber;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
@@ -12,6 +13,7 @@ import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
+import com.hanghae.baedalfriend.repository.ParticipantRepository;
 import com.hanghae.baedalfriend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
@@ -23,7 +25,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -38,6 +39,7 @@ public class ChatRoomService {
     private final PostRepository postRepository;
 
     private final ChatRoomJpaRepository chatRoomJpaRepository;
+    private ParticipantRepository participantRepository;
 
     private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
@@ -102,17 +104,22 @@ public class ChatRoomService {
         int num = chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom).size();
 
         if (chatRoom.getPost().getMaxCapacity() > num) {
-                ChatRoomMember chatRoomMember = ChatRoomMember.builder()
+
+            ChatRoomMember chatRoomMember = ChatRoomMember.builder()
                         .chatRoom(chatRoom)
                         .member(member)
+                        .participantNumber((ParticipantNumber) participantRepository)
                         .build();
                 chatRoomMemberJpaRepository.save(chatRoomMember);
+
                 return ResponseDto.success("채팅방입장");
 
         } else {
             return ResponseDto.fail("No_Admittance", "채팅방입장 불가");
         }
     }
+
+
 
     // 특정 채팅방 나가기
     // 나간 유저 : 나간 액션 처리

@@ -34,6 +34,9 @@ public class ChatRoom implements Serializable {
     @OneToMany(mappedBy = "chatRoom")
     private List<ChatRoomMember> memberList;
 
+    @ManyToOne
+    @JoinColumn(name = "participant_number_ID")
+    private ParticipantNumber participantNumber;
 
     public ChatRoom(String founder,Post post) {
         this.founder =founder;

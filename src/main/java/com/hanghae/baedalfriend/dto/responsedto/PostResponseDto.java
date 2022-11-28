@@ -28,7 +28,7 @@ public class PostResponseDto {
     private String deliveryTime; // 배달시간
     private Long deliveryFee; // 배달요금
     private Long maxCapacity; // 최대인원
-    private int participantNumber; // 참여자수
+    private Long participantNumber; // 참여자수
     private String nickname; // 닉네임
     private String profileURL; // 프로필사진
     private String gatherName; // 모이는 장소 이름
