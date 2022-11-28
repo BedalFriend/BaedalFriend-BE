@@ -150,11 +150,6 @@ public class MypageService {
         ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
         List<ChatMessage> chatMessages = chatMessageJpaRepository.findAllByMemberId(memberId);
 
-        if(chatRoom == null) { //채팅방 미참가자
-            return ResponseDto.fail("CHATROOM_NOT_FOUND",
-                    "채팅방이 존재하지 않습니다.");
-        }
-
         if(post == null) { //채팅 참가자
             MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
                     .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId).get(0).getChatRoom().getMemberList())
