@@ -43,7 +43,7 @@ public class PostRequestDto {
     private Long deliveryFee; // 배달요금
 
     @NotBlank(message = "공백은 허용하지 않습니다.")
-    private int participantNumber; // 참여자수
+    private Long participantNumber; // 참여자수
 
     @NotBlank(message = "공백은 허용하지 않습니다.")
     private String gatherName; // 모이는 장소 이름
@@ -51,9 +51,16 @@ public class PostRequestDto {
     @NotBlank(message = "공백은 허용하지 않습니다.")
     private String gatherAddress; // 모이는 장소 주소
 
+    private String nickname; // 닉네임
+    private String profileURL; // 프로필 사진
+
     private Long hits; // 조회수
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime limitTime; // 마감시각
 
    private String region; //지역
+
+    public Long getPostId() {
+        return id;
+    }
 }

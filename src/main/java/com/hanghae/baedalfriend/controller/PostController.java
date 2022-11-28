@@ -25,6 +25,8 @@ public class PostController {
             )
     })
 
+
+
     // 게시물 등록
     @PostMapping(value = "/auth/posts")
     public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) throws Exception {
@@ -42,9 +44,19 @@ public class PostController {
     public ResponseDto<?> getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }
+    // 참가자수 감소
+    @PutMapping(value = "/posts/participant/d/{postId}")
+    public ResponseDto<?> decreaseParticipant(@PathVariable Long postId,HttpServletRequest request) {
+        return postService.decreaseParticipant(postId, request);
+    }
 
+    // 참가자수 증가
+    @PostMapping("/posts/participant/i/{postId}")
+    public ResponseDto<?> participant(@PathVariable Long postId, HttpServletRequest request) {
+        return postService.updateParticipantNumber(postId, request);
+    }
     // 게시물 상세 조회
-    @RequestMapping(value = "/posts/detail/{postId}", method = RequestMethod.GET)
+    @GetMapping(value = "/posts/detail/{postId}")
     public ResponseDto<?> getDetailPost(@PathVariable Long postId, HttpServletRequest request){
         return postService.getDetailPost(postId,request);
     }
@@ -62,8 +74,9 @@ public class PostController {
     }
 
     // 특정 카테고리 조회
-    @RequestMapping(value = "/posts/category/{category}", method = RequestMethod.GET)
+    @GetMapping(value = "/posts/category/{category}")
     public ResponseDto<?> findCategoryPost(@PathVariable String category) {
         return postService.findCategoryPost(category);
     }
+
 }

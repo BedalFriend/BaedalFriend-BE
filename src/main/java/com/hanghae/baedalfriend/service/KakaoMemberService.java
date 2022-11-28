@@ -58,16 +58,16 @@ public class KakaoMemberService {
         KakaoMemberInfoDto kakaoMemberInfo = getKakaoMemberInfo(accessToken);
 
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        String nickname = String.valueOf(kakaoMemberInfo.getNickname());
+        String nickname = String.valueOf(kakaoMemberInfo.getId());
 
         Member kakaoMember = memberRepository.findByKakaoId(kakaoMemberInfo.getId())
                 .orElse(null);
 
-        log.info("kakaoMember + {} " ,kakaoMember);
 
-        System.out.println(kakaoMember.getNickname());
 
-        log.info(kakaoMember.getNickname());
+
+
+
         System.out.println(" ===================kakaoMember================================================");
 
 
@@ -78,12 +78,12 @@ public class KakaoMemberService {
             String profileURL = kakaoMemberInfo.getProfileURL();
             Long kakaoId= kakaoMemberInfo.getId();
             kakaoMember = new Member(encodedPassword, profileURL, nickname, kakaoId);
-            System.out.println(kakaoMember.getNickname());
-            log.info(kakaoMember.getNickname());
-            log.info(kakaoMember.getProfileURL());
-            System.out.println(kakaoMember.getProfileURL());
+
+
+
+
             memberRepository.save(kakaoMember);
-            System.out.println("=============================kakaoMember 저장 확인============================================");
+
         }
 
         // 4. 강제 로그인 처리
@@ -91,11 +91,11 @@ public class KakaoMemberService {
         Member member = check.getMemberById(String.valueOf(kakaoMember.getId()));
         TokenDto tokenDto = tokenProvider.generateTokenDto(kakaoMember);
         tokenDto.tokenToHeaders(response);
-        System.out.println("=============================Return============================================");
+
         return ResponseDto.success(
                 MemberResponseDto.builder()
                         .id(kakaoMember.getId())
-                        .nickname(kakaoMember.getNickname())
+//                        .nickname(kakaoMember.getNickname())
                         .profileURL(kakaoMember.getProfileURL())
                         .createdAt(kakaoMember.getCreatedAt())
                         .modifiedAt(kakaoMember.getModifiedAt())

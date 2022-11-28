@@ -27,4 +27,7 @@ public abstract class Timestamped {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @LastModifiedDate
     private LocalDateTime modifiedAt;
+
+    protected void setModifiedAt(LocalDateTime now) {
+    }
 }
