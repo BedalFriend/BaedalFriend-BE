@@ -37,8 +37,7 @@ public class Post extends Timestamped implements Serializable {
     private Long targetAmount; // 목표금액
     @Column(nullable = false)
     private String deliveryTime; //  배달시간
-    @Column(nullable = false)
-    private int participantNumber; // 참여자수
+
     @Column
     @ColumnDefault("0")
     private Long deliveryFee; //배달요금
@@ -65,6 +64,10 @@ public class Post extends Timestamped implements Serializable {
     @Column
     @ColumnDefault("0")
     private Long hits = 0L; // 조회수
+
+    @Column
+    @ColumnDefault("0")
+    private Long participantNumber = 0L; // 참여자수
 
     // 수정가능한 부분
     public void update(PostRequestDto postRequestDto) {
@@ -95,5 +98,15 @@ public class Post extends Timestamped implements Serializable {
     // 조회수
     public void hitsPost() {
         this.hits +=1L;
+    }
+
+    // 참가자수 증가
+    public void updateParticipantNumber() {
+        this.participantNumber +=1L;
+    }
+
+    // 참가자수 감소
+    public void decreaseParticipantNumber() {
+        this.participantNumber -=1L;
     }
 }

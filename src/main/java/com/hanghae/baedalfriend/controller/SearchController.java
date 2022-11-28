@@ -2,10 +2,8 @@ package com.hanghae.baedalfriend.controller;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping(value = "/v1/posts")
 public class SearchController {
@@ -17,7 +15,7 @@ public class SearchController {
     }
 
     // 제목 + 키워드 검색 + 정렬 기능 (로그인 전 현재 위치 입력하지 않은 사용자)
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @GetMapping(value = "/search")
     public ResponseDto<?> getSearch(@RequestParam("page") int page,
                                     @RequestParam("size") int size,
                                     @RequestParam("keyword") String keyword,
@@ -30,7 +28,7 @@ public class SearchController {
     }
 
     // 카테고리 검색 + 정렬 기능 (로그인 전 현재 위치 입력하지 않은 사용자)
-    @RequestMapping(value = "/category/search", method = RequestMethod.GET)
+    @GetMapping(value = "/category/search")
     public ResponseDto<?> getCategorySearch(@RequestParam("page") int page,
                                             @RequestParam("size") int size,
                                             @RequestParam("keyword") String keyword,
@@ -43,7 +41,7 @@ public class SearchController {
     }
 
     // 지역 + 전체카테고리 검색 + 정렬 기능 (로그인 후 현재 위치 입력한 사용자)
-    @RequestMapping(value = "/regionEntireCategory/search", method = RequestMethod.GET)
+    @GetMapping(value = "/regionEntireCategory/search")
     public ResponseDto<?> getRegionEntireCategory(@RequestParam("page") int page,
                                                   @RequestParam("size") int size,
                                                   @RequestParam("keyword") String keyword,
@@ -56,7 +54,7 @@ public class SearchController {
     }
 
     // 전체 카테고리 검색 + 정렬 ( 로그인 전 현재 위치 입력하지 않은 사용자)
-    @RequestMapping(value = "/entireCategory/search", method = RequestMethod.GET)
+    @GetMapping(value = "/entireCategory/search")
     public ResponseDto<?> getEntireCategory(@RequestParam("page") int page,
                                           @RequestParam("size") int size,
                                           @RequestParam("keyword") String keyword,
@@ -69,7 +67,7 @@ public class SearchController {
     }
 
     // 지역 , 제목 검색 + 정렬 기능 ( 로그인 후 현재위치를 입력한 사용자 )
-    @RequestMapping(value = "/region/search", method = RequestMethod.GET)
+    @GetMapping(value = "/region/search")
     public ResponseDto<?> getRegionSearch(@RequestParam("page") int page,
                                           @RequestParam("size") int size,
                                           @RequestParam("keyword") String keyword,
@@ -83,7 +81,7 @@ public class SearchController {
     }
 
     // 지역 , 카테고리별 검색 + 정렬 기능 ( 로그인 후 현재 위치를 입력한 사용자 )
-    @RequestMapping(value = "/regionCategory/search", method = RequestMethod.GET)
+    @GetMapping(value = "/regionCategory/search")
     public ResponseDto<?> getRegionCategorySearch(@RequestParam("page") int page,
                                                   @RequestParam("size") int size,
                                                   @RequestParam("keyword") String keyword,

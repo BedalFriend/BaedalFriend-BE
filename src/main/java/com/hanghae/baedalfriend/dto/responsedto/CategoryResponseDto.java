@@ -7,13 +7,13 @@ import lombok.Getter;
 public class CategoryResponseDto {
     private Long categoryId;
     private String categoryName;
-    private Long exposureNumber;
+    private Long hits;
 
     @Builder
-    public CategoryResponseDto(Long categoryId, String categoryName, Long exposureNumber){
+    public CategoryResponseDto(Long categoryId, String categoryName, Long hits){
         this.categoryId = categoryId;
         this.categoryName = categoryName;
-        this.exposureNumber = exposureNumber;
+        this.hits = hits;
     }
 
 }
