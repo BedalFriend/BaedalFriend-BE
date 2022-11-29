@@ -26,6 +26,7 @@ public class Post extends Timestamped implements Serializable {
     @Column(nullable = false)
     private String roomTitle; // 채팅방제목
     @Column(nullable = false)
+    @ColumnDefault("false")
     private boolean isDone; // 모집중
     @Column(nullable = false)
     private String category; // 카테고리
@@ -109,4 +110,5 @@ public class Post extends Timestamped implements Serializable {
     public void decreaseParticipantNumber() {
         this.participantNumber -=1L;
     }
+
 }
