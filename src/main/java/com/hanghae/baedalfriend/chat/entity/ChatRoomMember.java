@@ -1,6 +1,8 @@
 package com.hanghae.baedalfriend.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hanghae.baedalfriend.domain.Member;
+import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.domain.Timestamped;
 import lombok.*;
 

@@ -10,10 +10,14 @@ import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
-import com.hanghae.baedalfriend.domain.*;
+import com.hanghae.baedalfriend.domain.Member;
+import com.hanghae.baedalfriend.domain.Post;
+import com.hanghae.baedalfriend.domain.UserDetailsImpl;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
+import com.hanghae.baedalfriend.repository.EventRepository;
 import com.hanghae.baedalfriend.repository.MemberRepository;
 import com.hanghae.baedalfriend.repository.PostRepository;
+import com.hanghae.baedalfriend.repository.RefreshTokenRepository;
 import com.hanghae.baedalfriend.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service
@@ -33,8 +36,8 @@ public class MypageService {
 
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
-//    private final EventRepository eventRepository;
-//    private final RefreshTokenRepository refreshTokenRepository;
+    private final EventRepository eventRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
@@ -54,13 +57,13 @@ public class MypageService {
             nickname = member.getNickname();
         } else {
             if(nickname.equals("")){
-                throw new IllegalArgumentException("닉네임을 입력해주세요");
+                return ResponseDto.fail("BAD_REQUEST","닉네임을 입력해주세요.");
             } else if(memberRepository.findByNickname(nickname).isPresent()){
-                throw new IllegalArgumentException("중복된 닉네임이 존재합니다");
+                return ResponseDto.fail("BAD_REQUEST","중복된 닉네임이 존재합니다.");
             } else if( 2 > nickname.length() || 40 < nickname.length()) {
-                throw new IllegalArgumentException("닉네임은 2자 이상 40자 이하이어야 합니다.");
+                return ResponseDto.fail("BAD_REQUEST","닉네임은 2자 이상 40자 이하이어야 합니다.");
             } else if(!Pattern.matches(nicknamePattern, nickname)) {
-                throw new IllegalArgumentException("닉네임은 영문, 한글, 숫자만 가능합니다.");
+                return ResponseDto.fail("BAD_REQUEST","닉네임은 영문, 한글, 숫자만 가능합니다.");
             }
         }
 
@@ -114,6 +117,11 @@ public class MypageService {
     public ResponseDto<?> getMemberInfo(Long memberId, UserDetailsImpl userDetails) {
         Member member = findMember(memberId, userDetails);
 
+        if (null == member) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "사용자를 찾을 수 없습니다.");
+        }
+
         MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
         return ResponseDto.success(mypageResponseDto);
     }
@@ -122,6 +130,12 @@ public class MypageService {
     @Transactional
     public ResponseDto<?> getMyPost(Long memberId, UserDetailsImpl userDetails) {
         findMember(memberId, userDetails);
+
+        Post Post = postRepository.findAllByMemberId(memberId);
+        if (null == Post) {
+            return ResponseDto.fail("POST_NOT_FOUND",
+                    "게시글이 존재하지 않습니다.");
+        }
 
         List<Post> postList = postRepository.findAllByMemberIdOrderByIdDesc(memberId);
         return ResponseDto.success(postList);
@@ -133,14 +147,24 @@ public class MypageService {
         findMember(memberId, userDetails);
 
         Post post = postRepository.findAllByMemberId(memberId);
-        List<ChatRoom> chatRoomList = chatRoomJpaRepository.findAllByPost(post);
+        ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
         List<ChatMessage> chatMessages = chatMessageJpaRepository.findAllByMemberId(memberId);
-        MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
-                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //멤버
-                .chatMessages(chatMessages)
-                .chatRooms(chatRoomList) //방장
-                .build();
-        return ResponseDto.success(mypageChatResponseDto);
+
+        if(post == null) { //채팅 참가자
+            MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
+                    .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId).get(0).getChatRoom().getMemberList())
+                    .chatMessages(chatMessages)
+                    .build();
+            return ResponseDto.success(mypageChatResponseDto);
+        } else if(chatRoom != null){ //방장
+            MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
+                    .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId).get(0).getChatRoom().getMemberList())
+                    .chatMessages(chatMessages)
+                    .build();
+            return ResponseDto.success(mypageChatResponseDto);
+        } else {
+            return ResponseDto.fail("CHATROOM_NOT_FOUND","채팅방이 존재하지 않습니다");
+        }
     }
 
     //비밀번호 변경
@@ -149,7 +173,7 @@ public class MypageService {
         Member member = userDetails.getMember();
 
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호를 다시 확인해 주세요.");
+            return ResponseDto.fail("BAD_REQUEST","비밀번호를 다시 확인해 주세요.");
         }
         String password = passwordEncoder.encode(requestDto.getNewPassword());
 
@@ -160,32 +184,32 @@ public class MypageService {
     }
 
     //회원 탈퇴
+    @Transactional
     public ResponseDto<?> withdrawMember(Long memberId, PasswordDeleteRequestDto passwordDeleteRequestDto,
                                          UserDetailsImpl userDetails) {
         Member member = memberRepository.findById(userDetails.getMember().getId()).orElseThrow(
                 () -> new IllegalArgumentException("등록되지 않은 회원입니다.")
         );
+        Post post = postRepository.findAllByMemberId(memberId);
 
         //hard Delete
-//        refreshTokenRepository.deleteByMemberId(memberId);
-//        postRepository.deleteByMemberId(memberId);
-//        eventRepository.deleteByMemberId(memberId);
-//        chatRoomMemberJpaRepository.deleteByMemberId(memberId);
-//        chatMessageJpaRepository.deleteByMemberId(memberId);
+        refreshTokenRepository.deleteByMemberId(memberId);
+        chatRoomMemberJpaRepository.deleteByMemberId(memberId);
+        chatRoomJpaRepository.deleteByPost(post);
+        chatMessageJpaRepository.deleteByMemberId(memberId);
+        postRepository.deleteByMemberId(memberId);
+        eventRepository.deleteByMemberId(memberId);
 
-        String defaultImg = "https://sprtbucket.s3.ap-northeast-2.amazonaws.com/image/default.jpg";
-        if(!Objects.equals(member.getProfileURL(), defaultImg)){
+        if(member.getProfileURL() != null){
             String fileName = member.getProfileURL();
-
             s3Service.deleteImage(fileName);
         }
-
 
         if (passwordEncoder.matches(passwordDeleteRequestDto.getPassword(), member.getPassword())) {
             memberRepository.deleteById(memberId);
             SecurityContextHolder.clearContext();
         } else {
-            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+            return ResponseDto.fail("PASSWORD_NOT_MATCH","패스워드가 일치하지 않습니다");
         }
         return ResponseDto.success("회원 탈퇴 완료");
     }

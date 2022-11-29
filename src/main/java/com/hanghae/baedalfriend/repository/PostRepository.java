@@ -29,4 +29,6 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     List<Post> findAllByMemberIdOrderByIdDesc(Long memberId);
     //내가 쓴 게시글(채팅방) 찾기 (마이페이지)
     Post findAllByMemberId(Long memberId);
+
+    void deleteByMemberId(Long memberId);
 }

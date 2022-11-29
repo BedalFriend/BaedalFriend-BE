@@ -9,4 +9,6 @@ public interface ChatMessageJpaRepository extends JpaRepository<ChatMessage, Lon
     List<ChatMessage> findAllByRoomId (Long roomId);
 
     List<ChatMessage> findAllByMemberId(Long memberId);
+
+    void deleteByMemberId(Long memberId);
 }
