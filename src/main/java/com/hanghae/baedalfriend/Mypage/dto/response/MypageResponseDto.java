@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MypageResponseDto {
-    private Long mamberId;
+    private Long memberId;
 
     private String nickname;
 
@@ -22,7 +22,7 @@ public class MypageResponseDto {
     private String profileURL;
 
     public MypageResponseDto(Member member) {
-        this.mamberId = member.getId();
+        this.memberId = member.getId();
         this.nickname = member.getNickname();
         this.email = member.getEmail();
         this.address = member.getAddress();
