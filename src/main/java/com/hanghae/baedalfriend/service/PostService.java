@@ -1,5 +1,4 @@
 package com.hanghae.baedalfriend.service;
-
 import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
@@ -25,16 +24,12 @@ public class PostService {
     private final HitsRepository hitsRepository;
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
-
     private final RegionRepository regionRepository;
     private final TokenProvider tokenProvider;
     private final ChatRoomService chatRoomService;
     private final ChatRoomJpaRepository chatRoomRepository;
     private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
-
-
-
 
     // 게시글 등록
     @Transactional
@@ -124,20 +119,16 @@ public class PostService {
             regionRepository.save(region4);
             Region region5 = new Region("충남", 0L);
             regionRepository.save(region5);
-            Region region6 = new Region("충남", 0L);
+            Region region6 = new Region("전북", 0L);
             regionRepository.save(region6);
-            Region region7 = new Region("전북", 0L);
+            Region region7 = new Region("전남", 0L);
             regionRepository.save(region7);
-            Region region8 = new Region("전남", 0L);
+            Region region8 = new Region("경북", 0L);
             regionRepository.save(region8);
-            Region region9 = new Region("전북", 0L);
+            Region region9 = new Region("경남", 0L);
             regionRepository.save(region9);
-            Region region10 = new Region("경북", 0L);
+            Region region10 = new Region("제주", 0L);
             regionRepository.save(region10);
-            Region region11 = new Region("경남", 0L);
-            regionRepository.save(region11);
-            Region region12 = new Region("제주", 0L);
-            regionRepository.save(region12);
         }
 
         //게시글 등록
@@ -153,8 +144,7 @@ public class PostService {
                 .targetAmount(requestDto.getTargetAmount())// 목표금액
                 .deliveryTime(requestDto.getDeliveryTime()) // 배달시간
                 .deliveryFee(requestDto.getDeliveryFee()) // 배달요금
-//                .participantNumber(1) // 참여자수
-                .participantNumber((long) requestDto.getParticipantNumber()) // 참여자수
+                .participantNumber(requestDto.getParticipantNumber()) // 참여자수
                 .gatherName(requestDto.getGatherName()) // 모이는 장소 이름
                 .gatherAddress(requestDto.getGatherAddress()) // 모이는 장소 주소
                 .hits(requestDto.getHits()) // 조회수
@@ -163,15 +153,8 @@ public class PostService {
                 .profileURL(requestDto.getProfileURL()) // 프로필 사진
                 .build();
         postRepository.save(post);
-
-        //채팅방 자동생성
-        chatRoomService.createChatRoom(post, request);
-
-        //게시글작성자 자동입장
-        //게시글작성자 자동입장
-        chatRoomService.enterRoom(post.getId(),request);
-
-
+        chatRoomService.createChatRoom(post, request); //채팅방 자동생성
+        chatRoomService.enterRoom(post.getId(),request); //게시글작성자 자동입장
         return ResponseDto.success(
         PostResponseDto.builder()
                         .postId(post.getId()) //게시글 번호
@@ -186,7 +169,6 @@ public class PostService {
                         .targetAmount(post.getTargetAmount())// 목표금액
                         .deliveryTime(post.getDeliveryTime()) // 배달시간
                         .deliveryFee(post.getDeliveryFee()) // 배달요금
-//                        .participantNumber(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()).size()) // 참여자수
                         .participantNumber(post.getParticipantNumber()) // 참여자수
                         .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
                         .gatherName(post.getGatherName()) // 모이는 장소 이름
@@ -221,7 +203,6 @@ public class PostService {
                             .targetAmount(post.getTargetAmount())// 목표금액
                             .deliveryTime(post.getDeliveryTime()) // 배달시간
                             .deliveryFee(post.getDeliveryFee()) // 배달요금
-//                            .participantNumber(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()).size()) // 참여자수
                             .participantNumber(post.getParticipantNumber()) // 참여자수
                             .gatherName(post.getGatherName()) // 모이는 장소 이름
                             .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
@@ -259,7 +240,6 @@ public class PostService {
                             .targetAmount(post.getTargetAmount())// 목표금액
                             .deliveryTime(post.getDeliveryTime()) // 배달시간
                             .deliveryFee(post.getDeliveryFee()) // 배달요금
-//                            .participantNumber(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()).size()) // 참여자수
                             .participantNumber(post.getParticipantNumber()) // 참여자수
                             .gatherName(post.getGatherName()) // 모이는 장소 이름
                             .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
@@ -324,7 +304,6 @@ public class PostService {
                         .targetAmount(post.getTargetAmount())// 목표금액
                         .deliveryTime(post.getDeliveryTime()) // 배달시간
                         .deliveryFee(post.getDeliveryFee()) // 배달요금
-//                        .participantNumber(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()).size()) // 참여자수
                         .participantNumber(post.getParticipantNumber()) // 참여자수
                         .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
                         .gatherName(post.getGatherName()) // 모이는 장소 이름
@@ -371,12 +350,8 @@ public class PostService {
             return ResponseDto.fail("BAD_REQUEST", "작성자만 삭제할 수 있습니다.");
         }
         ChatRoom chatRoom=chatRoomRepository.findById(id).get();
-
         chatRoomMemberJpaRepository.deleteAllByChatRoom(chatRoom); //채팅방안 멤버 모두 삭제
-
         chatRoomRepository.deleteById(id);  // 채팅방도 같이 삭제
-
-
         postRepository.delete(post);   // 게시글 삭제
         return ResponseDto.success("delete success");
     }
@@ -395,6 +370,7 @@ public class PostService {
         }
         return tokenProvider.getMemberFromAuthentication();
     }
+
     // 특정 게시물 조회
     public ResponseDto<?> getPost(Long id) {
         Post post = isPresentPost(id);
@@ -415,7 +391,6 @@ public class PostService {
                         .targetAmount(post.getTargetAmount())// 목표금액
                         .deliveryTime(post.getDeliveryTime()) // 배달시간
                         .deliveryFee(post.getDeliveryFee()) // 배달요금
-//                        .participantNumber(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()).size()) // 참여자수
                         .participantNumber(post.getParticipantNumber()) // 참여자수
                         .gatherName(post.getGatherName()) // 모이는 장소 이름
                         .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
@@ -440,7 +415,7 @@ public class PostService {
             return ResponseDto.fail("NOT_FOUND_POST", "해당 게시글이 없습니다.");
         }
 
-        // 회원만 상세 페이지 조회 할 수 있도록 회원 유효성 체크
+        //회원 유효성 체크
         Member member = validateMember(request);
         LocalDateTime now = LocalDateTime.now();
 
@@ -485,7 +460,6 @@ public class PostService {
                         .targetAmount(post.getTargetAmount())// 목표금액
                         .deliveryTime(post.getDeliveryTime()) // 배달시간
                         .deliveryFee(post.getDeliveryFee()) // 배달요금
-//                        .participantNumber(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()).size()) // 참여자수
                         .participantNumber(Math.toIntExact(post.getParticipantNumber())) // 참여자수
                         .gatherName(post.getGatherName()) // 모이는 장소 이름
                         .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
@@ -508,7 +482,6 @@ public class PostService {
     }
 
     // 참가자수 증가
-
     @Transactional
     public ResponseDto<?> updateParticipantNumber(Long postId, HttpServletRequest request) {
         // 게시글 유효성 체크
@@ -516,33 +489,25 @@ public class PostService {
         if (null == post) {
             return ResponseDto.fail("NOT_FOUND_POST", "해당 게시글이 없습니다.");
         }
-
-        // 회원만 상세 페이지 조회 할 수 있도록 회원 유효성 체크
-        Member member = validateMember(request);
-
+        // 참가자수 증가
         post.updateParticipantNumber();
+        // 참가자수 post 테이블에 저장
         postRepository.save(post);
-
         return ResponseDto.success( post.getParticipantNumber());
     }
 
-
     // 참가자수 감소
+    @Transactional
     public ResponseDto<?> decreaseParticipant(Long postId, HttpServletRequest request) {
         // 게시글 유효성 체크
         Post post = isPresentPost(postId);
         if (null == post) {
             return ResponseDto.fail("NOT_FOUND_POST", "해당 게시글이 없습니다.");
         }
-
-        // 회원만 상세 페이지 조회 할 수 있도록 회원 유효성 체크
-        Member member = validateMember(request);
-
+        // 참가자수 감소
         post.decreaseParticipantNumber();
-        // 최대 5까지만 증가
-
+        // 참가자수 post 테이블에 저장
         postRepository.save(post);
-
         return ResponseDto.success( post.getParticipantNumber());
     }
 }

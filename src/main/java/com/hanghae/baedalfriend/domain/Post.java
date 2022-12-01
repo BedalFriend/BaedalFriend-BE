@@ -70,6 +70,10 @@ public class Post extends Timestamped implements Serializable {
     @ColumnDefault("0")
     private Long participantNumber = 0L; // 참여자수
 
+    @Column
+    @ColumnDefault("false")
+    private boolean isClosed = false;
+
     // 수정가능한 부분
     public void update(PostRequestDto postRequestDto) {
         this.roomTitle = postRequestDto.getRoomTitle(); // 채팅방제목
@@ -111,4 +115,8 @@ public class Post extends Timestamped implements Serializable {
         this.participantNumber -=1L;
     }
 
+    //공구종료
+    public void isClosed(boolean isClosed) {
+        this.isClosed = isClosed;
+    }
 }
