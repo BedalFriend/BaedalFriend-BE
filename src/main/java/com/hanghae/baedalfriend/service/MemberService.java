@@ -1,4 +1,5 @@
 package com.hanghae.baedalfriend.service;
+import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.dto.responsedto.EmailAuthResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.NicknameAuthResponseDto;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -155,13 +157,25 @@ public class MemberService {
 
 
 
-        //해당 유저가 진행중인 게시글(공구) id가 포함되는지
+        //해당 유저가 진행중인 게시글에 참여하고 있는지 확인하는 로직
         long roomId=0;
+        List<ChatRoomMember> chatRoomMemberList=chatRoomMemberJpaRepository.findByMember(member);
         if(chatRoomMemberJpaRepository.findByMember(member).size()==0){
-            System.out.println("공구x");
+
         }else{
-            roomId=chatRoomMemberJpaRepository.findByMember(member).get(0).getChatRoom().getId();
+            for (int i = 0; i < chatRoomMemberList.size() ; i++) {
+                if((!chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed())){
+                    roomId=chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getId();
+                    break;
+
+                }
+            }
+
         }
+
+
+
+
         return ResponseDto.success(
                 MemberResponseDto.builder()
                         .id(member.getId())
@@ -213,12 +227,21 @@ public class MemberService {
 
 
         Member member = refreshTokenRepository.findByValue(request.getHeader("Refresh_Token")).get().getMember();
-        //해당 유저가 진행중인 게시글(공구) id가 포함되는지
+
+        //해당 유저가 진행중인 게시글에 참여하고 있는지 확인하는 로직
         long roomId=0;
+        List<ChatRoomMember> chatRoomMemberList=chatRoomMemberJpaRepository.findByMember(member);
         if(chatRoomMemberJpaRepository.findByMember(member).size()==0){
-            System.out.println("공구x");
+
         }else{
-            roomId=chatRoomMemberJpaRepository.findByMember(member).get(0).getChatRoom().getId();
+            for (int i = 0; i < chatRoomMemberList.size() ; i++) {
+                if((!chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed())){
+                    roomId=chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getId();
+                    break;
+
+                }
+            }
+
         }
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
