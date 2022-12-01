@@ -81,4 +81,9 @@ public class Member extends Timestamped implements Serializable{
     public void updateUserPassword(String password) {
         this.password = password;
     }
+
+    public void update(String nickname, String profileURL) {
+        this.nickname = nickname;
+        this.profileURL = profileURL;
+    }
 }

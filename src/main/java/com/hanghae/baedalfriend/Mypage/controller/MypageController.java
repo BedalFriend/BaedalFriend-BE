@@ -6,6 +6,7 @@ import com.hanghae.baedalfriend.Mypage.dto.request.PasswordDeleteRequestDto;
 import com.hanghae.baedalfriend.Mypage.dto.request.PasswordRequestDto;
 import com.hanghae.baedalfriend.domain.UserDetailsImpl;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
+import com.hanghae.baedalfriend.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,8 @@ public class MypageController {
 
     private final MypageService mypageService;
 
+    private final S3Service s3Service;
+
     //유저 프로필 변경(닉네임)
     @PutMapping("/mypages/info/{memberId}")
     public ResponseDto<?> updateMember(@PathVariable Long memberId, @RequestBody MypageRequestDto requestDto,
@@ -27,17 +30,23 @@ public class MypageController {
         return mypageService.updateMember(memberId, requestDto, userDetails);
     }
 
-    //프로필 이미지 변경
-    @PutMapping("/mypages/image/{memberId}")
-    public ResponseDto<?> updateImage(@PathVariable Long memberId, @RequestPart("imgUrl") MultipartFile multipartFile,
-                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return mypageService.updateImage(memberId, multipartFile, userDetails);
+    //프로필 이미지 변경(조회)
+    @PostMapping("/mypages/image")
+    public ResponseDto<?> createImage(@RequestPart(value = "imgUrl", required = false) MultipartFile multipartFile) throws IOException {
+        return s3Service.createImage(multipartFile);
     }
 
     //프로필이미지 삭제
     @DeleteMapping("/mypages/image/{memberId}")
     public ResponseDto<?> deleteProfileImage(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return mypageService.deleteProfileImage(memberId, userDetails);
+    }
+
+    @PatchMapping("/mypages/edit/{memberId}")
+    public ResponseDto<?> editMember(@PathVariable Long memberId, @RequestPart(value = "nickname") MypageRequestDto requestDto,
+                                     @RequestPart(value = "imgUrl", required = false) MultipartFile multipartFile,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return mypageService.editMember(memberId, requestDto, multipartFile, userDetails);
     }
 
     //유저 정보 조회 (nickname. profileURL, email. address)

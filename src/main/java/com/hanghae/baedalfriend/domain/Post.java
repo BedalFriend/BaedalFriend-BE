@@ -23,7 +23,9 @@ public class Post extends Timestamped implements Serializable {
     @Column(nullable = false)
     private String roomTitle; // 채팅방제목
     @Column(nullable = false)
-    private boolean isDone; // 모집중
+    @ColumnDefault("false")
+    @Builder.Default
+    private boolean isDone = false; // 모집중인지
     @Column(nullable = false)
     private String category; // 카테고리
     @Column(nullable = false)
