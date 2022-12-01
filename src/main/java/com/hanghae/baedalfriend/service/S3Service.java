@@ -94,7 +94,7 @@ public class S3Service {
     }
 
     public void deleteImage(String imageUrl) {
-        String fileName = imageUrl.substring(51); //누구의 S3가 됐든 앞의 URL부분을 적어야 한다..
+        String fileName = imageUrl.substring(54);
         System.out.println("fileName : " + fileName);
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
         System.out.println("삭제완료");
