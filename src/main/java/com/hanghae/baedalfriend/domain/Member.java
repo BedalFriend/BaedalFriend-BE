@@ -45,6 +45,7 @@ public class Member extends Timestamped implements Serializable{
     private Authority role;
 
     @JsonIgnore
+    @Builder.Default
     private boolean isDeleted = Boolean.FALSE;
 
     public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId) {

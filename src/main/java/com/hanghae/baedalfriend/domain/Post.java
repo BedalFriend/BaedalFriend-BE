@@ -1,10 +1,8 @@
 package com.hanghae.baedalfriend.domain;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -16,7 +14,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Post extends Timestamped implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -64,14 +61,17 @@ public class Post extends Timestamped implements Serializable {
     private String profileURL; //프로필 이미지 URL
     @Column
     @ColumnDefault("0")
+    @Builder.Default
     private Long hits = 0L; // 조회수
 
     @Column
     @ColumnDefault("0")
+    @Builder.Default
     private Long participantNumber = 0L; // 참여자수
 
     @Column
     @ColumnDefault("false")
+    @Builder.Default
     private boolean isClosed = false;
 
     // 수정가능한 부분

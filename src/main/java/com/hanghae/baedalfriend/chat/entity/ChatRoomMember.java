@@ -27,15 +27,10 @@ public class ChatRoomMember extends Timestamped {
     @ManyToOne
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "participant_number_ID")
-    private ParticipantNumber participantNumber;
-
     @Builder
-    public ChatRoomMember(ChatRoom chatRoom, Member member , ParticipantNumber participantNumber) {
+    public ChatRoomMember(ChatRoom chatRoom, Member member) {
         this.member = member;
         this.chatRoom = chatRoom;
-        this.participantNumber =  participantNumber;
     }
 
 

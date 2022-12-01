@@ -4,7 +4,6 @@ package com.hanghae.baedalfriend.chat.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hanghae.baedalfriend.domain.Post;
 import lombok.*;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -16,11 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatRoom implements Serializable {
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-
 
     @Column(nullable = false)
     private String founder;
@@ -29,14 +26,9 @@ public class ChatRoom implements Serializable {
     @JoinColumn(name = "post_id")
     private Post post;
 
-
     @JsonIgnore
     @OneToMany(mappedBy = "chatRoom")
     private List<ChatRoomMember> memberList;
-
-    @ManyToOne
-    @JoinColumn(name = "participant_number_ID")
-    private ParticipantNumber participantNumber;
 
     public ChatRoom(String founder,Post post) {
         this.founder =founder;
