@@ -142,12 +142,12 @@ public class MemberService {
         // null값 사용자 유효성 체크
         if (null == member) {
             return ResponseDto.fail("MEMBER_NOT_FOUND",
-                    "사용자를 찾을 수 없습니다.");
+                    "이메일 혹은 비밀번호가 일치하지 않습니다.");
         }
 
         // 비밀번호 사용자 유효성 체크
         if (!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
-            return ResponseDto.fail("INVALID_MEMBER", "사용자를 찾을 수 없습니다.");
+            return ResponseDto.fail("INVALID_MEMBER", "이메일 혹은 비밀번호가 일치하지 않습니다.");
         }
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
@@ -193,7 +193,7 @@ public class MemberService {
 
         if (null == member) {
             return ResponseDto.fail("MEMBER_NOT_FOUND",
-                    "사용자를 찾을 수 없습니다.");
+                    "이메일 혹은 비밀번호가 일치하지 않습니다.");
         }
         return tokenProvider.deleteRefreshToken(member);
     }
