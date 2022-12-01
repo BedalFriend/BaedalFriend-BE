@@ -101,6 +101,7 @@ public class ChatRoomService {
         );
         int num = chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom).size();
 
+
         if (chatRoom.getPost().getMaxCapacity() > num) {
 
             ChatRoomMember chatRoomMember = ChatRoomMember.builder()
