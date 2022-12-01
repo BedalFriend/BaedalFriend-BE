@@ -37,10 +37,10 @@ public class ChatRoomController {
 
 
     //채팅방 나가기
-    @DeleteMapping("/channel/founder/{roomId}")
+    @PutMapping("/channel/close/{roomId}")
     @ResponseBody
-    public ResponseDto<?> leaveChatRoomFounder(@PathVariable Long roomId, HttpServletRequest request) {
-        return chatRoomService.leaveChatRoomFounder(roomId, request);
+    public ResponseDto<?> closeChatRoom(@PathVariable Long roomId, HttpServletRequest request) {
+        return chatRoomService.closeChatRoom(roomId, request);
     }
 
     // 특정 채팅방 조회

@@ -5,7 +5,6 @@ import com.hanghae.baedalfriend.chat.dto.response.ChatRoomResponseDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
-import com.hanghae.baedalfriend.chat.entity.ParticipantNumber;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
@@ -13,7 +12,6 @@ import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
-import com.hanghae.baedalfriend.repository.ParticipantRepository;
 import com.hanghae.baedalfriend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
@@ -39,7 +37,7 @@ public class ChatRoomService {
     private final PostRepository postRepository;
 
     private final ChatRoomJpaRepository chatRoomJpaRepository;
-    private ParticipantRepository participantRepository;
+
 
     private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
@@ -108,7 +106,6 @@ public class ChatRoomService {
             ChatRoomMember chatRoomMember = ChatRoomMember.builder()
                         .chatRoom(chatRoom)
                         .member(member)
-                        .participantNumber((ParticipantNumber) participantRepository)
                         .build();
                 chatRoomMemberJpaRepository.save(chatRoomMember);
 
@@ -168,10 +165,9 @@ public class ChatRoomService {
 
     }
 
-    // 특정 채팅방 나가기
-    // 방장
+   //채팅방종료
     @Transactional
-    public ResponseDto<?> leaveChatRoomFounder(Long roomId, HttpServletRequest request) {
+    public ResponseDto<?> closeChatRoom(Long roomId, HttpServletRequest request) {
 
         Member member = validateMember(request);
 
@@ -194,9 +190,9 @@ public class ChatRoomService {
 
 
 
-        chatRoomMemberJpaRepository.deleteAllByChatRoom(chatRoom);
+        chatRoom.getPost().isClosed(true);
 
-        return ResponseDto.success("채팅방에 아무도 없음");
+        return ResponseDto.success("채팅방종료");
     }
 
     //채팅방 하나 불러오기
