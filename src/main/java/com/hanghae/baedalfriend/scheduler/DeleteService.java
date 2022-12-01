@@ -3,6 +3,7 @@ package com.hanghae.baedalfriend.scheduler;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
+import com.hanghae.baedalfriend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class DeleteService {
+    private final PostRepository postRepository;
 
 
     //isdone값변경
@@ -22,8 +24,8 @@ public class DeleteService {
     public void updateIsDone(Post post) {
         post.isDone(true);
     }
-//
-//    public void delete(Post post){
-//
-//    }
+
+    public void delete(Post post){
+        postRepository.delete(post);
+    }
 }

@@ -25,8 +25,9 @@ public class DeleteScheduler {
         softDelete();
     }
 
-    @Scheduled(cron = "0 0/3 * * * ?") //1시간마다
-    public void userJobHour() throws Exception {
+    @Scheduled(cron = "0 0 10 L * ?") //매월 마지막날 저녁 10시에 실행
+    public void userJob() throws Exception {
+        hardDelete();
 
     }
 
@@ -40,7 +41,7 @@ public class DeleteScheduler {
     public void softDelete() {
         List<Post> postList = postRepository.findAll();
         for (Post post : postList) {
-            //인자보다 관거일 떄 true return
+            //인자보다 과거일 떄 true return
             if (now.isBefore(post.getLimitTime())) {
                 deleteService.updateIsDone(post);
             }
@@ -50,16 +51,14 @@ public class DeleteScheduler {
     }
 
 
-////    public void hardDelete(){
-////        List<Post> postList = postRepository.findAll();
-////        for (Post post : postList) {
-////            if (post.isDone()) {
-////
-////
-////
-////
-////            }
-////   }
+    public void hardDelete() {
+        List<Post> postList = postRepository.findAll();
+        for (Post post : postList) {
+            if (post.isClosed()) {
+                deleteService.delete(post);
+            }
+        }
+    }
 
 
 }
