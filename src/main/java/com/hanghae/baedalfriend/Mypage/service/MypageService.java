@@ -49,8 +49,6 @@ public class MypageService {
     private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final S3Service s3Service;
     private final PasswordEncoder passwordEncoder;
-
-
     //닉네임 수정
     @Transactional
     public ResponseDto<?> updateMember(Long memberId, MypageRequestDto requestDto, UserDetailsImpl userDetails) {
@@ -76,12 +74,10 @@ public class MypageService {
         // user 프로필 업데이트
         member.setNickname(nickname);
         memberRepository.save(member); // DB에 저장
-
         //수정한 거 Dto에 저장해서 반환하기
         MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
         return ResponseDto.success(mypageResponseDto);
     }
-
     //프로필 이미지 수정(미리보기)
     @Transactional
     public ResponseDto<?> updateImage(Long memberId, MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
@@ -117,7 +113,6 @@ public class MypageService {
         MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
         return ResponseDto.success(mypageResponseDto);
     }
-
     // 이미지 변경
     public ResponseDto<?> editMember(Long memberId, MypageRequestDto requestDto, MultipartFile multipartFile,
                                      UserDetailsImpl userDetails) throws IOException {
@@ -145,14 +140,12 @@ public class MypageService {
 
         Member member1 = checkNickname(requestDto.getNickname());
         String profileURL = member.getProfileURL();
-
         if (member1 != null) {
-
             if (profileURL == null) { //기본이미지
                 if (!multipartFile.isEmpty()) { // 입력한 이미지가 없는 상태에서
                     profileURL = s3Service.upload(multipartFile);
                     member.setProfileURL(profileURL);
-                    log.info("1. profileURL + {} + ================================1==================================== ", profileURL);
+
                 } else {
                     profileURL = null;
                 }
@@ -161,12 +154,12 @@ public class MypageService {
                     s3Service.deleteImage(profileURL);
                     profileURL = s3Service.upload(multipartFile);
                     member.setProfileURL(profileURL);
-                    log.info("2. profileURL + {} + ===================================2================================= ", profileURL);
+
                 } else {
                     s3Service.deleteImage(profileURL);
                     profileURL = s3Service.upload(multipartFile);
                     member.setProfileURL(profileURL);
-                    log.info("3. profileURL + {} + ====================================3================================ ", profileURL);
+
                 }
             }
         }
