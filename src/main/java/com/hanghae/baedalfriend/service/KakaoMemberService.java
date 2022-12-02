@@ -1,13 +1,9 @@
 package com.hanghae.baedalfriend.service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.hanghae.baedalfriend.domain.Check;
-
 import com.hanghae.baedalfriend.domain.Member;
-
 import com.hanghae.baedalfriend.dto.requestdto.TokenDto;
 import com.hanghae.baedalfriend.dto.responsedto.KakaoMemberInfoDto;
 import com.hanghae.baedalfriend.dto.responsedto.MemberResponseDto;
@@ -22,14 +18,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
@@ -37,13 +31,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class KakaoMemberService {
-
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
     private final TokenProvider tokenProvider;
-
     private final Check check;
 
     @Value("${myKaKaoRestAplKey}")
@@ -58,18 +50,12 @@ public class KakaoMemberService {
         KakaoMemberInfoDto kakaoMemberInfo = getKakaoMemberInfo(accessToken);
 
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        String nickname = String.valueOf(kakaoMemberInfo.getId());
+        String nickname = String.valueOf(kakaoMemberInfo.getNickname());
 
         Member kakaoMember = memberRepository.findByKakaoId(kakaoMemberInfo.getId())
                 .orElse(null);
-
-
-
-
-
-
+        log.info("kakaoMember : {} " ,kakaoMember);
         System.out.println(" ===================kakaoMember================================================");
-
 
         if (kakaoMember == null) {
             // 회원가입
@@ -78,16 +64,9 @@ public class KakaoMemberService {
             String profileURL = kakaoMemberInfo.getProfileURL();
             Long kakaoId= kakaoMemberInfo.getId();
             kakaoMember = new Member(encodedPassword, profileURL, nickname, kakaoId);
-
-
-
-
             memberRepository.save(kakaoMember);
-
         }
-
         // 4. 강제 로그인 처리
-//        System.out.println("=============================강제 로그인 처리============================================");
         Member member = check.getMemberById(String.valueOf(kakaoMember.getId()));
         TokenDto tokenDto = tokenProvider.generateTokenDto(kakaoMember);
         tokenDto.tokenToHeaders(response);
@@ -99,6 +78,7 @@ public class KakaoMemberService {
                         .profileURL(kakaoMember.getProfileURL())
                         .createdAt(kakaoMember.getCreatedAt())
                         .modifiedAt(kakaoMember.getModifiedAt())
+                        .nickname(kakaoMember.getNickname()) // 카카오 닉네임 추가 2022- 12 -02
                         .role(kakaoMember.getRole())
                         .build()
         );
