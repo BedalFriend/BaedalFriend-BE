@@ -21,21 +21,6 @@ public class MypageController {
 
     private final MypageService mypageService;
 
-    private final S3Service s3Service;
-
-    //유저 프로필 변경(닉네임)
-    @PutMapping("/mypages/info/{memberId}")
-    public ResponseDto<?> updateMember(@PathVariable Long memberId, @RequestBody MypageRequestDto requestDto,
-                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return mypageService.updateMember(memberId, requestDto, userDetails);
-    }
-
-    //프로필 이미지 변경(조회)
-    @PostMapping("/mypages/image")
-    public ResponseDto<?> createImage(@RequestPart(value = "imgUrl", required = false) MultipartFile multipartFile) throws IOException {
-        return s3Service.createImage(multipartFile);
-    }
-
     //프로필이미지 삭제
     @DeleteMapping("/mypages/image/{memberId}")
     public ResponseDto<?> deleteProfileImage(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -47,6 +32,12 @@ public class MypageController {
                                      @RequestPart(value = "imgUrl", required = false) MultipartFile multipartFile,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return mypageService.editMember(memberId, requestDto, multipartFile, userDetails);
+    }
+
+    @PutMapping("/mypages/address/{memberId}")
+    public ResponseDto<?> updateAddress(@PathVariable Long memberId, @RequestBody MypageRequestDto requestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return mypageService.updateAddress(memberId, requestDto, userDetails);
     }
 
     //유저 정보 조회 (nickname. profileURL, email. address)
@@ -62,17 +53,17 @@ public class MypageController {
     }
 
     //내가 들어간 채팅방
-    @GetMapping("/mypages/chat/{memberId}")
-    public ResponseDto<?> getMyChat(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return mypageService.getMyChat(memberId, userDetails);
-    }
+//    @GetMapping("/mypages/chat/{memberId}")
+//    public ResponseDto<?> getMyChat(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return mypageService.getMyChat(memberId, userDetails);
+//    }
 
     // 비밀번호 변경
-    @PutMapping("/updatePassword")
-    public ResponseDto<?> updatePassword(@RequestBody PasswordRequestDto passwordRequestDto,
-                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return mypageService.updatePassword(passwordRequestDto, userDetails);
-    }
+//    @PutMapping("/updatePassword")
+//    public ResponseDto<?> updatePassword(@RequestBody PasswordRequestDto passwordRequestDto,
+//                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return mypageService.updatePassword(passwordRequestDto, userDetails);
+//    }
 
     // 회원 탈퇴
     @DeleteMapping("/withdrawal/{memberId}")

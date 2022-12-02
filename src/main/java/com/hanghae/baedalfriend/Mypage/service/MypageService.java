@@ -4,7 +4,6 @@ import com.hanghae.baedalfriend.Mypage.dto.request.MypageRequestDto;
 import com.hanghae.baedalfriend.Mypage.dto.request.PasswordDeleteRequestDto;
 import com.hanghae.baedalfriend.Mypage.dto.request.PasswordRequestDto;
 import com.hanghae.baedalfriend.Mypage.dto.response.MypageChatResponseDto;
-import com.hanghae.baedalfriend.Mypage.dto.response.MypageImgResponseDto;
 import com.hanghae.baedalfriend.Mypage.dto.response.MypageResponseDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoom;
@@ -27,9 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -47,60 +44,6 @@ public class MypageService {
     private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final S3Service s3Service;
     private final PasswordEncoder passwordEncoder;
-
-
-    //닉네임 수정
-    @Transactional
-    public ResponseDto<?> updateMember(Long memberId, MypageRequestDto requestDto, UserDetailsImpl userDetails) {
-        Member member = findMember(memberId, userDetails);
-        String nickname = requestDto.getNickname();
-        String nicknamePattern = "^[0-9a-zA-Zㄱ-ㅎ가-힣]*${2,40}";
-
-        //닉네임
-        if(nickname.equals(member.getNickname())) {
-            nickname = member.getNickname();
-        } else {
-            if(nickname.equals("")){
-                return ResponseDto.fail("BAD_REQUEST","닉네임을 입력해주세요.");
-            } else if(memberRepository.findByNickname(nickname).isPresent()){
-                return ResponseDto.fail("BAD_REQUEST","중복된 닉네임이 존재합니다.");
-            } else if( 2 > nickname.length() || 40 < nickname.length()) {
-                return ResponseDto.fail("BAD_REQUEST","닉네임은 2자 이상 40자 이하이어야 합니다.");
-            } else if(!Pattern.matches(nicknamePattern, nickname)) {
-                return ResponseDto.fail("BAD_REQUEST","닉네임은 영문, 한글, 숫자만 가능합니다.");
-            }
-        }
-
-        // user 프로필 업데이트
-        member.setNickname(nickname);
-        memberRepository.save(member); // DB에 저장
-
-        //수정한 거 Dto에 저장해서 반환하기
-        MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
-        return ResponseDto.success(mypageResponseDto);
-    }
-
-    //프로필 이미지 수정(미리보기)
-    @Transactional
-    public ResponseDto<?> updateImage(Long memberId, MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
-        Member member = findMember(memberId, userDetails);
-
-        if (multipartFile != null) {
-            if(member.getProfileURL() != null) {
-                s3Service.deleteImage(member.getProfileURL());
-                String profileURL = s3Service.upload(multipartFile);
-                member.setProfileURL(profileURL);
-            } else {
-                String profileURL = s3Service.upload(multipartFile);
-                member.setProfileURL(profileURL);
-            }
-        }
-        memberRepository.save(member); // DB에 저장
-
-        //수정한 거 Dto에 저장해서 반환하기
-        MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
-        return ResponseDto.success(mypageResponseDto);
-    }
 
     //프로필 이미지 삭제
     @Transactional
@@ -147,6 +90,7 @@ public class MypageService {
             if(profileURL == null) { //기본이미지
                 if(!multipartFile.isEmpty()) {
                     profileURL = s3Service.upload(multipartFile);
+                    member.setProfileURL(profileURL);
                 }else {
                     profileURL = null;
                 }
@@ -157,14 +101,27 @@ public class MypageService {
                 } else {
                     s3Service.deleteImage(profileURL);
                     profileURL = s3Service.upload(multipartFile);
+                    member.setProfileURL(profileURL);
                 }
             }
         }
-            member.update(requestDto.getNickname(), profileURL);
-            memberRepository.save(member);
+        member.update(requestDto.getNickname(), profileURL);
+        memberRepository.save(member);
 
-            MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
-            return ResponseDto.success(mypageResponseDto);
+        MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
+        return ResponseDto.success(mypageResponseDto);
+    }
+
+    @Transactional
+    public ResponseDto<?> updateAddress(Long memberId, MypageRequestDto requestDto, UserDetailsImpl userDetails) {
+        Member member = findMember(memberId, userDetails);
+
+        member.setAddress(requestDto.getAddress());
+
+        memberRepository.save(member);
+
+        MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
+        return ResponseDto.success(mypageResponseDto);
     }
 
     //유저 정보 조회
