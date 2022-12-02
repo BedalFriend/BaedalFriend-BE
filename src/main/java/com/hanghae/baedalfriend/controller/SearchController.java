@@ -1,4 +1,5 @@
 package com.hanghae.baedalfriend.controller;
+
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +57,10 @@ public class SearchController {
     // 전체 카테고리 검색 + 정렬 ( 로그인 전 현재 위치 입력하지 않은 사용자)
     @GetMapping(value = "/entireCategory/search")
     public ResponseDto<?> getEntireCategory(@RequestParam("page") int page,
-                                          @RequestParam("size") int size,
-                                          @RequestParam("keyword") String keyword,
-                                          @RequestParam("sortBy") String sortBy,
-                                          @RequestParam("isAsc") boolean isAsc) {
+                                            @RequestParam("size") int size,
+                                            @RequestParam("keyword") String keyword,
+                                            @RequestParam("sortBy") String sortBy,
+                                            @RequestParam("isAsc") boolean isAsc) {
         {
             page = page - 1;
             return searchService.getEntireCategory(keyword, page, size, sortBy, isAsc);
@@ -89,7 +90,7 @@ public class SearchController {
                                                   @RequestParam("sortBy") String sortBy,
                                                   @RequestParam("isAsc") boolean isAsc) {
         {
-            page = page -1;
+            page = page - 1;
             return searchService.getRegionCategorySearch(keyword, region, page, size, sortBy, isAsc);
         }
     }

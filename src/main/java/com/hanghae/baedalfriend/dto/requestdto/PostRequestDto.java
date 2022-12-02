@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,6 +21,10 @@ public class PostRequestDto {
     private String roomTitle; // 채팅방 제목
 
     private boolean isDone; // 모집중
+
+    @NotBlank(message = "내용을 입력해주세요!")
+    @Size(max=40, message= "내용은 최대 40자미만으로 만들어주세요.")
+    private String content; // 내용
 
     @NotBlank(message = "공백은 허용하지 않습니다.")
     private String category; // 카테고리
