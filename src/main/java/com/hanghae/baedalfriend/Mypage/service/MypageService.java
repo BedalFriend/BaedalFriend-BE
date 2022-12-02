@@ -149,28 +149,23 @@ public class MypageService {
         if (member1 != null) {
 
             if (profileURL == null) { //기본이미지
-
                 if (!multipartFile.isEmpty()) { // 입력한 이미지가 없는 상태에서
                     profileURL = s3Service.upload(multipartFile);
-                    member.setProfileURL(profileURL); // 이거!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    member.setProfileURL(profileURL);
                     log.info("1. profileURL + {} + ================================1==================================== ", profileURL);
                 } else {
                     profileURL = null;
                 }
             } else {
-
                 if (multipartFile.isEmpty()) { // 입력한 이미지가 있는 상태에서
-
                     s3Service.deleteImage(profileURL);
                     profileURL = s3Service.upload(multipartFile);
                     member.setProfileURL(profileURL);
                     log.info("2. profileURL + {} + ===================================2================================= ", profileURL);
-
                 } else {
                     s3Service.deleteImage(profileURL);
-
                     profileURL = s3Service.upload(multipartFile);
-                    member.setProfileURL(profileURL); // 이거!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    member.setProfileURL(profileURL);
                     log.info("3. profileURL + {} + ====================================3================================ ", profileURL);
                 }
             }
