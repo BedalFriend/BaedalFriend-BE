@@ -140,7 +140,9 @@ public class MypageService {
 
         Member member1 = checkNickname(requestDto.getNickname());
         String profileURL = member.getProfileURL();
+
         if (member1 != null) {
+
             if (profileURL == null) { //기본이미지
                 if (!multipartFile.isEmpty()) { // 입력한 이미지가 없는 상태에서
                     profileURL = s3Service.upload(multipartFile);
@@ -169,6 +171,7 @@ public class MypageService {
         MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
         return ResponseDto.success(mypageResponseDto);
     }
+
 
     //유저 정보 조회
     @Transactional
