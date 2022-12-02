@@ -136,6 +136,7 @@ public class PostService {
                 .roomTitle(requestDto.getRoomTitle()) // 채팅방 제목
                 .member(member)
                 .isDone(requestDto.isDone())// 모집중
+                .content(requestDto.getContent()) // 내용
                 .category(requestDto.getCategory()) //카테고리
                 .maxCapacity(requestDto.getMaxCapacity()) // 최대 인원
                 .region(requestDto.getRegion()) // 지역
@@ -159,6 +160,7 @@ public class PostService {
         PostResponseDto.builder()
                         .postId(post.getId()) //게시글 번호
                         .memberId(post.getMember().getId()) // 회원 번호
+                        .content(post.getContent()) // 게시글 내용
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .isDone(post.isDone())// 모집중
                         .category(post.getCategory()) //카테고리
@@ -193,6 +195,7 @@ public class PostService {
                     PostResponseDto.builder()
                             .postId(post.getId()) //게시글 아이디
                             .memberId(post.getMember().getId()) // 게시글 ID
+                            .content(post.getContent()) // 게시글 내용
                             .roomTitle(post.getRoomTitle()) // 채팅방 제목
                             .isDone(post.isDone())// 모집중
                             .region(post.getRegion()) // 지역
@@ -230,6 +233,7 @@ public class PostService {
                     GetAllPostResponseDto.builder()
                             .postId(post.getId()) // 게시글 번호
                             .memberId(post.getMember().getId()) // 회원 번호
+                            .content(post.getContent()) // 게시글 내용
                             .roomTitle(post.getRoomTitle()) // 채팅방 제목
                             .region(post.getRegion()) // 지역
                             .isDone(post.isDone())// 모집중
@@ -294,6 +298,7 @@ public class PostService {
                 PostResponseDto.builder()
                         .postId(post.getId()) // 게시글 번호
                         .memberId(post.getMember().getId()) // 회원 번호
+                        .content(post.getContent()) // 게시글 내용
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
@@ -381,6 +386,7 @@ public class PostService {
                 PostResponseDto.builder()
                         .postId(post.getId()) //게시글 아이디
                         .memberId(post.getMember().getId()) // 게시글 ID
+                        .content(post.getContent()) // 게시글 내용
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
@@ -450,6 +456,7 @@ public class PostService {
                 PostDetailResponseDto.builder()
                         .postId(post.getId()) //게시글 아이디
                         .memberId(post.getMember().getId()) // 게시글 ID
+                        .content(post.getContent()) // 게시글 내용
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
