@@ -1,9 +1,15 @@
 package com.hanghae.baedalfriend.service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
+import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.domain.Check;
+
 import com.hanghae.baedalfriend.domain.Member;
+
 import com.hanghae.baedalfriend.dto.requestdto.TokenDto;
 import com.hanghae.baedalfriend.dto.responsedto.KakaoMemberInfoDto;
 import com.hanghae.baedalfriend.dto.responsedto.MemberResponseDto;
@@ -18,12 +24,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
@@ -31,12 +39,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class KakaoMemberService {
+
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
     private final TokenProvider tokenProvider;
+
     private final Check check;
+    private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
 
     @Value("${myKaKaoRestAplKey}")
     private String myKaKaoRestAplKey;
@@ -57,6 +68,7 @@ public class KakaoMemberService {
         log.info("kakaoMember : {} " ,kakaoMember);
         System.out.println(" ===================kakaoMember================================================");
 
+
         if (kakaoMember == null) {
             // 회원가입
             String password = UUID.randomUUID().toString();
@@ -64,12 +76,38 @@ public class KakaoMemberService {
             String profileURL = kakaoMemberInfo.getProfileURL();
             Long kakaoId= kakaoMemberInfo.getId();
             kakaoMember = new Member(encodedPassword, profileURL, nickname, kakaoId);
+
+
+
+
             memberRepository.save(kakaoMember);
+
         }
+
         // 4. 강제 로그인 처리
+//        System.out.println("=============================강제 로그인 처리============================================");
         Member member = check.getMemberById(String.valueOf(kakaoMember.getId()));
         TokenDto tokenDto = tokenProvider.generateTokenDto(kakaoMember);
         tokenDto.tokenToHeaders(response);
+
+
+
+        //해당 유저가 진행중인 게시글에 참여하고 있는지 확인하는 로직
+        long roomId=0;
+        List<ChatRoomMember> chatRoomMemberList=chatRoomMemberJpaRepository.findByMember(member);
+        if(chatRoomMemberJpaRepository.findByMember(member).size()==0){
+
+        }else{
+            for (int i = 0; i < chatRoomMemberList.size() ; i++) {
+                if((!chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed())){
+                    roomId=chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getId();
+                    break;
+
+                }
+            }
+
+        }
+
 
         return ResponseDto.success(
                 MemberResponseDto.builder()
@@ -79,6 +117,7 @@ public class KakaoMemberService {
                         .createdAt(kakaoMember.getCreatedAt())
                         .modifiedAt(kakaoMember.getModifiedAt())
                         .nickname(kakaoMember.getNickname()) // 카카오 닉네임 추가 2022- 12 -02
+                        .onGoing(roomId)
                         .role(kakaoMember.getRole())
                         .build()
         );
