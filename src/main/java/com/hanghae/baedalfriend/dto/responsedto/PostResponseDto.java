@@ -23,6 +23,7 @@ public class PostResponseDto {
     private boolean isDone; // 모집중
     private String category; // 카테고리
     private String targetAddress; // 식당 주소
+    private String content; // 내용
     private String targetName; // 식당이름
     private Long targetAmount; // 목표금액
     private String deliveryTime; // 배달시간
