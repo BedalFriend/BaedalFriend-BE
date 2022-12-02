@@ -21,6 +21,7 @@ import com.hanghae.baedalfriend.repository.PostRepository;
 import com.hanghae.baedalfriend.repository.RefreshTokenRepository;
 import com.hanghae.baedalfriend.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MypageService {
@@ -57,17 +59,17 @@ public class MypageService {
         String nicknamePattern = "^[0-9a-zA-Zㄱ-ㅎ가-힣]*${2,40}";
 
         //닉네임
-        if(nickname.equals(member.getNickname())) {
+        if (nickname.equals(member.getNickname())) {
             nickname = member.getNickname();
         } else {
-            if(nickname.equals("")){
-                return ResponseDto.fail("BAD_REQUEST","닉네임을 입력해주세요.");
-            } else if(memberRepository.findByNickname(nickname).isPresent()){
-                return ResponseDto.fail("BAD_REQUEST","중복된 닉네임이 존재합니다.");
-            } else if( 2 > nickname.length() || 40 < nickname.length()) {
-                return ResponseDto.fail("BAD_REQUEST","닉네임은 2자 이상 40자 이하이어야 합니다.");
-            } else if(!Pattern.matches(nicknamePattern, nickname)) {
-                return ResponseDto.fail("BAD_REQUEST","닉네임은 영문, 한글, 숫자만 가능합니다.");
+            if (nickname.equals("")) {
+                return ResponseDto.fail("BAD_REQUEST", "닉네임을 입력해주세요.");
+            } else if (memberRepository.findByNickname(nickname).isPresent()) {
+                return ResponseDto.fail("BAD_REQUEST", "중복된 닉네임이 존재합니다.");
+            } else if (2 > nickname.length() || 40 < nickname.length()) {
+                return ResponseDto.fail("BAD_REQUEST", "닉네임은 2자 이상 40자 이하이어야 합니다.");
+            } else if (!Pattern.matches(nicknamePattern, nickname)) {
+                return ResponseDto.fail("BAD_REQUEST", "닉네임은 영문, 한글, 숫자만 가능합니다.");
             }
         }
 
@@ -86,7 +88,7 @@ public class MypageService {
         Member member = findMember(memberId, userDetails);
 
         if (multipartFile != null) {
-            if(member.getProfileURL() != null) {
+            if (member.getProfileURL() != null) {
                 s3Service.deleteImage(member.getProfileURL());
                 String profileURL = s3Service.upload(multipartFile);
                 member.setProfileURL(profileURL);
@@ -116,6 +118,7 @@ public class MypageService {
         return ResponseDto.success(mypageResponseDto);
     }
 
+    // 이미지 변경
     public ResponseDto<?> editMember(Long memberId, MypageRequestDto requestDto, MultipartFile multipartFile,
                                      UserDetailsImpl userDetails) throws IOException {
         Member member = findMember(memberId, userDetails);
@@ -144,27 +147,39 @@ public class MypageService {
         String profileURL = member.getProfileURL();
 
         if (member1 != null) {
-            if(profileURL == null) { //기본이미지
-                if(!multipartFile.isEmpty()) {
+
+            if (profileURL == null) { //기본이미지
+
+                if (!multipartFile.isEmpty()) { // 입력한 이미지가 없는 상태에서
                     profileURL = s3Service.upload(multipartFile);
-                }else {
+                    member.setProfileURL(profileURL); // 이거!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    log.info("1. profileURL + {} + ================================1==================================== ", profileURL);
+                } else {
                     profileURL = null;
                 }
             } else {
-                if(multipartFile.isEmpty()) {
-                    s3Service.deleteImage(profileURL);
-                    profileURL = null;
-                } else {
+
+                if (multipartFile.isEmpty()) { // 입력한 이미지가 있는 상태에서
+
                     s3Service.deleteImage(profileURL);
                     profileURL = s3Service.upload(multipartFile);
+                    member.setProfileURL(profileURL);
+                    log.info("2. profileURL + {} + ===================================2================================= ", profileURL);
+
+                } else {
+                    s3Service.deleteImage(profileURL);
+
+                    profileURL = s3Service.upload(multipartFile);
+                    member.setProfileURL(profileURL); // 이거!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    log.info("3. profileURL + {} + ====================================3================================ ", profileURL);
                 }
             }
         }
-            member.update(requestDto.getNickname(), profileURL);
-            memberRepository.save(member);
+        member.update(requestDto.getNickname(), profileURL);
+        memberRepository.save(member);
 
-            MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
-            return ResponseDto.success(mypageResponseDto);
+        MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
+        return ResponseDto.success(mypageResponseDto);
     }
 
     //유저 정보 조회
@@ -205,20 +220,20 @@ public class MypageService {
         ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
         List<ChatMessage> chatMessages = chatMessageJpaRepository.findAllByMemberId(memberId);
 
-        if(post == null) { //채팅 참가자
+        if (post == null) { //채팅 참가자
             MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
                     .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId).get(0).getChatRoom().getMemberList())
                     .chatMessages(chatMessages)
                     .build();
             return ResponseDto.success(mypageChatResponseDto);
-        } else if(chatRoom != null){ //방장
+        } else if (chatRoom != null) { //방장
             MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
                     .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId).get(0).getChatRoom().getMemberList())
                     .chatMessages(chatMessages)
                     .build();
             return ResponseDto.success(mypageChatResponseDto);
         } else {
-            return ResponseDto.fail("CHATROOM_NOT_FOUND","채팅방이 존재하지 않습니다");
+            return ResponseDto.fail("CHATROOM_NOT_FOUND", "채팅방이 존재하지 않습니다");
         }
     }
 
@@ -228,7 +243,7 @@ public class MypageService {
         Member member = userDetails.getMember();
 
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
-            return ResponseDto.fail("BAD_REQUEST","비밀번호를 다시 확인해 주세요.");
+            return ResponseDto.fail("BAD_REQUEST", "비밀번호를 다시 확인해 주세요.");
         }
         String password = passwordEncoder.encode(requestDto.getNewPassword());
 
@@ -255,7 +270,7 @@ public class MypageService {
         postRepository.deleteByMemberId(memberId);
         eventRepository.deleteByMemberId(memberId);
 
-        if(member.getProfileURL() != null){
+        if (member.getProfileURL() != null) {
             String fileName = member.getProfileURL();
             s3Service.deleteImage(fileName);
         }
@@ -264,7 +279,7 @@ public class MypageService {
             memberRepository.deleteById(memberId);
             SecurityContextHolder.clearContext();
         } else {
-            return ResponseDto.fail("PASSWORD_NOT_MATCH","패스워드가 일치하지 않습니다");
+            return ResponseDto.fail("PASSWORD_NOT_MATCH", "패스워드가 일치하지 않습니다");
         }
         return ResponseDto.success("회원 탈퇴 완료");
     }
@@ -275,7 +290,7 @@ public class MypageService {
                 () -> new IllegalArgumentException("해당 유저 정보를 찾을 수 없습니다.")
         );
         //memberId와 로그인한 사용자Id가 다를 때
-        if(!member.getId().equals(userDetails.getMember().getId())) {
+        if (!member.getId().equals(userDetails.getMember().getId())) {
             throw new IllegalArgumentException("해당 유저 정보를 찾을 수 없습니다.");
         }
         return member;

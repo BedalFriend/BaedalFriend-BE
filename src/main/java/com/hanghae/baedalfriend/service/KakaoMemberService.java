@@ -33,6 +33,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -98,7 +99,7 @@ public class KakaoMemberService {
         if(chatRoomMemberJpaRepository.findByMember(member).size()==0){
 
         }else{
-            for (int i = 0; i < chatRoomMemberList.size() ; i++) {
+            for (int i = 0; i < ((List<?>) chatRoomMemberList).size() ; i++) {
                 if((!chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed())){
                     roomId=chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getId();
                     break;

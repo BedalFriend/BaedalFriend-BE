@@ -42,7 +42,8 @@ public class MypageController {
         return mypageService.deleteProfileImage(memberId, userDetails);
     }
 
-    @PatchMapping("/mypages/edit/{memberId}")
+    // 이미지 변경 2022 -12- 02
+    @PatchMapping("/mypages/edit/{memberId}") // 마지막 최종 적용 버튼 누를 때 이걸 타게 하면 ? 끝
     public ResponseDto<?> editMember(@PathVariable Long memberId, @RequestPart(value = "nickname") MypageRequestDto requestDto,
                                      @RequestPart(value = "imgUrl", required = false) MultipartFile multipartFile,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
