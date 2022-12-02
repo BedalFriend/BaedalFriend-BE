@@ -99,7 +99,7 @@ public class KakaoMemberService {
         if(chatRoomMemberJpaRepository.findByMember(member).size()==0){
 
         }else{
-            for (int i = 0; i < chatRoomMemberList.size() ; i++) {
+            for (int i = 0; i < ((List<?>) chatRoomMemberList).size() ; i++) {
                 if((!chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed())){
                     roomId=chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getId();
                     break;
