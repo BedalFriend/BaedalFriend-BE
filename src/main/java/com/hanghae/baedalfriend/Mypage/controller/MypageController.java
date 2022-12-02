@@ -49,6 +49,12 @@ public class MypageController {
         return mypageService.editMember(memberId, requestDto, multipartFile, userDetails);
     }
 
+    @PatchMapping("/mypages/address/{memberId}")
+    public ResponseDto<?> updateAddress(@PathVariable Long memberId, @RequestBody MypageRequestDto requestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return mypageService.updateAddress(memberId, requestDto, userDetails);
+    }
+
     //유저 정보 조회 (nickname. profileURL, email. address)
     @GetMapping("/mypages/info/{memberId}")
     public ResponseDto<?> getMemberInfo(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -66,6 +72,8 @@ public class MypageController {
     public ResponseDto<?> getMyChat(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return mypageService.getMyChat(memberId, userDetails);
     }
+
+
 
     // 비밀번호 변경
     @PutMapping("/updatePassword")

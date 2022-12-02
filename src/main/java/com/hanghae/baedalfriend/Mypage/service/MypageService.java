@@ -160,11 +160,23 @@ public class MypageService {
                 }
             }
         }
-            member.update(requestDto.getNickname(), profileURL);
-            memberRepository.save(member);
+        member.update(requestDto.getNickname(), profileURL);
+        memberRepository.save(member);
 
-            MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
-            return ResponseDto.success(mypageResponseDto);
+        MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
+        return ResponseDto.success(mypageResponseDto);
+    }
+
+    @Transactional
+    public ResponseDto<?> updateAddress(Long memberId, MypageRequestDto requestDto, UserDetailsImpl userDetails) {
+        Member member = findMember(memberId, userDetails);
+
+        member.setAddress(requestDto.getAddress());
+
+        memberRepository.save(member);
+
+        MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
+        return ResponseDto.success(mypageResponseDto);
     }
 
     //유저 정보 조회
