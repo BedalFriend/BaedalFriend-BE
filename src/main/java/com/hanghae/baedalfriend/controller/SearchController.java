@@ -24,11 +24,6 @@ public class SearchController {
                                     @RequestParam("isAsc") boolean isAsc) {
         {
             page = page - 1;
-
-            if (keyword == null) {
-                return ResponseDto.fail("CODE_FAIL", "요청에 실패 했습니다."); // 2022 - 12 -02 수정 두산
-            }
-
             return searchService.getSearch(keyword, page, size, sortBy, isAsc);
         }
     }
