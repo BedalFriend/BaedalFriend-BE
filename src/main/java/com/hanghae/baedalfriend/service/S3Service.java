@@ -19,8 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -107,16 +105,20 @@ public class S3Service {
     }
 
     public ResponseDto<?> createImage(MultipartFile multipartFile) throws IOException {
-        String fileUrl = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename(); //저장되는 파일의 이름이 중복되지 않기 위해 랜덤값 + 파일이름
+        String fileUrl = UUID.randomUUID().toString().concat(getFileExtension(multipartFile.getOriginalFilename()));
 
         ObjectMetadata objMeta = new ObjectMetadata(); //ContentLength로 S3에 알려주기위해 사용
         objMeta.setContentLength(multipartFile.getInputStream().available());
 
-        amazonS3.putObject(bucket, fileUrl, multipartFile.getInputStream(), objMeta); //S3의 API메서드인 putObject를 이용해 파일 Stream을 열어 S3에 파일 업로드
+        //S3의 API메서드인 putObject를 이용해 파일 Stream을 열어 S3에 파일 업로드
+        amazonS3.putObject(bucket, fileUrl, multipartFile.getInputStream(), objMeta);
 
         MypageImgResponseDto mypageImgResponseDto = MypageImgResponseDto.builder()
                 .profileURL(amazonS3.getUrl(bucket, fileUrl).toString())
                 .build();
+
+        System.out.println("fileName : " + fileUrl);
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileUrl));
 
         return ResponseDto.success(mypageImgResponseDto);
     }
