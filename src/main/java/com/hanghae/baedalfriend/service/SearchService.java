@@ -1,26 +1,21 @@
 package com.hanghae.baedalfriend.service;
-
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.dto.responsedto.PostResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
-import com.hanghae.baedalfriend.exception.MemberException.CustomExceptionHandler;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
 import com.hanghae.baedalfriend.repository.PostRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 public class SearchService {
     private ChatRoomService chatRoomService;
@@ -30,7 +25,6 @@ public class SearchService {
     private PostRepository postRepository;
     private TokenProvider tokenProvider;
     private PostService postService;
-
     public SearchService(ChatRoomService chatRoomService, ChatRoomJpaRepository chatRoomRepository, ChatRoomMemberJpaRepository chatRoomMemberJpaRepository, ChatRoomJpaRepository chatRoomJpaRepository, PostRepository postRepository, TokenProvider tokenProvider, PostService postService) {
         this.chatRoomService = chatRoomService;
         this.chatRoomRepository = chatRoomRepository;
@@ -46,10 +40,8 @@ public class SearchService {
     public ResponseDto<?> getCategorySearch(String keyword, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
-
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Post> posts = postRepository.findByCategory(keyword, sortBy, pageable);
-
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
         for (Post post : posts) {
@@ -90,13 +82,9 @@ public class SearchService {
     public ResponseDto<?> getSearch(String keyword, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
-
         Pageable pageable = PageRequest.of(page, size, sort);
-
         Page<Post> posts = postRepository.findByRoomTitle(keyword, sortBy, pageable);
-
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-
         LocalDateTime now = LocalDateTime.now();
         for (Post post : posts) {
             if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
@@ -105,15 +93,14 @@ public class SearchService {
             }
 
             if (keyword == null) {
-                try { // keyword가  null 값이면 catch로 넘어감
+                try {
                     Exception e = new Exception("예외처리");
                     throw e;
 
-                } catch (Exception e) { // 여기는 null 값이면 타는곳
+                } catch (Exception e) {
                     e.printStackTrace();
 
-
-                } finally { // 여기는 무조건 타는곳
+                } finally {
                     postResponseDtoList.add(
                             PostResponseDto.builder()
                                     .postId(post.getId())
@@ -149,13 +136,9 @@ public class SearchService {
     public ResponseDto<?> getRegionSearch(String keyword, String region, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
-
         Pageable pageable = PageRequest.of(page, size, sort);
-
         Page<Post> posts = postRepository.findByRoomTitleAndRegion(keyword, region, sortBy, pageable);
-
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-
         LocalDateTime now = LocalDateTime.now();
         for (Post post : posts) {
             if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
@@ -164,14 +147,14 @@ public class SearchService {
             }
 
             if (keyword == null) {
-                try { // keyword가  null 값이면 catch로 넘어감
+                try {
                     Exception e = new Exception("예외처리");
                     throw e;
 
-                } catch (Exception e) { // 여기는 null 값이면 타는곳
+                } catch (Exception e) {
                     e.printStackTrace();
 
-                } finally { // 여기는 무조건 타는곳
+                } finally {
                     postResponseDtoList.add(
                             PostResponseDto.builder()
                                     .postId(post.getId())
@@ -218,7 +201,6 @@ public class SearchService {
                 post.isDone(false);
                 postRepository.save(post);
             }
-
             postResponseDtoList.add(
                     PostResponseDto.builder()
                             .postId(post.getId())
@@ -244,7 +226,6 @@ public class SearchService {
                             .build()
             );
         }
-
         return ResponseDto.success(postResponseDtoList);
     }
 
@@ -262,7 +243,6 @@ public class SearchService {
                 post.isDone(false);
                 postRepository.save(post);
             }
-
             postResponseDtoList.add(
                     PostResponseDto.builder()
                             .postId(post.getId())
@@ -288,7 +268,6 @@ public class SearchService {
                             .build()
             );
         }
-
         return ResponseDto.success(postResponseDtoList);
     }
 
