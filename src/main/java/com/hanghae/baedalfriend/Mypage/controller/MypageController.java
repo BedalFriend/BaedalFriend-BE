@@ -5,7 +5,9 @@ import com.hanghae.baedalfriend.Mypage.dto.request.PasswordDeleteRequestDto;
 import com.hanghae.baedalfriend.Mypage.service.MypageService;
 import com.hanghae.baedalfriend.domain.UserDetailsImpl;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
+import com.hanghae.baedalfriend.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +28,7 @@ public class MypageController {
     }
 
     // 이미지 변경 + 닉네임변경
-    @PutMapping("/mypages/edit/{memberId}")
+    @PatchMapping("/mypages/edit/{memberId}")
     public ResponseDto<?> editMember(@PathVariable Long memberId, @RequestPart(value = "nickname", required = false) MypageRequestDto requestDto,
                                      @RequestPart(value = "imgUrl", required = false) MultipartFile multipartFile,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
