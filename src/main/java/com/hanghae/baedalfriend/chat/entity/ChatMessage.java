@@ -17,7 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class ChatMessage extends Timestamped  implements Serializable  {
+public class ChatMessage implements Serializable  {
 
 
     //메세지 타입: 입장, 채팅, 퇴장

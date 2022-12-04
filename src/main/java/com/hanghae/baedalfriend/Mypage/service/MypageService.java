@@ -60,44 +60,50 @@ public class MypageService {
         return ResponseDto.success(mypageResponseDto);
     }
     // 이미지 + 닉네임 변경
+    @Transactional
     public ResponseDto<?> editMember(Long memberId, MypageRequestDto requestDto, MultipartFile multipartFile,
                                      UserDetailsImpl userDetails) throws IOException {
         Member member = findMember(memberId, userDetails);
-        //닉네임
 
+        //닉네임
         if (requestDto != null) {
             String nickname = requestDto.getNickname();
-            String nicknamePattern = "^[0-9a-zA-Zㄱ-ㅎ가-힣]*${2,40}";
-            if (nickname.equals("")) {
-                return ResponseDto.fail("BAD_REQUEST", "닉네임을 입력해주세요.");
-            } else if (memberRepository.findByNickname(nickname).isPresent()) {
-                return ResponseDto.fail("BAD_REQUEST", "중복된 닉네임이 존재합니다.");
-            } else if (2 > nickname.length() || 40 < nickname.length()) {
-                return ResponseDto.fail("BAD_REQUEST", "닉네임은 2자 이상 40자 이하이어야 합니다.");
-            } else if (!Pattern.matches(nicknamePattern, nickname)) {
-                return ResponseDto.fail("BAD_REQUEST", "닉네임은 영문, 한글, 숫자만 가능합니다.");
+            if (nickname == null) {
+                member.setNickname(member.getNickname());
+            } else {
+                String nicknamePattern = "^[0-9a-zA-Zㄱ-ㅎ가-힣]*${2,40}";
+                if (nickname.equals("")) {
+                    return ResponseDto.fail("BAD_REQUEST", "닉네임을 입력해주세요.");
+                } else if (memberRepository.findByNickname(nickname).isPresent()) {
+                    return ResponseDto.fail("BAD_REQUEST", "중복된 닉네임이 존재합니다.");
+                } else if (2 > nickname.length() || 40 < nickname.length()) {
+                    return ResponseDto.fail("BAD_REQUEST", "닉네임은 2자 이상 40자 이하이어야 합니다.");
+                } else if (!Pattern.matches(nicknamePattern, nickname)) {
+                    return ResponseDto.fail("BAD_REQUEST", "닉네임은 영문, 한글, 숫자만 가능합니다.");
+                }
+                member.setNickname(nickname);
             }
-            member.setNickname(nickname);
         }
-        member.setNickname(member.getNickname());
 
         //프로필 이미지
         String profileURL = member.getProfileURL();
-        if (!multipartFile.isEmpty()) { // 입력한 이미지가 있을 때
-            if(profileURL == null) { //등록된 이미지는 없을 때
+        if (profileURL == null) { // 등록된 이미지가 없을 때 (기본이미지)
+            if (multipartFile != null) { // 입력한 이미지 파일이 있을 때
                 profileURL = s3Service.upload(multipartFile);
                 member.setProfileURL(profileURL);
-            } else { //등록된 이미지는 있을 때
-                s3Service.deleteImage(profileURL);
-                profileURL = s3Service.upload(multipartFile);
-                member.setProfileURL(profileURL);
+            } else { //입력한 이미지 파일이 없을 때
+                member.setProfileURL(null);
             }
-        } else { //입력한 이미지가 없을 때
-            if (profileURL != null) { //등록된 이미지도 있을 때
+        } else { // 등록된 이미지가 있을 때 (url)
+            if (multipartFile != null) { // 입력한 이미지 파일이 있을 때
                 s3Service.deleteImage(profileURL);
-                profileURL = null;
+                profileURL = s3Service.upload(multipartFile);
+                member.setProfileURL(profileURL);
+            } else { // 입력한 이미지 파일이 없을 때
+                member.setProfileURL(member.getProfileURL());
             }
         }
+
         member.update(member.getNickname(), profileURL);
         memberRepository.save(member);
 
@@ -113,7 +119,7 @@ public class MypageService {
         if(requestDto != null) { //주소가 들어올 때
             String address = requestDto.getAddress();
             if(address == null) {
-                ResponseDto.fail("REGISTER_YOUR_ADDRESS","주소를 등록해주세요");
+                member.setAddress(member.getAddress());
             } else {
                 member.setAddress(requestDto.getAddress());
             }
