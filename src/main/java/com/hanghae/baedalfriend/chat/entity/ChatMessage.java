@@ -46,6 +46,8 @@ public class ChatMessage extends Timestamped  implements Serializable  {
     @ManyToOne
     private Member member;
 
+    private String createdAt;
+
 
 
 
