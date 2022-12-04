@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class MypageRequestDto {
 
     private String nickname;
+    private String address;
     private String profileURL;
 }

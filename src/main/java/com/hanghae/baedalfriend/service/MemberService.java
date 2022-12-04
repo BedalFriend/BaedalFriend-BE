@@ -238,10 +238,8 @@ public class MemberService {
                 if((!chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed())){
                     roomId=chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getId();
                     break;
-
                 }
             }
-
         }
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
