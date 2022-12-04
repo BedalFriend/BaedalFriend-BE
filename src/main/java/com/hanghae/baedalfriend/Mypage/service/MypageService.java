@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -71,16 +70,6 @@ public class MypageService {
             if (nickname == null) {
                 member.setNickname(member.getNickname());
             } else {
-                String nicknamePattern = "^[0-9a-zA-Zㄱ-ㅎ가-힣]*${2,40}";
-                if (nickname.equals("")) {
-                    return ResponseDto.fail("BAD_REQUEST", "닉네임을 입력해주세요.");
-                } else if (memberRepository.findByNickname(nickname).isPresent()) {
-                    return ResponseDto.fail("BAD_REQUEST", "중복된 닉네임이 존재합니다.");
-                } else if (2 > nickname.length() || 40 < nickname.length()) {
-                    return ResponseDto.fail("BAD_REQUEST", "닉네임은 2자 이상 40자 이하이어야 합니다.");
-                } else if (!Pattern.matches(nicknamePattern, nickname)) {
-                    return ResponseDto.fail("BAD_REQUEST", "닉네임은 영문, 한글, 숫자만 가능합니다.");
-                }
                 member.setNickname(nickname);
             }
         }
