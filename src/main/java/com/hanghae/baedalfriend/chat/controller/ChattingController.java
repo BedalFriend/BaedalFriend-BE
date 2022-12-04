@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -27,12 +30,10 @@ public class ChattingController {
     @MessageMapping("/chat/message")
     public void message(ChatMessageRequestDto messageRequestDto) {
         // 메시지 생성 시간 정보
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-DD");
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-        String dateOutput = simpleDateFormat.format(date);
-        messageRequestDto.setCreatedAt(dateOutput);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH-mm");
+        String formatedNow = now.format(formatter);
+        messageRequestDto.setCreatedAt(formatedNow);
 
         ChatMessage chatMessage = new ChatMessage(messageRequestDto);
 
