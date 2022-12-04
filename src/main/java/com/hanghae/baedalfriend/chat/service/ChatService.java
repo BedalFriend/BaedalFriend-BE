@@ -55,6 +55,7 @@ public class ChatService {
         message.setRoomId(chatMessage.getRoomId());
         message.setSender(chatMessage.getSender());
         message.setMember(member);
+        message.setCreatedAt(chatMessage.getCreatedAt());
 
 
         chatMessageRepository.save(message);
