@@ -34,13 +34,6 @@ public class ChatService {
 
     // 메시지 전송
     public void sendChatMessage(ChatMessage chatMessage) {
-
-        if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
-            log.info("Message Type is ENTER");
-            chatMessage.setMessage("입장");
-        } else if (ChatMessage.MessageType.QUIT.equals(chatMessage.getType())) {
-            chatMessage.setMessage("퇴장");
-        }
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
     }
 
