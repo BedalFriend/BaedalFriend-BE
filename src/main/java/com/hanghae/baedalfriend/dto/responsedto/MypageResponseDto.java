@@ -1,4 +1,4 @@
-package com.hanghae.baedalfriend.Mypage.dto.response;
+package com.hanghae.baedalfriend.dto.responsedto;
 
 import com.hanghae.baedalfriend.domain.Member;
 import lombok.AllArgsConstructor;
