@@ -81,6 +81,16 @@ public class ChatRoomService {
 
         Member member = validateMember(request);
 
+        //해당 유저가 진행중인 게시글에 참여하고 있는지 확인하는 로직
+        List<ChatRoomMember> chatRoomMemberList=chatRoomMemberJpaRepository.findByMember(member);
+            for (int i = 0; i < chatRoomMemberList.size() ; i++) {
+                if((chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed())){
+                    return ResponseDto.fail("No_Admittance", "중복입장 불가능");
+                }
+            }
+
+
+
 
         if (null == member) {
             return ResponseDto.fail("MEMBER_NOT_FOUND", "사용자를 찾을 수 없습니다.");
