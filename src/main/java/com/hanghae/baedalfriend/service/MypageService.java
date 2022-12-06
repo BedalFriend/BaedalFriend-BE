@@ -185,9 +185,7 @@ public class MypageService {
             String fileName = member.getProfileURL();
             s3Service.deleteImage(fileName);
         }
-
         memberRepository.deleteById(memberId);
-        SecurityContextHolder.clearContext();
 
         return ResponseDto.success("회원 탈퇴 완료");
     }

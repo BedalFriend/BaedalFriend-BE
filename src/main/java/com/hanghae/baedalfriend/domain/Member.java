@@ -18,8 +18,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Where(clause = "is_deleted = false")
-@SQLDelete(sql = "UPDATE member SET is_deleted = true where id = ?")
 public class Member extends Timestamped implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,10 +41,6 @@ public class Member extends Timestamped implements Serializable{
 
     @Enumerated(value = EnumType.STRING)
     private Authority role;
-
-    @JsonIgnore
-    @Builder.Default
-    private boolean isDeleted = Boolean.FALSE;
 
     public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId) {
         this.nickname = nickname;
