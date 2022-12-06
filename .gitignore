@@ -1,7 +1,7 @@
 HELP.md
 .gradle
 build/
-!gradle/wrapper/gradle-wrapper.jar
+
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -192,7 +192,7 @@ replay_pid*
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
-
+#test
 ### macOS ###
 # General
 .DS_Store
