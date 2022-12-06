@@ -31,7 +31,7 @@ public class ChattingController {
     public void message(ChatMessageRequestDto messageRequestDto) {
         // 메시지 생성 시간 정보
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH-mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formatedNow = now.format(formatter);
         messageRequestDto.setCreatedAt(formatedNow);
 

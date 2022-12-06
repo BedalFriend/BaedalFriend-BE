@@ -57,6 +57,7 @@ public class ChatMessage implements Serializable  {
         this.message = chatMessageRequestDto.getMessage();
         this.roomId = chatMessageRequestDto.getRoomId();
         this.sender = chatMessageRequestDto.getSender();
+        this.createdAt =chatMessageRequestDto.getCreatedAt();
 
 
     }
