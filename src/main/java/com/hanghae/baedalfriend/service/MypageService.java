@@ -1,6 +1,5 @@
 package com.hanghae.baedalfriend.service;
 
-import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
@@ -8,8 +7,8 @@ import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.domain.UserDetailsImpl;
 import com.hanghae.baedalfriend.dto.requestdto.MypageRequestDto;
-import com.hanghae.baedalfriend.dto.responsedto.MypageHistoryResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.MypageResponseDto;
+import com.hanghae.baedalfriend.dto.responsedto.PostResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.repository.EventRepository;
 import com.hanghae.baedalfriend.repository.MemberRepository;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -128,42 +126,39 @@ public class MypageService {
     public ResponseDto<?> getMyPost(Long memberId, UserDetailsImpl userDetails) {
         findMember(memberId, userDetails);
 
-        Post Post = postRepository.findByMemberId(memberId);
-        if (null == Post) {
-            return ResponseDto.fail("POST_NOT_FOUND",
-                    "게시글이 존재하지 않습니다.");
-        }
-
-        List<Post> postList = postRepository.findByMemberIdOrderByIdDesc(memberId);
-        return ResponseDto.success(postList);
-    }
-
-    //내가 들어간 채팅방 (참여내역)
-    @Transactional
-    public ResponseDto<?> getHistory(Long memberId, UserDetailsImpl userDetails) {
-        findMember(memberId, userDetails);
-
         Post post = postRepository.findByMemberId(memberId);
-        ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
-
-        if (post == null && chatRoom != null) { //참여자
-            MypageHistoryResponseDto mypageHistoryResponseDto = MypageHistoryResponseDto.builder()
-                    .chatRoom(chatRoomMemberJpaRepository.findAllByMemberId(memberId))
-                    .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()))
-                    .build();
-            return ResponseDto.success(mypageHistoryResponseDto);
-        } else if (post != null && chatRoom != null) { //방장
-                MypageHistoryResponseDto mypageHistoryResponseDto = MypageHistoryResponseDto.builder()
-                        .chatRoom(chatRoomMemberJpaRepository.findAllByMemberId(memberId))
-                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()))
-                        .build();
-                System.out.println("2. 방장이라면 여기를 타면...????????");
-                return ResponseDto.success(mypageHistoryResponseDto);
-        } else{
-            return ResponseDto.fail("NOT_FOUND", "기록이 존재하지 않습니다");
+        if (null == post) {
+            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 입니다.");
         }
-
+        return ResponseDto.success(
+                PostResponseDto.builder()
+                        .postId(post.getId()) //게시글 아이디
+                        .memberId(post.getMember().getId()) // 게시글 ID
+                        .content(post.getContent()) // 게시글 내용
+                        .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                        .region(post.getRegion()) // 지역
+                        .isDone(post.isDone())// 모집중
+                        .category(post.getCategory()) //카테고리
+                        .maxCapacity(post.getMaxCapacity()) // 최대인원
+                        .targetAddress(post.getTargetAddress()) // 식당주소
+                        .targetName(post.getTargetName())// 식당이름
+                        .targetAmount(post.getTargetAmount())// 목표금액
+                        .deliveryTime(post.getDeliveryTime()) // 배달시간
+                        .deliveryFee(post.getDeliveryFee()) // 배달요금
+                        .participantNumber(post.getParticipantNumber()) // 참여자수
+                        .gatherName(post.getGatherName()) // 모이는 장소 이름
+                        .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
+                        .hits(post.getHits()) // 조회수
+                        .createdAt(post.getCreatedAt()) // 생성일
+                        .modifiedAt(post.getModifiedAt()) // 수정일
+                        .nickname(post.getMember().getNickname()) // 작성자 닉네임
+                        .profileURL(post.getMember().getProfileURL()) // 작성자 프로필 사진
+                        .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                        .build()
+        );
     }
+
     //회원 탈퇴
     @Transactional
     public ResponseDto<?> withdrawMember(Long memberId, UserDetailsImpl userDetails) {

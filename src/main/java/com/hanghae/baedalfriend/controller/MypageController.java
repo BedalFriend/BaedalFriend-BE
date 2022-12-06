@@ -46,12 +46,6 @@ public class MypageController {
         return mypageService.getMyPost(memberId, userDetails);
     }
 
-    // history
-    @GetMapping("/mypages/history/{memberId}")
-    public ResponseDto<?> getHistory(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return mypageService.getHistory(memberId, userDetails);
-    }
-
     // 회원 탈퇴
     @DeleteMapping("/withdrawal/{memberId}")
     public ResponseDto<?> withdrawal(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
