@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -46,62 +46,46 @@ public class MypageService {
     private final S3Service s3Service;
     private final PasswordEncoder passwordEncoder;
 
-    // 프로필 이미지 삭제
-    @Transactional
-    public ResponseDto<?> deleteProfileImage(Long memberId, UserDetailsImpl userDetails) {
-        findMember(memberId, userDetails);
-        Member member = userDetails.getMember();
-        s3Service.deleteImage(member.getProfileURL());
-
-        member.setProfileURL(null);
-        memberRepository.save(member);
-
-        MypageResponseDto mypageResponseDto = new MypageResponseDto(member);
-        return ResponseDto.success(mypageResponseDto);
-    }
-
     // 이미지 + 닉네임 변경
     @Transactional
     public ResponseDto<?> editMember(Long memberId, MypageRequestDto requestDto, MultipartFile multipartFile,
                                      UserDetailsImpl userDetails) throws IOException {
         Member member = findMember(memberId, userDetails);
-
+        String profileURL = member.getProfileURL();
         //닉네임
         if (requestDto != null) {
             String nickname = requestDto.getNickname();
             if (nickname == null) {
                 member.setNickname(member.getNickname());
             } else {
-                String nicknamePattern = "^[0-9a-zA-Zㄱ-ㅎ가-힣]*${2,40}";
-                if (nickname.equals("")) {
-                    return ResponseDto.fail("BAD_REQUEST", "닉네임을 입력해주세요.");
-                } else if (memberRepository.findByNickname(nickname).isPresent()) {
-                    return ResponseDto.fail("BAD_REQUEST", "중복된 닉네임이 존재합니다.");
-                } else if (2 > nickname.length() || 40 < nickname.length()) {
-                    return ResponseDto.fail("BAD_REQUEST", "닉네임은 2자 이상 40자 이하이어야 합니다.");
-                } else if (!Pattern.matches(nicknamePattern, nickname)) {
-                    return ResponseDto.fail("BAD_REQUEST", "닉네임은 영문, 한글, 숫자만 가능합니다.");
-                }
                 member.setNickname(nickname);
             }
         }
 
         //프로필 이미지
-        String profileURL = member.getProfileURL();
         if (profileURL == null) { // 등록된 이미지가 없을 때 (기본이미지)
             if (multipartFile != null) { // 입력한 이미지 파일이 있을 때
                 profileURL = s3Service.upload(multipartFile);
                 member.setProfileURL(profileURL);
-            } else { //입력한 이미지 파일이 없을 때
-                member.setProfileURL(null);
+            }else {
+                member.setProfileURL(profileURL);
             }
-        } else { // 등록된 이미지가 있을 때 (url)
-            if (multipartFile != null) { // 입력한 이미지 파일이 있을 때
+        }else { // 등록된 이미지가 있을 때 (url)
+            if(multipartFile != null){
                 s3Service.deleteImage(profileURL);
                 profileURL = s3Service.upload(multipartFile);
                 member.setProfileURL(profileURL);
-            } else { // 입력한 이미지 파일이 없을 때
-                member.setProfileURL(member.getProfileURL());
+            }else {//null로 들어올 때  1.등록된 이미지 파일이 있으면 이미지를 그대로 보낸다  2. 등록된 이미지가 있을 때 기본이미지로 보낸다\
+                if(requestDto != null) {
+                    String profile = requestDto.getProfileURL();
+                    if(Objects.equals(profile, "BasicProfile")) {
+                        s3Service.deleteImage(profileURL);
+                        profileURL = null;
+                        member.setProfileURL(null);
+                    }
+                } else {
+                        member.setProfileURL(profileURL);
+                }
             }
         }
 
@@ -120,7 +104,7 @@ public class MypageService {
         if(requestDto != null) { //주소가 들어올 때
             String address = requestDto.getAddress();
             if(address == null) {
-                ResponseDto.fail("REGISTER_YOUR_ADDRESS","주소를 등록해주세요");
+                member.setAddress(member.getAddress());
             } else {
                 member.setAddress(requestDto.getAddress());
             }

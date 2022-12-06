@@ -6,14 +6,12 @@ import com.hanghae.baedalfriend.Mypage.service.MypageService;
 import com.hanghae.baedalfriend.domain.UserDetailsImpl;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-@Slf4j
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1")
@@ -21,19 +19,8 @@ public class MypageController {
 
     private final MypageService mypageService;
 
-    //프로필이미지 삭제
-    @DeleteMapping("/mypages/image/{memberId}")
-    public ResponseDto<?> deleteProfileImage(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return mypageService.deleteProfileImage(memberId, userDetails);
-    }
-
-//    @PostMapping(value = "/auth/posts", consumes = { MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE }, produces = "application/json")
-//    public ResponseDto<?> createPosts(@RequestPart(value = "postDto") PostRequestDto requestDto, HttpServletRequest request,
-//                                      @RequestPart(value = "imageUrl", required = false) MultipartFile multipartFile) throws IOException {
-//        return postService.createPost(requestDto, request, multipartFile);
-//    }
     // 이미지 변경 + 닉네임변경
-    @PatchMapping(value = "/mypages/edit/{memberId}")
+    @PatchMapping("/mypages/edit/{memberId}")
     public ResponseDto<?> editMember(@PathVariable Long memberId, @RequestPart(value = "nickname", required = false) MypageRequestDto requestDto,
                                      @RequestPart(value = "imgUrl", required = false) MultipartFile multipartFile,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
