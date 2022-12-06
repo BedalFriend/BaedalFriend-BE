@@ -5,9 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.hanghae.baedalfriend.Mypage.dto.response.MypageImgResponseDto;
 import com.hanghae.baedalfriend.dto.PhotoDto;
-import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -102,24 +100,5 @@ public class S3Service {
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
         System.out.println("삭제완료");
 
-    }
-
-    public ResponseDto<?> createImage(MultipartFile multipartFile) throws IOException {
-        String fileUrl = UUID.randomUUID().toString().concat(getFileExtension(multipartFile.getOriginalFilename()));
-
-        ObjectMetadata objMeta = new ObjectMetadata(); //ContentLength로 S3에 알려주기위해 사용
-        objMeta.setContentLength(multipartFile.getInputStream().available());
-
-        //S3의 API메서드인 putObject를 이용해 파일 Stream을 열어 S3에 파일 업로드
-        amazonS3.putObject(bucket, fileUrl, multipartFile.getInputStream(), objMeta);
-
-        MypageImgResponseDto mypageImgResponseDto = MypageImgResponseDto.builder()
-                .profileURL(amazonS3.getUrl(bucket, fileUrl).toString())
-                .build();
-
-        System.out.println("fileName : " + fileUrl);
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileUrl));
-
-        return ResponseDto.success(mypageImgResponseDto);
     }
 }
