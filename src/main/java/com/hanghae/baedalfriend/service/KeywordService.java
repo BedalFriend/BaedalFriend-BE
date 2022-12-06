@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Component
@@ -77,8 +78,8 @@ public class KeywordService {
         // 회원 유효성 검사
         Member member = validateMember(request);
 
-        //유저가 등록한 최근 검색어
-        List<Keyword> keywordList = keywordRepository.findAllByMemberIdOrderByCreatedAtDesc(member.getId());
+        // 최근 등록순 7개만 조회
+         List<Keyword> keywordList = keywordRepository.findAllByMemberIdOrderByCreatedAtDesc(member.getId()).stream().limit(7).collect(Collectors.toList());
         return ResponseDto.success(keywordList);
     }
 
