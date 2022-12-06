@@ -17,7 +17,6 @@ import com.hanghae.baedalfriend.repository.PostRepository;
 import com.hanghae.baedalfriend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -129,13 +128,13 @@ public class MypageService {
     public ResponseDto<?> getMyPost(Long memberId, UserDetailsImpl userDetails) {
         findMember(memberId, userDetails);
 
-        Post Post = postRepository.findAllByMemberId(memberId);
+        Post Post = postRepository.findByMemberId(memberId);
         if (null == Post) {
             return ResponseDto.fail("POST_NOT_FOUND",
                     "게시글이 존재하지 않습니다.");
         }
 
-        List<Post> postList = postRepository.findAllByMemberIdOrderByIdDesc(memberId);
+        List<Post> postList = postRepository.findByMemberIdOrderByIdDesc(memberId);
         return ResponseDto.success(postList);
     }
 
@@ -144,7 +143,7 @@ public class MypageService {
     public ResponseDto<?> getHistory(Long memberId, UserDetailsImpl userDetails) {
         findMember(memberId, userDetails);
 
-        Post post = postRepository.findAllByMemberId(memberId);
+        Post post = postRepository.findByMemberId(memberId);
         ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
 
         if (post == null && chatRoom != null) { //참여자
@@ -171,7 +170,7 @@ public class MypageService {
         Member member = memberRepository.findById(userDetails.getMember().getId()).orElseThrow(
                 () -> new IllegalArgumentException("등록되지 않은 회원입니다.")
         );
-        Post post = postRepository.findAllByMemberId(memberId);
+        Post post = postRepository.findByMemberId(memberId);
 
         //hard Delete
         refreshTokenRepository.deleteByMemberId(memberId);
