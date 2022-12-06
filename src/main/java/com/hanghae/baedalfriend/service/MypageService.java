@@ -184,7 +184,8 @@ public class MypageService {
         return ResponseDto.success("회원 탈퇴 완료");
     }
 
-    private Member findMember(Long memberId, UserDetailsImpl userDetails) {
+    @Transactional
+    public Member findMember(Long memberId, UserDetailsImpl userDetails) {
         //member 정보 찾기
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new IllegalArgumentException("해당 유저 정보를 찾을 수 없습니다.")
