@@ -1,8 +1,6 @@
 package com.hanghae.baedalfriend.scheduler;
 
 import com.hanghae.baedalfriend.domain.Post;
-import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
-import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
