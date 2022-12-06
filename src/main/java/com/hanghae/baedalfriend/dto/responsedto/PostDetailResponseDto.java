@@ -17,6 +17,7 @@ public class PostDetailResponseDto {
     private Long memberId;
     private String roomTitle; // 채팅방 제목
     private boolean isDone; // 모집중
+    private String content; // 내용
     private String category; // 카테고리
     private String targetAddress; // 식당 주소
     private String targetName; // 식당이름

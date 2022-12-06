@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
+import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.domain.Check;
 
 import com.hanghae.baedalfriend.domain.Member;
@@ -31,6 +33,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -45,6 +48,7 @@ public class KakaoMemberService {
     private final TokenProvider tokenProvider;
 
     private final Check check;
+    private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
 
     @Value("${myKaKaoRestAplKey}")
     private String myKaKaoRestAplKey;
@@ -58,16 +62,11 @@ public class KakaoMemberService {
         KakaoMemberInfoDto kakaoMemberInfo = getKakaoMemberInfo(accessToken);
 
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        String nickname = String.valueOf(kakaoMemberInfo.getId());
+        String nickname = String.valueOf(kakaoMemberInfo.getNickname());
 
         Member kakaoMember = memberRepository.findByKakaoId(kakaoMemberInfo.getId())
                 .orElse(null);
-
-
-
-
-
-
+        log.info("kakaoMember : {} " ,kakaoMember);
         System.out.println(" ===================kakaoMember================================================");
 
 
@@ -92,6 +91,25 @@ public class KakaoMemberService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(kakaoMember);
         tokenDto.tokenToHeaders(response);
 
+
+
+        //해당 유저가 진행중인 게시글에 참여하고 있는지 확인하는 로직
+        long roomId=0;
+        List<ChatRoomMember> chatRoomMemberList=chatRoomMemberJpaRepository.findByMember(member);
+        if(chatRoomMemberJpaRepository.findByMember(member).size()==0){
+
+        }else{
+            for (int i = 0; i < ((List<?>) chatRoomMemberList).size() ; i++) {
+                if((!chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed())){
+                    roomId=chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getId();
+                    break;
+
+                }
+            }
+
+        }
+
+
         return ResponseDto.success(
                 MemberResponseDto.builder()
                         .id(kakaoMember.getId())
@@ -99,6 +117,8 @@ public class KakaoMemberService {
                         .profileURL(kakaoMember.getProfileURL())
                         .createdAt(kakaoMember.getCreatedAt())
                         .modifiedAt(kakaoMember.getModifiedAt())
+                        .nickname(kakaoMember.getNickname()) // 카카오 닉네임 추가 2022- 12 -02
+                        .onGoing(roomId)
                         .role(kakaoMember.getRole())
                         .build()
         );

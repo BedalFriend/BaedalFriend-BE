@@ -9,7 +9,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post,Long> {
     List<Post> findAllByOrderByModifiedAtDesc();
     List<Post> findAllByCategory(String category);
-    //제목 검색 + 정렬
+    //제목 검색 + 정렬 // 로그인 안했을때 메인검색 타는 쿼리
     @Query(value="SELECT * FROM post WHERE concat(room_title, category) like concat('%',:roomTitle,'%') ORDER BY :sortBy" , nativeQuery= true)
     Page<Post> findByRoomTitle(String roomTitle, String sortBy,  Pageable pageable);
     //특정 카테고리별 검색 + 정렬
