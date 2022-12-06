@@ -17,6 +17,7 @@ import java.util.List;
 public class GetAllPostResponseDto {
     private Long postId; // 게시글 아이디
     private Long memberId; // 회원 번호
+    private String content; // 내용
     private String roomTitle; // 채팅방 제목
     private boolean isDone; // 모집중
     private Long maxCapacity; // 최대인원

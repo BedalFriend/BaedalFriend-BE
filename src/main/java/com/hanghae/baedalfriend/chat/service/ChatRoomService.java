@@ -101,6 +101,7 @@ public class ChatRoomService {
         );
         int num = chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom).size();
 
+
         if (chatRoom.getPost().getMaxCapacity() > num) {
 
             ChatRoomMember chatRoomMember = ChatRoomMember.builder()
@@ -108,6 +109,7 @@ public class ChatRoomService {
                         .member(member)
                         .build();
                 chatRoomMemberJpaRepository.save(chatRoomMember);
+
 
                 return ResponseDto.success("채팅방입장");
 
@@ -146,22 +148,9 @@ public class ChatRoomService {
 
         // 나간 유저를 채팅방 리스트에서 제거
         chatRoomMemberJpaRepository.deleteByMember(member);
-        // 현재 채팅룸에 한명이라도 남아있다면 퇴장메시지 전송
-        if (chatRoomMemberJpaRepository.findAllByChatRoom(chatRoom).size() == 0) {
-            chatService.sendChatMessage(
-                    ChatMessage.builder()
-                            .type(ChatMessage.MessageType.QUIT)
-                            .roomId(roomId)
-                            .sender(member.getNickname())
-                            .member(member)
-                            .build()
-            );
-            return ResponseDto.success("퇴장메시지 전송 성공");
 
-        } else {
-            return ResponseDto.success("채팅방안 사람이 없음");
+            return ResponseDto.success("퇴장성공");
 
-        }
 
     }
 

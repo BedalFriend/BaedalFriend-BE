@@ -17,12 +17,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class ChatMessage extends Timestamped  implements Serializable  {
+public class ChatMessage implements Serializable  {
 
 
     //메세지 타입: 입장, 채팅, 퇴장
     public enum MessageType {
-        ENTER, TALK, QUIT
+        ENTER, TALK, EXIT
     }
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +45,8 @@ public class ChatMessage extends Timestamped  implements Serializable  {
     @JoinColumn(name = "member_Id", nullable = false)
     @ManyToOne
     private Member member;
+
+    private String createdAt;
 
 
 
