@@ -1,11 +1,5 @@
-package com.hanghae.baedalfriend.Mypage.service;
+package com.hanghae.baedalfriend.service;
 
-import com.hanghae.baedalfriend.Mypage.dto.request.MypageRequestDto;
-import com.hanghae.baedalfriend.Mypage.dto.request.PasswordDeleteRequestDto;
-import com.hanghae.baedalfriend.Mypage.dto.request.PasswordRequestDto;
-import com.hanghae.baedalfriend.Mypage.dto.response.MypageChatResponseDto;
-import com.hanghae.baedalfriend.Mypage.dto.response.MypageResponseDto;
-import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
@@ -13,16 +7,17 @@ import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.domain.UserDetailsImpl;
+import com.hanghae.baedalfriend.dto.requestdto.MypageRequestDto;
+import com.hanghae.baedalfriend.dto.responsedto.MypageHistoryResponseDto;
+import com.hanghae.baedalfriend.dto.responsedto.MypageResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.repository.EventRepository;
 import com.hanghae.baedalfriend.repository.MemberRepository;
 import com.hanghae.baedalfriend.repository.PostRepository;
 import com.hanghae.baedalfriend.repository.RefreshTokenRepository;
-import com.hanghae.baedalfriend.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +39,6 @@ public class MypageService {
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final S3Service s3Service;
-    private final PasswordEncoder passwordEncoder;
 
     // 이미지 + 닉네임 변경
     @Transactional
@@ -147,50 +141,33 @@ public class MypageService {
 
     //내가 들어간 채팅방 (참여내역)
     @Transactional
-    public ResponseDto<?> getMyChat(Long memberId, UserDetailsImpl userDetails) {
+    public ResponseDto<?> getHistory(Long memberId, UserDetailsImpl userDetails) {
         findMember(memberId, userDetails);
 
         Post post = postRepository.findAllByMemberId(memberId);
         ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
-        List<ChatMessage> chatMessages = chatMessageJpaRepository.findAllByMemberId(memberId);
 
-        if (post == null) { //채팅 참가자
-            MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
-                    .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId).get(0).getChatRoom().getMemberList())
-                    .chatMessages(chatMessages)
+        if (post == null && chatRoom != null) { //참여자
+            MypageHistoryResponseDto mypageHistoryResponseDto = MypageHistoryResponseDto.builder()
+                    .chatRoom(chatRoomMemberJpaRepository.findAllByMemberId(memberId))
+                    .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()))
                     .build();
-            return ResponseDto.success(mypageChatResponseDto);
-        } else if (chatRoom != null) { //방장
-            MypageChatResponseDto mypageChatResponseDto = MypageChatResponseDto.builder()
-                    .chatRoomMembers(chatRoomMemberJpaRepository.findAllByMemberId(memberId).get(0).getChatRoom().getMemberList())
-                    .chatMessages(chatMessages)
-                    .build();
-            return ResponseDto.success(mypageChatResponseDto);
-        } else {
-            return ResponseDto.fail("CHATROOM_NOT_FOUND", "채팅방이 존재하지 않습니다");
+            return ResponseDto.success(mypageHistoryResponseDto);
+        } else if (post != null && chatRoom != null) { //방장
+                MypageHistoryResponseDto mypageHistoryResponseDto = MypageHistoryResponseDto.builder()
+                        .chatRoom(chatRoomMemberJpaRepository.findAllByMemberId(memberId))
+                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get()))
+                        .build();
+                System.out.println("2. 방장이라면 여기를 타면...????????");
+                return ResponseDto.success(mypageHistoryResponseDto);
+        } else{
+            return ResponseDto.fail("NOT_FOUND", "기록이 존재하지 않습니다");
         }
+
     }
-
-    //비밀번호 변경
-    @Transactional
-    public ResponseDto<?> updatePassword(PasswordRequestDto requestDto, UserDetailsImpl userDetails) {
-        Member member = userDetails.getMember();
-
-        if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
-            return ResponseDto.fail("BAD_REQUEST", "비밀번호를 다시 확인해 주세요.");
-        }
-        String password = passwordEncoder.encode(requestDto.getNewPassword());
-
-        member.updateUserPassword(password);
-        memberRepository.save(member);
-
-        return ResponseDto.success("비밀번호 변경 완료");
-    }
-
     //회원 탈퇴
     @Transactional
-    public ResponseDto<?> withdrawMember(Long memberId, PasswordDeleteRequestDto passwordDeleteRequestDto,
-                                         UserDetailsImpl userDetails) {
+    public ResponseDto<?> withdrawMember(Long memberId, UserDetailsImpl userDetails) {
         Member member = memberRepository.findById(userDetails.getMember().getId()).orElseThrow(
                 () -> new IllegalArgumentException("등록되지 않은 회원입니다.")
         );
@@ -209,12 +186,9 @@ public class MypageService {
             s3Service.deleteImage(fileName);
         }
 
-        if (passwordEncoder.matches(passwordDeleteRequestDto.getPassword(), member.getPassword())) {
-            memberRepository.deleteById(memberId);
-            SecurityContextHolder.clearContext();
-        } else {
-            return ResponseDto.fail("PASSWORD_NOT_MATCH", "패스워드가 일치하지 않습니다");
-        }
+        memberRepository.deleteById(memberId);
+        SecurityContextHolder.clearContext();
+
         return ResponseDto.success("회원 탈퇴 완료");
     }
 
