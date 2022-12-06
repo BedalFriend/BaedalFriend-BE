@@ -31,4 +31,7 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     Post findAllByMemberId(Long memberId);
 
     void deleteByMemberId(Long memberId);
+
+    Page<Post> findByOrderByHitsDesc(Pageable pageable);
+
 }

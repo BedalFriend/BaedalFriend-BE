@@ -29,6 +29,7 @@ public class SearchService {
     private TokenProvider tokenProvider;
     private PostService postService;
 
+
     public SearchService(ChatRoomService chatRoomService, ChatRoomJpaRepository chatRoomRepository, ChatRoomMemberJpaRepository chatRoomMemberJpaRepository, ChatRoomJpaRepository chatRoomJpaRepository, PostRepository postRepository, TokenProvider tokenProvider, PostService postService) {
         this.chatRoomService = chatRoomService;
         this.chatRoomRepository = chatRoomRepository;
@@ -288,6 +289,51 @@ public class SearchService {
                             .modifiedAt(post.getModifiedAt()) // 수정일
                             .limitTime(post.getLimitTime()) // 파티모집 마감 시각
                             .build()
+            );
+        }
+        return ResponseDto.success(postResponseDtoList);
+    }
+
+    // 인기 검색
+    @Transactional
+    public ResponseDto<?> getPopularSearch(int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Post> posts = postRepository.findByOrderByHitsDesc(pageable);
+        List<PostRequestDto> postResponseDtoList = new ArrayList<>();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Post post : posts) {
+            if (now.ifEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
+                post.isDone(false);
+                postRepository.save(post);
+            }
+            postResponseDto.builder()
+                    .postId(post.getId())
+                    .memberId(post.getMember().getId())
+                    .roomTitle(post.getRoomTitle())
+                    .isDone(post.isDone())
+                    .region(post.getRegion())
+                    .category(post.getCategory())
+                    .targetAddress(post.getTargetAddress())
+                    .tartgetName(post.getTargetName())
+                    .targetAmount(post.getTargetAmount())
+                    .delivertyTime(post.getDeliveryTime())
+                    .maxCapacity(post.getMaxCapacity())
+                    .deliveryFee(post.getDeliveryFee())
+                    .participantNumeber(post.getParticipantNumber())
+                    .gatherName(post.getGatherName())
+                    .gatherAddress(post.getGatherAddress())
+                    .hits(post.getHits())
+                    .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                    .createdAt(post.getCreatedAt())
+                    .modifiedAt(post.getModifiedAt())
+                    .limitTime(post.getLimitTime())
+                    .build()
             );
         }
         return ResponseDto.success(postResponseDtoList);
