@@ -26,10 +26,9 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     Page<Post> findByCategoryAndRegion(String category , String region , String sortBy, Pageable pageable);
     List<Post> findByMember(Member member);
     //내가 쓴 게시글 찾기
-    List<Post> findAllByMemberIdOrderByIdDesc(Long memberId);
+    List<Post> findByMemberIdOrderByIdDesc(Long memberId);
     //내가 쓴 게시글(채팅방) 찾기 (마이페이지)
-    Post findAllByMemberId(Long memberId);
-
+    Post findByMemberId(Long memberId);
     void deleteByMemberId(Long memberId);
 
     Page<Post> findByOrderByHitsDesc(Pageable pageable);

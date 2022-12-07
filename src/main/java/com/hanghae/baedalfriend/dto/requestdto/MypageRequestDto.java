@@ -1,4 +1,4 @@
-package com.hanghae.baedalfriend.Mypage.dto.request;
+package com.hanghae.baedalfriend.dto.requestdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -84,7 +84,7 @@ public class ChatRoomService {
         //해당 유저가 진행중인 게시글에 참여하고 있는지 확인하는 로직
         List<ChatRoomMember> chatRoomMemberList=chatRoomMemberJpaRepository.findByMember(member);
             for (int i = 0; i < chatRoomMemberList.size() ; i++) {
-                if((chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed())){
+                if(!chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed()){
                     return ResponseDto.fail("No_Admittance", "중복입장 불가능");
                 }
             }
