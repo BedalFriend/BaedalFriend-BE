@@ -1,5 +1,7 @@
 package com.hanghae.baedalfriend.service;
 
+import com.hanghae.baedalfriend.chat.entity.ChatRoom;
+import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
@@ -21,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -75,7 +79,7 @@ public class MypageService {
                         member.setProfileURL(null);
                     }
                 } else {
-                        member.setProfileURL(profileURL);
+                    member.setProfileURL(profileURL);
                 }
             }
         }
@@ -126,37 +130,41 @@ public class MypageService {
     public ResponseDto<?> getMyPost(Long memberId, UserDetailsImpl userDetails) {
         findMember(memberId, userDetails);
 
-        Post post = postRepository.findByMemberId(memberId);
-        if (null == post) {
+        List<Post> posts = postRepository.findByMemberIdOrderByIdDesc(memberId);
+        if (null == posts) {
             return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 입니다.");
         }
-        return ResponseDto.success(
-                PostResponseDto.builder()
-                        .postId(post.getId()) //게시글 아이디
-                        .memberId(post.getMember().getId()) // 게시글 ID
-                        .content(post.getContent()) // 게시글 내용
-                        .roomTitle(post.getRoomTitle()) // 채팅방 제목
-                        .region(post.getRegion()) // 지역
-                        .isDone(post.isDone())// 모집중
-                        .category(post.getCategory()) //카테고리
-                        .maxCapacity(post.getMaxCapacity()) // 최대인원
-                        .targetAddress(post.getTargetAddress()) // 식당주소
-                        .targetName(post.getTargetName())// 식당이름
-                        .targetAmount(post.getTargetAmount())// 목표금액
-                        .deliveryTime(post.getDeliveryTime()) // 배달시간
-                        .deliveryFee(post.getDeliveryFee()) // 배달요금
-                        .participantNumber(post.getParticipantNumber()) // 참여자수
-                        .gatherName(post.getGatherName()) // 모이는 장소 이름
-                        .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
-                        .hits(post.getHits()) // 조회수
-                        .createdAt(post.getCreatedAt()) // 생성일
-                        .modifiedAt(post.getModifiedAt()) // 수정일
-                        .nickname(post.getMember().getNickname()) // 작성자 닉네임
-                        .profileURL(post.getMember().getProfileURL()) // 작성자 프로필 사진
-                        .limitTime(post.getLimitTime()) // 파티모집 마감 시각
-                        .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                        .build()
-        );
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+        for (Post post : posts) {
+            postResponseDtoList.add(
+                    PostResponseDto.builder()
+                            .postId(post.getId()) //게시글 아이디
+                            .memberId(post.getMember().getId()) // 게시글 ID
+                            .content(post.getContent()) // 게시글 내용
+                            .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                            .region(post.getRegion()) // 지역
+                            .isDone(post.isDone())// 모집중
+                            .category(post.getCategory()) //카테고리
+                            .maxCapacity(post.getMaxCapacity()) // 최대인원
+                            .targetAddress(post.getTargetAddress()) // 식당주소
+                            .targetName(post.getTargetName())// 식당이름
+                            .targetAmount(post.getTargetAmount())// 목표금액
+                            .deliveryTime(post.getDeliveryTime()) // 배달시간
+                            .deliveryFee(post.getDeliveryFee()) // 배달요금
+                            .participantNumber(post.getParticipantNumber()) // 참여자수
+                            .gatherName(post.getGatherName()) // 모이는 장소 이름
+                            .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
+                            .hits(post.getHits()) // 조회수
+                            .createdAt(post.getCreatedAt()) // 생성일
+                            .modifiedAt(post.getModifiedAt()) // 수정일
+                            .nickname(post.getMember().getNickname()) // 작성자 닉네임
+                            .profileURL(post.getMember().getProfileURL()) // 작성자 프로필 사진
+                            .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                            .build()
+            );
+        }
+        return ResponseDto.success(postResponseDtoList);
     }
 
     //회원 탈퇴
@@ -166,14 +174,28 @@ public class MypageService {
                 () -> new IllegalArgumentException("등록되지 않은 회원입니다.")
         );
         Post post = postRepository.findByMemberId(memberId);
+        ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
+        List<ChatRoomMember> chatRoomMembers = chatRoomMemberJpaRepository.findAllByMemberId(memberId);
+
+
+        if (post == null) { //채팅 참가자
+            if (!chatRoomMembers.get(0).getChatRoom().getPost().isClosed() || !chatRoomMembers.get(0).getChatRoom().getPost().isDone()) {
+                return ResponseDto.fail("No_Admittance", "진행중인 배프가 있습니다");
+            }
+        } else if (chatRoom != null) { //방장
+            if (!postRepository.findByMemberId(memberId).isClosed() || !postRepository.findByMemberId(memberId).isDone()) {
+                return ResponseDto.fail("No_Admittance", "진행중인 배프가 있습니다");
+            }
+        }
 
         //hard Delete
         refreshTokenRepository.deleteByMemberId(memberId);
         chatRoomMemberJpaRepository.deleteByMemberId(memberId);
-        chatRoomJpaRepository.deleteByPost(post);
-        chatMessageJpaRepository.deleteByMemberId(memberId);
-        postRepository.deleteByMemberId(memberId);
-        eventRepository.deleteByMemberId(memberId);
+        chatRoomMemberJpaRepository.deleteByChatRoom(chatRoom); //참가
+        chatRoomJpaRepository.deleteByPost(post); // 채팅방
+        chatMessageJpaRepository.deleteByMemberId(memberId); //메세지
+        postRepository.deleteByMemberId(memberId); //포스트
+        eventRepository.deleteByMemberId(memberId); //이벤트
 
         if (member.getProfileURL() != null) {
             String fileName = member.getProfileURL();
