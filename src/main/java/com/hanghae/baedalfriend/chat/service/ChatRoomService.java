@@ -189,7 +189,9 @@ public class ChatRoomService {
 
 
 
-        chatRoom.getPost().isClosed(true);
+        Post post=chatRoom.getPost();
+        post.isClosed(true);
+        postRepository.save(post);
 
         return ResponseDto.success("채팅방종료");
     }
