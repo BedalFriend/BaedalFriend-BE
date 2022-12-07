@@ -1,4 +1,4 @@
-package com.hanghae.baedalfriend.scheduler;
+package com.hanghae.baedalfriend.shared.scheduler;
 
 
 import com.hanghae.baedalfriend.domain.Post;
