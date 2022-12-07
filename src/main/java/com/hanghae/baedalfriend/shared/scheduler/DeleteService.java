@@ -21,6 +21,7 @@ public class DeleteService {
     @Transactional
     public void updateIsDone(Post post) {
         post.isDone(true);
+        postRepository.save(post);
     }
 
     public void delete(Post post){
