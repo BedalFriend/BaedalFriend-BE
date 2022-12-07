@@ -11,8 +11,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeleteScheduler {
 
+
     private final PostRepository postRepository;
     private final DeleteService deleteService;
+
 
 
     @Scheduled(cron = "0 0/1 * * * ?  ") //1분마다 실행
@@ -32,12 +34,12 @@ public class DeleteScheduler {
         LocalDateTime now = LocalDateTime.now();
         List<Post> postList = postRepository.findAll();
         for (Post post : postList) {
-                boolean s = now.isAfter(post.getLimitTime());
-                if (s) {
-                    deleteService.updateIsDone(post);
-                }
+            if (now.isAfter(post.getLimitTime())) {
+
+                deleteService.updateIsDone(post);
             }
         }
+    }
 
     public void hardDelete() {
         List<Post> postList = postRepository.findAll();
@@ -47,4 +49,8 @@ public class DeleteScheduler {
             }
         }
     }
+
+
 }
+
+
