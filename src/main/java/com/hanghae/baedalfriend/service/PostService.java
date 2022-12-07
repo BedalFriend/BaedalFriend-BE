@@ -163,6 +163,7 @@ public class PostService {
                         .content(post.getContent()) // 게시글 내용
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .isDone(post.isDone())// 모집중
+                        .isClosed(post.isClosed()) // 나간방
                         .category(post.getCategory()) //카테고리
                         .maxCapacity(post.getMaxCapacity()) // 최대인원
                         .region(post.getRegion()) // 지역
@@ -198,6 +199,7 @@ public class PostService {
                             .content(post.getContent()) // 게시글 내용
                             .roomTitle(post.getRoomTitle()) // 채팅방 제목
                             .isDone(post.isDone())// 모집중
+                            .isClosed(post.isClosed()) // 나간방
                             .region(post.getRegion()) // 지역
                             .category(post.getCategory()) //카테고리
                             .maxCapacity(post.getMaxCapacity()) // 최대인원
@@ -292,7 +294,6 @@ public class PostService {
         if (post.validateMember(member)) {
             return ResponseDto.fail("BAD_REQUEST", "작성자만 수정할 수 있습니다.");
         }
-
         post.update(requestDto);
         return ResponseDto.success(
                 PostResponseDto.builder()
@@ -302,6 +303,7 @@ public class PostService {
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
+                        .isClosed(post.isClosed()) // 나간방
                         .maxCapacity(post.getMaxCapacity()) // 최대인원
                         .category(post.getCategory()) //카테고리
                         .targetAddress(post.getTargetAddress()) // 식당주소
@@ -390,6 +392,7 @@ public class PostService {
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
+                        .isClosed(post.isClosed()) // 나간방
                         .category(post.getCategory()) //카테고리
                         .maxCapacity(post.getMaxCapacity()) // 최대인원
                         .targetAddress(post.getTargetAddress()) // 식당주소
@@ -420,7 +423,6 @@ public class PostService {
         if (null == post) {
             return ResponseDto.fail("NOT_FOUND_POST", "해당 게시글이 없습니다.");
         }
-
         //회원 유효성 체크
         Member member = validateMember(request);
         LocalDateTime now = LocalDateTime.now();
@@ -460,6 +462,7 @@ public class PostService {
                         .roomTitle(post.getRoomTitle()) // 채팅방 제목
                         .region(post.getRegion()) // 지역
                         .isDone(post.isDone())// 모집중
+                        .isClosed(post.isClosed()) // 나간방
                         .category(post.getCategory()) //카테고리
                         .maxCapacity(post.getMaxCapacity()) // 최대인원
                         .targetAddress(post.getTargetAddress()) // 식당주소

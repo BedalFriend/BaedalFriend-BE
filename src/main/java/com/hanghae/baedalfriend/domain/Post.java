@@ -78,6 +78,7 @@ public class Post extends Timestamped implements Serializable {
 
     // 수정가능한 부분
     public void update(PostRequestDto postRequestDto) {
+        this.content = postRequestDto.getContent(); // 내용
         this.roomTitle = postRequestDto.getRoomTitle(); // 채팅방제목
         this.category = postRequestDto.getCategory(); // 카테고리
         this.targetName = postRequestDto.getTargetName(); // 식당이름
@@ -116,6 +117,7 @@ public class Post extends Timestamped implements Serializable {
     public void decreaseParticipantNumber() {
         this.participantNumber -=1L;
     }
+
 
     //공구종료
     public void isClosed(boolean isClosed) {
