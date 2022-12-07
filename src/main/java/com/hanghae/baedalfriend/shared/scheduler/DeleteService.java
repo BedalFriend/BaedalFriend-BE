@@ -1,4 +1,4 @@
-package com.hanghae.baedalfriend.scheduler;
+package com.hanghae.baedalfriend.shared.scheduler;
 
 import com.hanghae.baedalfriend.domain.Post;
 import com.hanghae.baedalfriend.repository.PostRepository;
@@ -21,6 +21,7 @@ public class DeleteService {
     @Transactional
     public void updateIsDone(Post post) {
         post.isDone(true);
+        postRepository.save(post);
     }
 
     public void delete(Post post){

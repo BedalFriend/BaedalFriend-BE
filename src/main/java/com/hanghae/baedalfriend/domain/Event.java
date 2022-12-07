@@ -1,18 +1,12 @@
 package com.hanghae.baedalfriend.domain;
 
-import com.hanghae.baedalfriend.dto.PhotoDto;
-import com.hanghae.baedalfriend.dto.requestdto.EventRequestDto;
-import com.hanghae.baedalfriend.dto.requestdto.EventUpRequestDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -36,16 +30,13 @@ public class Event extends Timestamped{
     @JoinColumn(name="member_id", nullable = false)
     private Member member;
 
-    public void update(EventUpRequestDto requestDto, List<PhotoDto> photoDtos) {
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
-        this.imageUrl = photoDtos.get(0).getPath();
+    public void update(String title, String content, String imageUrl) {
+        this.title = title;
+        this.content = content;
+        this.imageUrl = imageUrl;
     }
 
     public boolean validateMember(Member member) {
         return !this.member.equals(member);
     }
-
-
 }
-

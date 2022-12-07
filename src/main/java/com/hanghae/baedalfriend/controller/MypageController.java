@@ -1,8 +1,7 @@
-package com.hanghae.baedalfriend.Mypage.controller;
+package com.hanghae.baedalfriend.controller;
 
-import com.hanghae.baedalfriend.Mypage.dto.request.MypageRequestDto;
-import com.hanghae.baedalfriend.Mypage.dto.request.PasswordDeleteRequestDto;
-import com.hanghae.baedalfriend.Mypage.service.MypageService;
+import com.hanghae.baedalfriend.dto.requestdto.MypageRequestDto;
+import com.hanghae.baedalfriend.service.MypageService;
 import com.hanghae.baedalfriend.domain.UserDetailsImpl;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,8 @@ public class MypageController {
 
     // 이미지 변경 + 닉네임변경
     @PatchMapping("/mypages/edit/{memberId}")
-    public ResponseDto<?> editMember(@PathVariable Long memberId, @RequestPart(value = "nickname", required = false) MypageRequestDto requestDto,
+    public ResponseDto<?> editMember(@PathVariable Long memberId,
+                                     @RequestPart(value = "nickname", required = false) MypageRequestDto requestDto,
                                      @RequestPart(value = "imgUrl", required = false) MultipartFile multipartFile,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return mypageService.editMember(memberId, requestDto, multipartFile, userDetails);
@@ -46,23 +46,9 @@ public class MypageController {
         return mypageService.getMyPost(memberId, userDetails);
     }
 
-    // 내가 들어간 채팅방
-//    @GetMapping("/mypages/chat/{memberId}")
-//    public ResponseDto<?> getMyChat(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        return mypageService.getMyChat(memberId, userDetails);
-//    }
-
-    // 비밀번호 변경
-//    @PutMapping("/updatePassword")
-//    public ResponseDto<?> updatePassword(@RequestBody PasswordRequestDto passwordRequestDto,
-//                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        return mypageService.updatePassword(passwordRequestDto, userDetails);
-//    }
-
     // 회원 탈퇴
     @DeleteMapping("/withdrawal/{memberId}")
-    public ResponseDto<?> withdrawal(@PathVariable Long memberId, @RequestBody PasswordDeleteRequestDto passwordDeleteRequestDto,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return mypageService.withdrawMember(memberId, passwordDeleteRequestDto, userDetails);
+    public ResponseDto<?> withdrawal(@PathVariable Long memberId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return mypageService.withdrawMember(memberId, userDetails);
     }
 }

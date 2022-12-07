@@ -1,5 +1,6 @@
 package com.hanghae.baedalfriend.controller;
 
+import com.amazonaws.Response;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,4 +95,18 @@ public class SearchController {
             return searchService.getRegionCategorySearch(keyword, region, page, size, sortBy, isAsc);
         }
     }
+
+    // 인기검색
+    @GetMapping(value="/popular/search")
+    public ResponseDto<?> getPopularSearch(@RequestParam("page") int page,
+                                            @RequestParam("size") int size,
+                                            @RequestParam("sortBy") String sortBy,
+                                            @RequestParam("isAsc") boolean isAsc)   {
+
+        {
+            page = page - 1;
+            return searchService.getPopularSearch(page, size, sortBy, isAsc);
+        }
+    }
+
 }
