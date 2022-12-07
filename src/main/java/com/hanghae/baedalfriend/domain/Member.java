@@ -1,13 +1,9 @@
 package com.hanghae.baedalfriend.domain;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hanghae.baedalfriend.shared.Authority;
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -24,29 +20,24 @@ public class Member extends Timestamped implements Serializable{
     private Long id;
     @Column(unique = true)
     private String nickname;
-
     @Column(unique = true)
     private String email;
-
     @Column(unique = true)
     private Long kakaoId;
-
     private String address;
-
     @JsonIgnore
     @Column(nullable = false)
     private String password;
-
     private String profileURL;
-
     @Enumerated(value = EnumType.STRING)
     private Authority role;
 
-    public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId) {
+    public Member(String encodedPassword, String profileURL, String nickname, Long kakaoId, String email) {
         this.nickname = nickname;
         this.password = encodedPassword;
         this.profileURL = profileURL;
         this.kakaoId = kakaoId;
+        this.email = email;
         this.role = Authority.ROLE_MEMBER;
     }
 
@@ -69,11 +60,6 @@ public class Member extends Timestamped implements Serializable{
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
-    }
-
-    //비밀번호 변경
-    public void updateUserPassword(String password) {
-        this.password = password;
     }
 
     public void update(String nickname, String profileURL) {
