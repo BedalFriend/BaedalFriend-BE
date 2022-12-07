@@ -31,6 +31,7 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     Post findByMemberId(Long memberId);
     void deleteByMemberId(Long memberId);
 
+    //인기검색
     Page<Post> findByOrderByHitsDesc(Pageable pageable);
 
 }

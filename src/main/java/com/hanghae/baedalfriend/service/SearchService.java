@@ -4,6 +4,7 @@ import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.domain.Post;
+import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import com.hanghae.baedalfriend.dto.responsedto.PostResponseDto;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
@@ -26,6 +27,7 @@ public class SearchService {
     private ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     private ChatRoomJpaRepository chatRoomJpaRepository;
     private PostRepository postRepository;
+    private PostResponseDto postResponseDto;
     private TokenProvider tokenProvider;
     private PostService postService;
 
@@ -303,37 +305,38 @@ public class SearchService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Post> posts = postRepository.findByOrderByHitsDesc(pageable);
-        List<PostRequestDto> postResponseDtoList = new ArrayList<>();
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
 
         LocalDateTime now = LocalDateTime.now();
 
         for (Post post : posts) {
-            if (now.ifEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
+            if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
                 post.isDone(false);
                 postRepository.save(post);
             }
-            postResponseDto.builder()
-                    .postId(post.getId())
-                    .memberId(post.getMember().getId())
-                    .roomTitle(post.getRoomTitle())
-                    .isDone(post.isDone())
-                    .region(post.getRegion())
-                    .category(post.getCategory())
-                    .targetAddress(post.getTargetAddress())
-                    .tartgetName(post.getTargetName())
-                    .targetAmount(post.getTargetAmount())
-                    .delivertyTime(post.getDeliveryTime())
-                    .maxCapacity(post.getMaxCapacity())
-                    .deliveryFee(post.getDeliveryFee())
-                    .participantNumeber(post.getParticipantNumber())
-                    .gatherName(post.getGatherName())
-                    .gatherAddress(post.getGatherAddress())
-                    .hits(post.getHits())
-                    .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                    .createdAt(post.getCreatedAt())
-                    .modifiedAt(post.getModifiedAt())
-                    .limitTime(post.getLimitTime())
-                    .build()
+            postResponseDtoList.add(
+                    postResponseDto.builder()
+                            .postId(post.getId())
+                            .memberId(post.getMember().getId())
+                            .roomTitle(post.getRoomTitle())
+                            .isDone(post.isDone())
+                            .region(post.getRegion())
+                            .category(post.getCategory())
+                            .targetAddress(post.getTargetAddress())
+                            .targetName(post.getTargetName())
+                            .targetAmount(post.getTargetAmount())
+                            .deliveryTime(post.getDeliveryTime())
+                            .maxCapacity(post.getMaxCapacity())
+                            .deliveryFee(post.getDeliveryFee())
+                            .participantNumber(post.getParticipantNumber())
+                            .gatherName(post.getGatherName())
+                            .gatherAddress(post.getGatherAddress())
+                            .hits(post.getHits())
+                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                            .createdAt(post.getCreatedAt())
+                            .modifiedAt(post.getModifiedAt())
+                            .limitTime(post.getLimitTime())
+                            .build()
             );
         }
         return ResponseDto.success(postResponseDtoList);
