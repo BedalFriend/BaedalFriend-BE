@@ -178,11 +178,11 @@ public class MypageService {
         List<ChatRoomMember> chatRoomMembers = chatRoomMemberJpaRepository.findAllByMemberId(memberId);
 
 
-        if (post == null) { //채팅 참가자
+        if (post == null && chatRoom != null) { //채팅 참가자
             if (!chatRoomMembers.get(0).getChatRoom().getPost().isClosed() || !chatRoomMembers.get(0).getChatRoom().getPost().isDone()) {
                 return ResponseDto.fail("No_Admittance", "진행중인 배프가 있습니다");
             }
-        } else if (chatRoom != null) { //방장
+        } else if (post != null && chatRoom != null) { //방장
             if (!postRepository.findByMemberId(memberId).isClosed() || !postRepository.findByMemberId(memberId).isDone()) {
                 return ResponseDto.fail("No_Admittance", "진행중인 배프가 있습니다");
             }
