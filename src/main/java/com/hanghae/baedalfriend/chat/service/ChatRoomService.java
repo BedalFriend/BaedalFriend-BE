@@ -152,7 +152,7 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomJpaRepository.findById(roomId).orElseThrow(
                 () -> new NullPointerException("해당하는 채팅방이 없습니다.")
         );
-
+        chatRoom.getPost().isDone(true);
         chatRoom.getPost().isClosed(true);
         return ResponseDto.success("채팅방종료");
     }

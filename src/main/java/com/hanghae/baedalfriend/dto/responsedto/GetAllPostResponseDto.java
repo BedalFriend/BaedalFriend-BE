@@ -22,6 +22,7 @@ public class GetAllPostResponseDto {
     private boolean isDone; // 모집중
     private Long maxCapacity; // 최대인원
     private String category; // 카테고리
+    private boolean isClosed; // 나간방
     private String targetAddress; // 식당 주소
     private String targetName; // 식당이름
     private String region; // 지역
