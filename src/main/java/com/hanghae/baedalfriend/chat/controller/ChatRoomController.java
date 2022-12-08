@@ -2,7 +2,6 @@ package com.hanghae.baedalfriend.chat.controller;
 
 import com.hanghae.baedalfriend.chat.service.ChatRoomService;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
-import com.hanghae.baedalfriend.shared.ChatRoomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
