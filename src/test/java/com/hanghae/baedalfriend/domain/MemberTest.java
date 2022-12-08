@@ -222,7 +222,7 @@ class MemberTest {
                 .id(1L)
                 .nickname("test")
                 .email("test@gmail.com")
-
+                .address("서울시 강남구")
                 .password("1q2w3e4r!!")
                 .kakaoId(123456789L)
                 .profileURL("https://test.com")
