@@ -22,7 +22,7 @@ public class ChatMessage implements Serializable  {
 
     //메세지 타입: 입장, 채팅, 퇴장
     public enum MessageType {
-        ENTER, TALK, EXIT
+        ENTER, TALK, EXIT , FINISH
     }
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
