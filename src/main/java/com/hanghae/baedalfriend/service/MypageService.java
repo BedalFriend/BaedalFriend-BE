@@ -175,10 +175,10 @@ public class MypageService {
         );
         Post post = postRepository.findByMemberId(memberId);
         ChatRoom chatRoom = chatRoomJpaRepository.findAllByPost(post);
+        ChatRoomMember chatRoomMember = chatRoomMemberJpaRepository.findByMemberId(memberId);
         List<ChatRoomMember> chatRoomMembers = chatRoomMemberJpaRepository.findAllByMemberId(memberId);
 
-
-        if (post == null && chatRoom != null) { //채팅 참가자
+        if (post == null && chatRoomMember != null){//채팅 참가자
             if (!chatRoomMembers.get(0).getChatRoom().getPost().isClosed() || !chatRoomMembers.get(0).getChatRoom().getPost().isDone()) {
                 return ResponseDto.fail("No_Admittance", "진행중인 배프가 있습니다");
             }
