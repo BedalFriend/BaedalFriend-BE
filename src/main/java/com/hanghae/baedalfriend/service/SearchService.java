@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,35 +50,34 @@ public class SearchService {
         Page<Post> posts = postRepository.findByCategory(keyword, sortBy, pageable);
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
+
         for (Post post : posts) {
-            if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
-                post.isDone(false);
-                postRepository.save(post);
+            if (post.isDone() == false ) {
+                postResponseDtoList.add(
+                        PostResponseDto.builder()
+                                .postId(post.getId())
+                                .memberId(post.getMember().getId())
+                                .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                                .isDone(post.isDone()) // 모집중
+                                .region(post.getRegion()) // 지역
+                                .category(post.getCategory()) //카테고리
+                                .targetAddress(post.getTargetAddress()) // 식당주소
+                                .targetName(post.getTargetName()) // 식당이름
+                                .targetAmount(post.getTargetAmount()) // 목표금액
+                                .deliveryTime(post.getDeliveryTime()) // 배달시간
+                                .maxCapacity(post.getMaxCapacity()) // 최대수용인원
+                                .deliveryFee(post.getDeliveryFee()) // 배달요금
+                                .participantNumber(post.getParticipantNumber()) // 참여자수
+                                .gatherName(post.getGatherName()) // 모이는 장소 이름
+                                .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
+                                .hits(post.getHits()) // 조회수
+                                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                                .createdAt(post.getCreatedAt()) // 생성일
+                                .modifiedAt(post.getModifiedAt()) // 수정일
+                                .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                                .build()
+                );
             }
-            postResponseDtoList.add(
-                    PostResponseDto.builder()
-                            .postId(post.getId())
-                            .memberId(post.getMember().getId())
-                            .roomTitle(post.getRoomTitle()) // 채팅방 제목
-                            .isDone(post.isDone()) // 모집중
-                            .region(post.getRegion()) // 지역
-                            .category(post.getCategory()) //카테고리
-                            .targetAddress(post.getTargetAddress()) // 식당주소
-                            .targetName(post.getTargetName()) // 식당이름
-                            .targetAmount(post.getTargetAmount()) // 목표금액
-                            .deliveryTime(post.getDeliveryTime()) // 배달시간
-                            .maxCapacity(post.getMaxCapacity()) // 최대수용인원
-                            .deliveryFee(post.getDeliveryFee()) // 배달요금
-                            .participantNumber(post.getParticipantNumber()) // 참여자수
-                            .gatherName(post.getGatherName()) // 모이는 장소 이름
-                            .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
-                            .hits(post.getHits()) // 조회수
-                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                            .createdAt(post.getCreatedAt()) // 생성일
-                            .modifiedAt(post.getModifiedAt()) // 수정일
-                            .limitTime(post.getLimitTime()) // 파티모집 마감 시각
-                            .build()
-            );
         }
         return ResponseDto.success(postResponseDtoList);
     }
@@ -93,35 +91,34 @@ public class SearchService {
         Page<Post> posts = postRepository.findByRoomTitle(keyword, sortBy, pageable);
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
+
         for (Post post : posts) {
-            if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
-                post.isDone(false);
-                postRepository.save(post);
+            if (post.isDone() == false ) {
+                postResponseDtoList.add(
+                        PostResponseDto.builder()
+                                .postId(post.getId())
+                                .memberId(post.getMember().getId())
+                                .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                                .isDone(post.isDone()) // 모집중
+                                .region(post.getRegion()) // 지역
+                                .category(post.getCategory()) //카테고리
+                                .targetAddress(post.getTargetAddress()) // 식당주소
+                                .targetName(post.getTargetName()) // 식당이름
+                                .targetAmount(post.getTargetAmount()) // 목표금액
+                                .deliveryTime(post.getDeliveryTime()) // 배달시간
+                                .maxCapacity(post.getMaxCapacity()) // 최대수용인원
+                                .deliveryFee(post.getDeliveryFee()) // 배달요금
+                                .participantNumber(post.getParticipantNumber()) // 참여자수
+                                .gatherName(post.getGatherName()) // 모이는 장소 이름
+                                .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
+                                .hits(post.getHits()) // 조회수
+                                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                                .createdAt(post.getCreatedAt()) // 생성일
+                                .modifiedAt(post.getModifiedAt()) // 수정일
+                                .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                                .build()
+                );
             }
-            postResponseDtoList.add(
-                    PostResponseDto.builder()
-                            .postId(post.getId())
-                            .memberId(post.getMember().getId())
-                            .roomTitle(post.getRoomTitle()) // 채팅방 제목
-                            .isDone(post.isDone()) // 모집중
-                            .region(post.getRegion()) // 지역
-                            .category(post.getCategory()) //카테고리
-                            .targetAddress(post.getTargetAddress()) // 식당주소
-                            .targetName(post.getTargetName()) // 식당이름
-                            .targetAmount(post.getTargetAmount()) // 목표금액
-                            .deliveryTime(post.getDeliveryTime()) // 배달시간
-                            .maxCapacity(post.getMaxCapacity()) // 최대수용인원
-                            .deliveryFee(post.getDeliveryFee()) // 배달요금
-                            .participantNumber(post.getParticipantNumber()) // 참여자수
-                            .gatherName(post.getGatherName()) // 모이는 장소 이름
-                            .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
-                            .hits(post.getHits()) // 조회수
-                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                            .createdAt(post.getCreatedAt()) // 생성일
-                            .modifiedAt(post.getModifiedAt()) // 수정일
-                            .limitTime(post.getLimitTime()) // 파티모집 마감 시각
-                            .build()
-            );
         }
         return ResponseDto.success(postResponseDtoList); // 검색결과 반환
     }
@@ -136,34 +133,32 @@ public class SearchService {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
         for (Post post : posts) {
-            if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
-                post.isDone(false);
-                postRepository.save(post);
+            if (post.isDone() == false  ) {
+                postResponseDtoList.add(
+                        PostResponseDto.builder()
+                                .postId(post.getId())
+                                .memberId(post.getMember().getId())
+                                .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                                .isDone(post.isDone()) // 모집중
+                                .region(post.getRegion()) // 지역
+                                .category(post.getCategory()) //카테고리
+                                .targetAddress(post.getTargetAddress()) // 식당주소
+                                .targetName(post.getTargetName()) // 식당이름
+                                .targetAmount(post.getTargetAmount()) // 목표금액
+                                .deliveryTime(post.getDeliveryTime()) // 배달시간
+                                .maxCapacity(post.getMaxCapacity()) // 최대수용인원
+                                .deliveryFee(post.getDeliveryFee()) // 배달요금
+                                .participantNumber(post.getParticipantNumber()) // 참여자수
+                                .gatherName(post.getGatherName()) // 모이는 장소 이름
+                                .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
+                                .hits(post.getHits()) // 조회수
+                                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                                .createdAt(post.getCreatedAt()) // 생성일
+                                .modifiedAt(post.getModifiedAt()) // 수정일
+                                .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                                .build()
+                );
             }
-            postResponseDtoList.add(
-                    PostResponseDto.builder()
-                            .postId(post.getId())
-                            .memberId(post.getMember().getId())
-                            .roomTitle(post.getRoomTitle()) // 채팅방 제목
-                            .isDone(post.isDone()) // 모집중
-                            .region(post.getRegion()) // 지역
-                            .category(post.getCategory()) //카테고리
-                            .targetAddress(post.getTargetAddress()) // 식당주소
-                            .targetName(post.getTargetName()) // 식당이름
-                            .targetAmount(post.getTargetAmount()) // 목표금액
-                            .deliveryTime(post.getDeliveryTime()) // 배달시간
-                            .maxCapacity(post.getMaxCapacity()) // 최대수용인원
-                            .deliveryFee(post.getDeliveryFee()) // 배달요금
-                            .participantNumber(post.getParticipantNumber()) // 참여자수
-                            .gatherName(post.getGatherName()) // 모이는 장소 이름
-                            .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
-                            .hits(post.getHits()) // 조회수
-                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                            .createdAt(post.getCreatedAt()) // 생성일
-                            .modifiedAt(post.getModifiedAt()) // 수정일
-                            .limitTime(post.getLimitTime()) // 파티모집 마감 시각
-                            .build()
-            );
         }
         return ResponseDto.success(postResponseDtoList); // 검색결과 반환
     }
@@ -180,34 +175,32 @@ public class SearchService {
 
         LocalDateTime now = LocalDateTime.now();
         for (Post post : posts) {
-            if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
-                post.isDone(false);
-                postRepository.save(post);
+            if (post.isDone() == false ) {
+                postResponseDtoList.add(
+                        PostResponseDto.builder()
+                                .postId(post.getId())
+                                .memberId(post.getMember().getId())
+                                .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                                .isDone(post.isDone()) // 모집중
+                                .region(post.getRegion()) // 지역
+                                .category(post.getCategory()) //카테고리
+                                .targetAddress(post.getTargetAddress()) // 식당주소
+                                .targetName(post.getTargetName()) // 식당이름
+                                .targetAmount(post.getTargetAmount()) // 목표금액
+                                .deliveryTime(post.getDeliveryTime()) // 배달시간
+                                .maxCapacity(post.getMaxCapacity()) // 최대수용인원
+                                .deliveryFee(post.getDeliveryFee()) // 배달요금
+                                .participantNumber(post.getParticipantNumber()) // 참여자수
+                                .gatherName(post.getGatherName()) // 모이는 장소 이름
+                                .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
+                                .hits(post.getHits()) // 조회수
+                                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                                .createdAt(post.getCreatedAt()) // 생성일
+                                .modifiedAt(post.getModifiedAt()) // 수정일
+                                .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                                .build()
+                );
             }
-            postResponseDtoList.add(
-                    PostResponseDto.builder()
-                            .postId(post.getId())
-                            .memberId(post.getMember().getId())
-                            .roomTitle(post.getRoomTitle()) // 채팅방 제목
-                            .isDone(post.isDone()) // 모집중
-                            .region(post.getRegion()) // 지역
-                            .category(post.getCategory()) //카테고리
-                            .targetAddress(post.getTargetAddress()) // 식당주소
-                            .targetName(post.getTargetName()) // 식당이름
-                            .targetAmount(post.getTargetAmount()) // 목표금액
-                            .deliveryTime(post.getDeliveryTime()) // 배달시간
-                            .maxCapacity(post.getMaxCapacity()) // 최대수용인원
-                            .deliveryFee(post.getDeliveryFee()) // 배달요금
-                            .participantNumber(post.getParticipantNumber()) // 참여자수
-                            .gatherName(post.getGatherName()) // 모이는 장소 이름
-                            .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
-                            .hits(post.getHits()) // 조회수
-                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                            .createdAt(post.getCreatedAt()) // 생성일
-                            .modifiedAt(post.getModifiedAt()) // 수정일
-                            .limitTime(post.getLimitTime()) // 파티모집 마감 시각
-                            .build()
-            );
         }
         return ResponseDto.success(postResponseDtoList);
     }
@@ -222,34 +215,32 @@ public class SearchService {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
         for (Post post : posts) {
-            if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
-                post.isDone(false);
-                postRepository.save(post);
+            if (post.isDone() == false ) {
+                postResponseDtoList.add(
+                        PostResponseDto.builder()
+                                .postId(post.getId())
+                                .memberId(post.getMember().getId())
+                                .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                                .isDone(post.isDone()) // 모집중
+                                .region(post.getRegion()) // 지역
+                                .category(post.getCategory()) //카테고리
+                                .targetAddress(post.getTargetAddress()) // 식당주소
+                                .targetName(post.getTargetName()) // 식당이름
+                                .targetAmount(post.getTargetAmount()) // 목표금액
+                                .deliveryTime(post.getDeliveryTime()) // 배달시간
+                                .maxCapacity(post.getMaxCapacity()) // 최대수용인원
+                                .deliveryFee(post.getDeliveryFee()) // 배달요금
+                                .participantNumber(post.getParticipantNumber()) // 참여자수
+                                .gatherName(post.getGatherName()) // 모이는 장소 이름
+                                .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
+                                .hits(post.getHits()) // 조회수
+                                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                                .createdAt(post.getCreatedAt()) // 생성일
+                                .modifiedAt(post.getModifiedAt()) // 수정일
+                                .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                                .build()
+                );
             }
-            postResponseDtoList.add(
-                    PostResponseDto.builder()
-                            .postId(post.getId())
-                            .memberId(post.getMember().getId())
-                            .roomTitle(post.getRoomTitle()) // 채팅방 제목
-                            .isDone(post.isDone()) // 모집중
-                            .region(post.getRegion()) // 지역
-                            .category(post.getCategory()) //카테고리
-                            .targetAddress(post.getTargetAddress()) // 식당주소
-                            .targetName(post.getTargetName()) // 식당이름
-                            .targetAmount(post.getTargetAmount()) // 목표금액
-                            .deliveryTime(post.getDeliveryTime()) // 배달시간
-                            .maxCapacity(post.getMaxCapacity()) // 최대수용인원
-                            .deliveryFee(post.getDeliveryFee()) // 배달요금
-                            .participantNumber(post.getParticipantNumber()) // 참여자수
-                            .gatherName(post.getGatherName()) // 모이는 장소 이름
-                            .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
-                            .hits(post.getHits()) // 조회수
-                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                            .createdAt(post.getCreatedAt()) // 생성일
-                            .modifiedAt(post.getModifiedAt()) // 수정일
-                            .limitTime(post.getLimitTime()) // 파티모집 마감 시각
-                            .build()
-            );
         }
         return ResponseDto.success(postResponseDtoList);
     }
@@ -264,34 +255,32 @@ public class SearchService {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
         for (Post post : posts) {
-            if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
-                post.isDone(false);
-                postRepository.save(post);
+            if (post.isDone() == false ) { // isDone 상태에 따라서 build패턴에 넣는값 조절
+                postResponseDtoList.add(
+                        PostResponseDto.builder()
+                                .postId(post.getId())
+                                .memberId(post.getMember().getId())
+                                .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                                .isDone(post.isDone()) // 모집중
+                                .region(post.getRegion()) // 지역
+                                .category(post.getCategory()) //카테고리
+                                .targetAddress(post.getTargetAddress()) // 식당주소
+                                .targetName(post.getTargetName()) // 식당이름
+                                .targetAmount(post.getTargetAmount()) // 목표금액
+                                .deliveryTime(post.getDeliveryTime()) // 배달시간
+                                .maxCapacity(post.getMaxCapacity()) // 최대수용인원
+                                .deliveryFee(post.getDeliveryFee()) // 배달요금
+                                .participantNumber(post.getParticipantNumber()) // 참여자수
+                                .gatherName(post.getGatherName()) // 모이는 장소 이름
+                                .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
+                                .hits(post.getHits()) // 조회수
+                                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                                .createdAt(post.getCreatedAt()) // 생성일
+                                .modifiedAt(post.getModifiedAt()) // 수정일
+                                .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                                .build()
+                );
             }
-            postResponseDtoList.add(
-                    PostResponseDto.builder()
-                            .postId(post.getId())
-                            .memberId(post.getMember().getId())
-                            .roomTitle(post.getRoomTitle()) // 채팅방 제목
-                            .isDone(post.isDone()) // 모집중
-                            .region(post.getRegion()) // 지역
-                            .category(post.getCategory()) //카테고리
-                            .targetAddress(post.getTargetAddress()) // 식당주소
-                            .targetName(post.getTargetName()) // 식당이름
-                            .targetAmount(post.getTargetAmount()) // 목표금액
-                            .deliveryTime(post.getDeliveryTime()) // 배달시간
-                            .maxCapacity(post.getMaxCapacity()) // 최대수용인원
-                            .deliveryFee(post.getDeliveryFee()) // 배달요금
-                            .participantNumber(post.getParticipantNumber()) // 참여자수
-                            .gatherName(post.getGatherName()) // 모이는 장소 이름
-                            .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
-                            .hits(post.getHits()) // 조회수
-                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                            .createdAt(post.getCreatedAt()) // 생성일
-                            .modifiedAt(post.getModifiedAt()) // 수정일
-                            .limitTime(post.getLimitTime()) // 파티모집 마감 시각
-                            .build()
-            );
         }
         return ResponseDto.success(postResponseDtoList);
     }
@@ -310,34 +299,32 @@ public class SearchService {
         LocalDateTime now = LocalDateTime.now();
 
         for (Post post : posts) {
-            if (now.isEqual(post.getLimitTime()) || now.isAfter(post.getLimitTime())) {
-                post.isDone(false);
-                postRepository.save(post);
+            if (post.isDone() == false ) {// isDone 상태에 따라서 build패턴에 넣는값 조절
+                postResponseDtoList.add(
+                        PostResponseDto.builder()
+                                .postId(post.getId())
+                                .memberId(post.getMember().getId())
+                                .roomTitle(post.getRoomTitle()) // 채팅방 제목
+                                .isDone(post.isDone()) // 모집중
+                                .region(post.getRegion()) // 지역
+                                .category(post.getCategory()) //카테고리
+                                .targetAddress(post.getTargetAddress()) // 식당주소
+                                .targetName(post.getTargetName()) // 식당이름
+                                .targetAmount(post.getTargetAmount()) // 목표금액
+                                .deliveryTime(post.getDeliveryTime()) // 배달시간
+                                .maxCapacity(post.getMaxCapacity()) // 최대수용인원
+                                .deliveryFee(post.getDeliveryFee()) // 배달요금
+                                .participantNumber(post.getParticipantNumber()) // 참여자수
+                                .gatherName(post.getGatherName()) // 모이는 장소 이름
+                                .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
+                                .hits(post.getHits()) // 조회수
+                                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
+                                .createdAt(post.getCreatedAt()) // 생성일
+                                .modifiedAt(post.getModifiedAt()) // 수정일
+                                .limitTime(post.getLimitTime()) // 파티모집 마감 시각
+                                .build()
+                );
             }
-            postResponseDtoList.add(
-                    postResponseDto.builder()
-                            .postId(post.getId())
-                            .memberId(post.getMember().getId())
-                            .roomTitle(post.getRoomTitle())
-                            .isDone(post.isDone())
-                            .region(post.getRegion())
-                            .category(post.getCategory())
-                            .targetAddress(post.getTargetAddress())
-                            .targetName(post.getTargetName())
-                            .targetAmount(post.getTargetAmount())
-                            .deliveryTime(post.getDeliveryTime())
-                            .maxCapacity(post.getMaxCapacity())
-                            .deliveryFee(post.getDeliveryFee())
-                            .participantNumber(post.getParticipantNumber())
-                            .gatherName(post.getGatherName())
-                            .gatherAddress(post.getGatherAddress())
-                            .hits(post.getHits())
-                            .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                            .createdAt(post.getCreatedAt())
-                            .modifiedAt(post.getModifiedAt())
-                            .limitTime(post.getLimitTime())
-                            .build()
-            );
         }
         return ResponseDto.success(postResponseDtoList);
     }
