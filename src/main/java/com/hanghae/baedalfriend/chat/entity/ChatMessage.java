@@ -22,7 +22,7 @@ public class ChatMessage implements Serializable  {
 
     //메세지 타입: 입장, 채팅, 퇴장
     public enum MessageType {
-        ENTER, TALK, QUIT
+        ENTER, TALK, EXIT , FINISH
     }
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +57,7 @@ public class ChatMessage implements Serializable  {
         this.message = chatMessageRequestDto.getMessage();
         this.roomId = chatMessageRequestDto.getRoomId();
         this.sender = chatMessageRequestDto.getSender();
+        this.createdAt =chatMessageRequestDto.getCreatedAt();
 
 
     }

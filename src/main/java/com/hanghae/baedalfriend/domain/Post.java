@@ -26,6 +26,7 @@ public class Post extends Timestamped implements Serializable {
     @ColumnDefault("false")
     @Builder.Default
     private boolean isDone = false; // 모집중인지
+    private String content; // 내용
     @Column(nullable = false)
     private String category; // 카테고리
     @Column(nullable = false)
@@ -37,7 +38,6 @@ public class Post extends Timestamped implements Serializable {
     @Column(nullable = false)
     private String deliveryTime; //  배달시간
 
-    private String content; // 내용
     @Column
     @ColumnDefault("0")
     private Long deliveryFee; //배달요금
@@ -55,6 +55,8 @@ public class Post extends Timestamped implements Serializable {
 
     @Column(nullable = false)
     private String region; // 지역
+
+    private String keyword; // 검색어
 
     private String nickname; // 닉네임
 
@@ -76,7 +78,7 @@ public class Post extends Timestamped implements Serializable {
 
     // 수정가능한 부분
     public void update(PostRequestDto postRequestDto) {
-        this.content = postRequestDto.getContent();// 내용
+        this.content = postRequestDto.getContent(); // 내용
         this.roomTitle = postRequestDto.getRoomTitle(); // 채팅방제목
         this.category = postRequestDto.getCategory(); // 카테고리
         this.targetName = postRequestDto.getTargetName(); // 식당이름
@@ -115,6 +117,7 @@ public class Post extends Timestamped implements Serializable {
     public void decreaseParticipantNumber() {
         this.participantNumber -=1L;
     }
+
 
     //공구종료
     public void isClosed(boolean isClosed) {
