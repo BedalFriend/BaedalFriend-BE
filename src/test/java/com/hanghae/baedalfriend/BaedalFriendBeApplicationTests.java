@@ -6,10 +6,4 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class BaedalFriendBeApplicationTests {
 
-    @Test
-    void contextLoads() {
-
-    }
-
-
 }

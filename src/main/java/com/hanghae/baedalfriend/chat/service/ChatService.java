@@ -59,12 +59,5 @@ public class ChatService {
     }
 
 
-    @Transactional
-    public Member validateMember(HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Refresh_token"))) {
-            return null;
-        }
-        return tokenProvider.getMemberFromAuthentication();
-    }
 
 }

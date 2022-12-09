@@ -56,11 +56,6 @@ jobs:
             docker stop finalproject
             docker rm finalproject
             docker run -d --rm --name finalproject -p 80:8080 kaifazhehj99/finalproject:latest
-      - name: Setup MySQL
-        uses: samin/mysql-action@v1
-        with:
-          character set server: 'utf8' 
-          mysql database: 'myselectshop' 
-          mysql user: 'admin'
-          mysql password: ${{ secrets.MYSQL_PASSWORD }}
+            docker rmi $(docker images -q)
+
  

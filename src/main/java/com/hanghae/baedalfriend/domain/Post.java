@@ -1,8 +1,10 @@
 package com.hanghae.baedalfriend.domain;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hanghae.baedalfriend.dto.requestdto.PostRequestDto;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -105,22 +107,23 @@ public class Post extends Timestamped implements Serializable {
 
     // 조회수
     public void hitsPost() {
-        this.hits +=1L;
+        this.hits += 1L;
     }
 
     // 참가자수 증가
     public void updateParticipantNumber() {
-        this.participantNumber +=1L;
+        this.participantNumber += 1L;
     }
 
     // 참가자수 감소
     public void decreaseParticipantNumber() {
-        this.participantNumber -=1L;
+        this.participantNumber -= 1L;
     }
 
 
     //공구종료
-    public void isClosed(boolean isClosed) {
+    public void isClosed(boolean isClosed, boolean isDone) {
         this.isClosed = isClosed;
+        this.isDone = isDone;
     }
 }
