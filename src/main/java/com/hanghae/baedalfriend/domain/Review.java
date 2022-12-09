@@ -19,11 +19,11 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
-
+    @Column(nullable = false)
     private int star;//받은 별점
-
+    @Column(nullable = false)
     private Long reviewer;//리뷰남긴 사람 memberId
-
+    @Column(unique = true)
     private String isUnique;
 
     @Convert(converter = ReviewCategoryConverter.class)
