@@ -59,14 +59,6 @@ public class KakaoMemberService {
             kakaoMember = new Member(encodedPassword, profileURL, nickname, kakaoId, email);
             memberRepository.save(kakaoMember);
 
-        } else {
-            String password = UUID.randomUUID().toString();
-            String encodedPassword = passwordEncoder.encode(password);
-            String profileURL = kakaoMemberInfo.getProfileURL();
-            String email = kakaoMemberInfo.getEmail();
-            Long kakaoId = kakaoMemberInfo.getId();
-            kakaoMember = new Member(encodedPassword, profileURL, nickname, kakaoId, email);
-            memberRepository.save(kakaoMember);
         }
 
         //강제 로그인 처리

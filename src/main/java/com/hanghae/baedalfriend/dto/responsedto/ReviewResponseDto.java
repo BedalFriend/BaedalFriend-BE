@@ -12,7 +12,6 @@ import java.util.List;
 @Builder
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ReviewResponseDto {
     private List<ChatRoomMember> chatRoomMemberList;
 
