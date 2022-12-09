@@ -18,10 +18,18 @@ import java.util.Map;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    // 게시물 등록
+    //리뷰창 view
+    @GetMapping(value = "/auth/review/{postId}")
+    public ResponseDto<?> getReview(@PathVariable Long postId, HttpServletRequest request) {
+        return reviewService.getReview(postId, request);
+
+
+    }
+
+    // 리뷰등록
     @PostMapping(value = "/auth/review/{postId}")
-    public ResponseDto<?> createReview(@PathVariable Long postId, @RequestBody List<ReviewRequestDto> reviewRequestDtoList , HttpServletRequest request){
-        return reviewService.createReview(postId,reviewRequestDtoList,request);
+    public ResponseDto<?> createReview(@PathVariable Long postId, @RequestBody List<ReviewRequestDto> reviewRequestDtoList, HttpServletRequest request) {
+        return reviewService.createReview(postId, reviewRequestDtoList, request);
     }
 
 }
