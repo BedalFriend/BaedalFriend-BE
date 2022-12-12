@@ -10,6 +10,7 @@ import com.hanghae.baedalfriend.dto.responsedto.*;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
 import com.hanghae.baedalfriend.repository.*;
 import com.hanghae.baedalfriend.shared.Hits;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.hanghae.baedalfriend.domain.QPost.post;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
+    private final JPAQueryFactory jpaQueryFactory;
     private final HitsRepository hitsRepository;
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
@@ -232,41 +236,12 @@ public class PostService {
     // 전체 게시글 조회
     @Transactional(readOnly = true)
     public ResponseDto<?> getAllPost() {
-        List<Post> allPosts = postRepository.findAllByOrderByModifiedAtDesc();
-        List<GetAllPostResponseDto> getAllPostResponseDtoList = new ArrayList<>();
 
-        for (Post post : allPosts) {
-            if (post.isDone() == false ) {
-                getAllPostResponseDtoList.add(
-                        GetAllPostResponseDto.builder()
-                                .postId(post.getId()) // 게시글 번호
-                                .memberId(post.getMember().getId()) // 회원 번호
-                                .content(post.getContent()) // 게시글 내용
-                                .roomTitle(post.getRoomTitle()) // 채팅방 제목
-                                .region(post.getRegion()) // 지역
-                                .isDone(post.isDone())// 모집중
-                                .isClosed(post.isClosed()) // 나간방
-                                .category(post.getCategory()) //카테고리
-                                .maxCapacity(post.getMaxCapacity()) // 최대인원
-                                .targetAddress(post.getTargetAddress()) // 식당주소
-                                .targetName(post.getTargetName())// 식당이름
-                                .targetAmount(post.getTargetAmount())// 목표금액
-                                .deliveryTime(post.getDeliveryTime()) // 배달시간
-                                .deliveryFee(post.getDeliveryFee()) // 배달요금
-                                .participantNumber(post.getParticipantNumber()) // 참여자수
-                                .gatherName(post.getGatherName()) // 모이는 장소 이름
-                                .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
-                                .hits(post.getHits()) // 조회수
-                                .limitTime(post.getLimitTime()) // 파티모집 마감 시각
-                                .createdAt(post.getCreatedAt()) // 생성일
-                                .modifiedAt(post.getModifiedAt()) // 수정일
-                                .nickname(post.getMember().getNickname()) // 작성자 닉네임
-                                .profileURL(post.getMember().getProfileURL()) // 작성자 프로필 사진
-                                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                                .build()
-                );
-            }
-        }
+        List<Post> getAllPostResponseDtoList = jpaQueryFactory
+                .selectFrom(post)
+                .where(post.isDone.eq(false))
+                .fetch();
+
         return ResponseDto.success(getAllPostResponseDtoList);
     }
 
