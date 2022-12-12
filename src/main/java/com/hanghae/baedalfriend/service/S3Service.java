@@ -78,9 +78,10 @@ public class S3Service {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
     private String createFileName(String fileName) { // 먼저 파일 업로드 시, 파일명을 난수화하기 위해 random으로 돌립니다.
-        // 파일 이름의 길이가 길면 100자로 자르기 (디비의 varchar(255) 제한에 걸리지 않으려고)
+        // 파일 이름의 길이가 길면 50자로 자르기
         if (fileName.length()>100){
-            fileName = fileName.substring(0,100);
+            String filename = fileName.substring(50);
+            return UUID.randomUUID().toString().concat(getFileExtension(filename));
         }
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
     }
