@@ -15,7 +15,7 @@ import static com.hanghae.baedalfriend.domain.QPost.post;
 public class DeleteScheduler {
 
 
-    private final PostRepository postRepository;
+
     private final DeleteService deleteService;
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -37,7 +37,7 @@ public class DeleteScheduler {
         LocalDateTime now = LocalDateTime.now();
         List<Post> postList = jpaQueryFactory
                 .selectFrom(post)
-                .where(post.isClosed.notIn(true).or(post.isDone.notIn(true)))
+                .where(post.isDone.eq(false))
                 .fetch();
         for (Post post : postList) {
             if (now.isAfter(post.getLimitTime())) {
@@ -50,7 +50,7 @@ public class DeleteScheduler {
     public void hardDelete() {
         List<Post> postList = jpaQueryFactory
                 .selectFrom(post)
-                .where(post.isClosed.isTrue())
+                .where(post.isClosed.eq(false))
                 .fetch();
         for (Post post : postList) {
                 deleteService.delete(post);
