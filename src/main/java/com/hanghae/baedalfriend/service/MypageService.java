@@ -66,14 +66,14 @@ public class MypageService {
                 member.setProfileURL(profileURL);
             }
         }else { // 등록된 이미지가 있을 때 (url)
-            if(multipartFile != null){
+            if (multipartFile != null) {
                 s3Service.deleteImage(profileURL);
                 profileURL = s3Service.upload(multipartFile);
                 member.setProfileURL(profileURL);
             }else {//null로 들어올 때  1.등록된 이미지 파일이 있으면 이미지를 그대로 보낸다  2. 등록된 이미지가 있을 때 기본이미지로 보낸다\
-                if(requestDto != null) {
+                if (requestDto != null) {
                     String profile = requestDto.getProfileURL();
-                    if(Objects.equals(profile, "BasicProfile")) {
+                    if (Objects.equals(profile, "BasicProfile")) {
                         s3Service.deleteImage(profileURL);
                         profileURL = null;
                         member.setProfileURL(null);
@@ -96,9 +96,9 @@ public class MypageService {
     public ResponseDto<?> updateAddress(Long memberId, MypageRequestDto requestDto, UserDetailsImpl userDetails) {
         Member member = findMember(memberId, userDetails);
 
-        if(requestDto != null) { //주소가 들어올 때
+        if (requestDto != null) { //주소가 들어올 때
             String address = requestDto.getAddress();
-            if(address == null) {
+            if (address == null) {
                 member.setAddress(member.getAddress());
             } else {
                 member.setAddress(requestDto.getAddress());
@@ -144,6 +144,7 @@ public class MypageService {
                             .roomTitle(post.getRoomTitle()) // 채팅방 제목
                             .region(post.getRegion()) // 지역
                             .isDone(post.isDone())// 모집중
+                            .isClosed(post.isClosed()) // 나간방
                             .category(post.getCategory()) //카테고리
                             .maxCapacity(post.getMaxCapacity()) // 최대인원
                             .targetAddress(post.getTargetAddress()) // 식당주소
