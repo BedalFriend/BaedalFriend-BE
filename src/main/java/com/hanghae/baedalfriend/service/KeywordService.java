@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Component
@@ -78,9 +77,19 @@ public class KeywordService {
         // 회원 유효성 검사
         Member member = validateMember(request);
 
-        // 최근 등록순 7개만 조회
-         List<Keyword> keywordList = keywordRepository.findAllByMemberIdOrderByCreatedAtDesc(member.getId()).stream().limit(7).collect(Collectors.toList());
+        //최근 등록순 7개 조회
+        List<Keyword> keywordList2 = keywordRepository.findAllByMemberIdOrderByCreatedAtDesc(member.getId()).stream().limit(7).toList();
+
+        //LinkedHashMap 사용해서 중복 제거
+        HashMap<String, Keyword> keywordMap = new LinkedHashMap<>();
+        for (Keyword keyword : keywordList2) {
+            keywordMap.put(keyword.getKeyword(), keyword);
+        }
+
+        List<Keyword> keywordList = new ArrayList<>(keywordMap.values());
+
         return ResponseDto.success(keywordList);
+
     }
 
     // 검색어 삭제
