@@ -29,6 +29,19 @@ public class SearchController {
         }
     }
 
+    // fulltext search
+    @GetMapping(value = "/fulltext")
+    public ResponseDto<?> getFullTextSearch(@RequestParam("page") int page,
+                                            @RequestParam("size") int size,
+                                            @RequestParam("keyword") String keyword,
+                                            @RequestParam("sortBy") String sortBy,
+                                            @RequestParam("isAsc") boolean isAsc) {
+        {
+            page = page - 1;
+            return searchService.getFullTextSearch(keyword, page, size, sortBy, isAsc);
+        }
+    }
+
     // 카테고리 검색 + 정렬 기능 (로그인 전 현재 위치 입력하지 않은 사용자)
     @GetMapping(value = "/category/search")
     public ResponseDto<?> getCategorySearch(@RequestParam("page") int page,

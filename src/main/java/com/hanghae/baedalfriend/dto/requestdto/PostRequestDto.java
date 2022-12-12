@@ -1,6 +1,7 @@
 package com.hanghae.baedalfriend.dto.requestdto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,6 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class PostRequestDto {
     private Long id;
 
@@ -64,6 +64,28 @@ public class PostRequestDto {
     private LocalDateTime limitTime; // 마감시각
 
    private String region; //지역
+
+    @QueryProjection
+    public PostRequestDto( Long id, String roomTitle, boolean isDone, String content, String category, String targetAddress, String targetName, Long targetAmount, String deliveryTime, Long maxCapacity, Long deliveryFee, Long participantNumber, String gatherName, String gatherAddress, String nickname, String profileURL, Long hits, LocalDateTime limitTime, String region) {
+        this.id = id;
+        this.roomTitle = roomTitle;
+        this.isDone = isDone;
+        this.category = category;
+        this.targetAddress = targetAddress;
+        this.targetName = targetName;
+        this.targetAmount = targetAmount;
+        this.deliveryTime = deliveryTime;
+        this.maxCapacity = maxCapacity;
+        this.deliveryFee = deliveryFee;
+        this.participantNumber = participantNumber;
+        this.gatherName = gatherName;
+        this.gatherAddress = gatherAddress;
+        this.nickname = nickname;
+        this.profileURL = profileURL;
+        this.hits = hits;
+        this.limitTime = limitTime;
+        this.region = region;
+    }
 
     public Long getPostId() {
         return id;
