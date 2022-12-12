@@ -56,3 +56,6 @@ jobs:
             docker stop finalproject
             docker rm finalproject
             docker run -d --rm --name finalproject -p 80:8080 kaifazhehj99/finalproject:latest
+            
+
+ 

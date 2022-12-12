@@ -1,19 +1,49 @@
 package com.hanghae.baedalfriend.domain;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PostTest {
 
     @Test
+    @DisplayName("정상 케이스")
     void getRoomTitle() {
-
+        Post post = Post.builder()
+                .id(1L)
+                .member(Member.builder().id(1L).build())
+                .roomTitle("baedalfriend")
+                .isDone(false)
+                .content("content")
+                .category("category")
+                .targetName("targetName")
+                .targetAddress("targetAddress")
+                .targetAmount(10000L)
+                .deliveryTime("deliveryTime")
+                .deliveryFee(1000L)
+                .gatherName("gatherName")
+                .gatherAddress("gatherAddress")
+                .maxCapacity(10L)
+                .region("region")
+                .keyword("keyword")
+                .nickname( "nickname")
+                .profileURL("profileURL")
+                .hits(0L)
+                .participantNumber(0L)
+                .isClosed(false)
+                .build();
+        assertNotNull(post);
+        assertEquals(post.getRoomTitle(), "baedalfriend");
 
     }
 
     @Test
     void update() {
+
+
     }
 
     @Test
