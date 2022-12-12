@@ -328,49 +328,4 @@ public class SearchService {
         }
         return ResponseDto.success(postResponseDtoList);
     }
-
-
-    // fulltext search
-    @Transactional(readOnly = true)
-    public ResponseDto<?> getFullTextSearch(String keyword, int page, int size, String sortBy, boolean isAsc) {
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-
-        Sort sort = Sort.by(direction, sortBy); // 정렬
-        Pageable pageable = PageRequest.of(page, size, sort); // 페이징
-
-        Page<Post> posts = postRepository.findByRoomTitleContaining(keyword, pageable); // 검색
-        List<PostResponseDto> postResponseDtoList = new ArrayList<>(); // 리턴할 리스트
-
-        LocalDateTime now = LocalDateTime.now();
-
-        for (Post post : posts) {
-            if (post.isDone() == false ) {// isDone 상태에 따라서 build패턴에 넣는값 조절
-                postResponseDtoList.add(
-                        PostResponseDto.builder()
-                                .postId(post.getId())
-                                .memberId(post.getMember().getId())
-                                .roomTitle(post.getRoomTitle()) // 채팅방 제목
-                                .isDone(post.isDone()) // 모집중
-                                .region(post.getRegion()) // 지역
-                                .category(post.getCategory()) //카테고리
-                                .targetAddress(post.getTargetAddress()) // 식당주소
-                                .targetName(post.getTargetName()) // 식당이름
-                                .targetAmount(post.getTargetAmount()) // 목표금액
-                                .deliveryTime(post.getDeliveryTime()) // 배달시간
-                                .maxCapacity(post.getMaxCapacity()) // 최대수용인원
-                                .deliveryFee(post.getDeliveryFee()) // 배달요금
-                                .participantNumber(post.getParticipantNumber()) // 참여자수
-                                .gatherName(post.getGatherName()) // 모이는 장소 이름
-                                .gatherAddress(post.getGatherAddress()) // 모이는 장소 주소
-                                .hits(post.getHits()) // 조회수
-                                .chatRoomMembers(chatRoomMemberJpaRepository.findAllByChatRoom(chatRoomJpaRepository.findById(post.getId()).get())) //참여중인 유저목록
-                                .createdAt(post.getCreatedAt()) // 생성일
-                                .modifiedAt(post.getModifiedAt()) // 수정일
-                                .limitTime(post.getLimitTime()) // 파티모집 마감 시각
-                                .build()
-                );
-            }
-        }
-        return ResponseDto.success(postResponseDtoList);
-    }
 }
