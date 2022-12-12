@@ -1,25 +1,33 @@
 package com.hanghae.baedalfriend.chat.service;
+
 import com.hanghae.baedalfriend.chat.dto.response.ChatRoomResponseDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
-import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
+import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
+import com.hanghae.baedalfriend.domain.QPost;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
 import com.hanghae.baedalfriend.repository.PostRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
+
+
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +41,7 @@ public class ChatRoomService {
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final ChatRoomMemberJpaRepository chatRoomMemberJpaRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
-    private final ChatService chatService;
+    private final JPAQueryFactory jpaQueryFactory;
 
     @PostConstruct
     private void init() {
@@ -61,12 +69,15 @@ public class ChatRoomService {
     public ResponseDto<?> enterRoom(Long roomId, HttpServletRequest request) {
         Member member = validateMember(request);
         //해당 유저가 진행중인 게시글에 참여하고 있는지 확인하는 로직
-        List<ChatRoomMember> chatRoomMemberList=chatRoomMemberJpaRepository.findByMember(member);
-        for (int i = 0; i < chatRoomMemberList.size() ; i++) {
-            if(!chatRoomMemberJpaRepository.findByMember(member).get(i).getChatRoom().getPost().isClosed()){
-                return ResponseDto.fail("No_Admittance", "중복입장 불가능");
-            }
+
+        Post post = jpaQueryFactory
+                .selectFrom(QPost.post)
+                .where(QPost.post.isClosed.eq(false).and(QPost.post.id.eq(roomId)))
+                .fetchOne();
+        if(post!=null){
+            return ResponseDto.fail("No_Admittance", "중복입장 불가능");
         }
+
 
         if (null == member) {
             return ResponseDto.fail("MEMBER_NOT_FOUND", "사용자를 찾을 수 없습니다.");
