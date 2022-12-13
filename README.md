@@ -53,3 +53,7 @@
 
 <br>
 <h3 align="center"><b><a href="https://github.com/orgs/BedalFriend/projects/1/views/1"> 개발 진행상황 </a></b></h3>
+
+---
+<h3 align="center"><b><a href="https://github.com/orgs/BedalFriend/projects/1/views/1"> Backend팀원 </a></b></h3>
+
