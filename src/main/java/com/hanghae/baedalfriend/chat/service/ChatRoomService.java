@@ -72,7 +72,7 @@ public class ChatRoomService {
 
         Post post = jpaQueryFactory
                 .selectFrom(QPost.post)
-                .where(QPost.post.isClosed.eq(false).and(QPost.post.id.eq(roomId)))
+                .where(QPost.post.isClosed.eq(false))
                 .fetchOne();
         if(post!=null){
             return ResponseDto.fail("No_Admittance", "중복입장 불가능");
