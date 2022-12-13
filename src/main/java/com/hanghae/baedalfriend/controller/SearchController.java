@@ -29,6 +29,7 @@ public class SearchController {
         }
     }
 
+
     // 카테고리 검색 + 정렬 기능 (로그인 전 현재 위치 입력하지 않은 사용자)
     @GetMapping(value = "/category/search")
     public ResponseDto<?> getCategorySearch(@RequestParam("page") int page,

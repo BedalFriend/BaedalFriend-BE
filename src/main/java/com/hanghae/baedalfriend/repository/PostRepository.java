@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;
-public interface PostRepository extends JpaRepository<Post,Long> {
+public interface PostRepository extends JpaRepository<Post,Long> ,PostRepositoryCustom {
     List<Post> findAllByOrderByModifiedAtDesc();
     List<Post> findAllByCategory(String category);
     //제목 검색 + 정렬 // 로그인 안했을때 메인검색 타는 쿼리
@@ -33,5 +33,6 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
     //인기검색
     Page<Post> findByOrderByHitsDesc(Pageable pageable);
+
 
 }
