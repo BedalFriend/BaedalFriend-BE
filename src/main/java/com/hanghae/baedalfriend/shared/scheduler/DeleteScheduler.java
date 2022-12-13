@@ -7,14 +7,17 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import static com.hanghae.baedalfriend.domain.QPost.post;
+
 @Component
 @RequiredArgsConstructor
 public class DeleteScheduler {
 
 
-    private final PostRepository postRepository;
-    private final DeleteService deleteService;
 
+    private final DeleteService deleteService;
+    private final JPAQueryFactory jpaQueryFactory;
 
 
     @Scheduled(cron = "0 0/1 * * * ?  ") //1분마다 실행
@@ -32,7 +35,10 @@ public class DeleteScheduler {
 
     public void softDelete() {
         LocalDateTime now = LocalDateTime.now();
-        List<Post> postList = postRepository.findAll();
+        List<Post> postList = jpaQueryFactory
+                .selectFrom(post)
+                .where(post.isDone.eq(false))
+                .fetch();
         for (Post post : postList) {
             if (now.isAfter(post.getLimitTime())) {
 
@@ -42,11 +48,12 @@ public class DeleteScheduler {
     }
 
     public void hardDelete() {
-        List<Post> postList = postRepository.findAll();
+        List<Post> postList = jpaQueryFactory
+                .selectFrom(post)
+                .where(post.isClosed.eq(false))
+                .fetch();
         for (Post post : postList) {
-            if (post.isClosed()) {
                 deleteService.delete(post);
-            }
         }
     }
 
