@@ -5,9 +5,9 @@ import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-//
+
 import javax.servlet.http.HttpServletRequest;
-//
+
 
 @RequiredArgsConstructor
 @Controller
@@ -35,7 +35,7 @@ public class ChatRoomController {
     }
 
 
-    //채팅방 나가기
+    //채팅방 종료
     @PutMapping("/channel/close/{roomId}")
     @ResponseBody
     public ResponseDto<?> closeChatRoom(@PathVariable Long roomId, HttpServletRequest request) {
