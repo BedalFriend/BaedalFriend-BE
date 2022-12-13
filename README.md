@@ -1,5 +1,7 @@
 # BaedalFriend-BE
-BaedalFriend-BE
+ <br>
+<img src="https://myawsbucketds.s3.ap-northeast-2.amazonaws.com/0d288f58-c949-4498-8693-0fe249f29820.png">
+<br>
 <h3 align="center"><b>실전 프로젝트</b></h3>
 
 <h4 align="center">📆 2022.11.04 ~ 2022.12.16</h4>
