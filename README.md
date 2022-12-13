@@ -9,7 +9,9 @@
 <h4 align="center">📆 2022.11.04 ~ 2022.12.16</h4>
 
 ---
-
+<br>
+<h3 align="center"><b>Project Architecture </b></h3>
+<img src="https://myawsbucketds.s3.ap-northeast-2.amazonaws.com/efc1f1fa-3aa2-4c3e-bafc-a78dbd2de947.png">
 <br>
 <h3 align="center"><b>🛠 Tech Stack 🛠</b></h3>
 <p align="center">
