@@ -56,10 +56,10 @@
 
 ---
 <h3 align="center"><b> Backend팀원 </b></h3>
-- <img src="https://img.shields.io/badge/백두산-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/BaekDoosan-maker">
-         <img src="https://img.shields.io/badge/Plo_GitHub-609926?style=for-the-badge&logo=github&logoColor=white"/> </a>
-- <img src="https://img.shields.io/badge/이호진-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/kaifazhe99">
-         <img src="https://img.shields.io/badge/Denia_Github-609926?style=for-the-badge&logo=github&logoColor=white"/> </a>
-- <img src="https://img.shields.io/badge/강소연-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/ssoyeon59">
-         <img src="https://img.shields.io/badge/SomeD_Github-609926?style=for-the-badge&logo=github&logoColor=white"/> </a>
+ <img src="https://img.shields.io/badge/백두산-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/BaekDoosan-maker">
+         <img src="https://img.shields.io/badge/GitHub-609926?style=for-the-badge&logo=github&logoColor=white"/> </a>
+ <img src="https://img.shields.io/badge/이호진-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/kaifazhe99">
+         <img src="https://img.shields.io/badge/Github-609926?style=for-the-badge&logo=github&logoColor=white"/> </a>
+ <img src="https://img.shields.io/badge/강소연-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/ssoyeon59">
+         <img src="https://img.shields.io/badge/Github-609926?style=for-the-badge&logo=github&logoColor=white"/> </a>
 
