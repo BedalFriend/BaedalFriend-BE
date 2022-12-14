@@ -4,11 +4,13 @@ import com.hanghae.baedalfriend.chat.dto.response.ChatRoomResponseDto;
 import com.hanghae.baedalfriend.chat.entity.ChatMessage;
 import com.hanghae.baedalfriend.chat.entity.ChatRoom;
 import com.hanghae.baedalfriend.chat.entity.ChatRoomMember;
+import com.hanghae.baedalfriend.chat.entity.QChatRoomMember;
 import com.hanghae.baedalfriend.chat.repository.ChatMessageJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomJpaRepository;
 import com.hanghae.baedalfriend.chat.repository.ChatRoomMemberJpaRepository;
 import com.hanghae.baedalfriend.domain.Member;
 import com.hanghae.baedalfriend.domain.Post;
+import com.hanghae.baedalfriend.domain.QMember;
 import com.hanghae.baedalfriend.domain.QPost;
 import com.hanghae.baedalfriend.dto.responsedto.ResponseDto;
 import com.hanghae.baedalfriend.jwt.TokenProvider;
@@ -26,7 +28,10 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 
-
+import static com.hanghae.baedalfriend.domain.QPost.post;
+import static com.hanghae.baedalfriend.chat.entity.QChatRoomMember.chatRoomMember;
+import static com.hanghae.baedalfriend.chat.entity.QChatRoom.chatRoom;
+import static com.hanghae.baedalfriend.domain.QMember.member;
 
 
 @Service
@@ -58,7 +63,7 @@ public class ChatRoomService {
     }
 
     // 채팅방 생성
-    public void createChatRoom(Post post,  HttpServletRequest request) {
+    public void createChatRoom(Post post, HttpServletRequest request) {
         Member member = validateMember(request);
         String founder = member.getNickname();
         ChatRoom chatRoom = new ChatRoom(founder, post);
@@ -72,14 +77,15 @@ public class ChatRoomService {
         Member member = validateMember(request);
         //해당 유저가 진행중인 게시글에 참여하고 있는지 확인하는 로직
 
-        List<Post> post = jpaQueryFactory
-                .selectFrom(QPost.post)
-                .where(QPost.post.isClosed.eq(false).and(QPost.post.member.eq(member)))
+        List<ChatRoomMember> chatRoomMembers = jpaQueryFactory
+                .selectFrom(chatRoomMember)
+                .where(chatRoomMember.chatRoom.post.isDone.eq(false)
+                        .and(chatRoomMember.member.eq(member)))
                 .fetch();
-        if(post.size()!=0){
+
+        if (chatRoomMembers.size() != 0) {
             return ResponseDto.fail("No_Admittance", "중복입장 불가능");
         }
-
 
         if (null == member) {
             return ResponseDto.fail("MEMBER_NOT_FOUND", "사용자를 찾을 수 없습니다.");
@@ -166,7 +172,7 @@ public class ChatRoomService {
                 () -> new NullPointerException("해당하는 채팅방이 없습니다.")
         );
 
-        chatRoom.getPost().isClosed(true,true);
+        chatRoom.getPost().isClosed(true, true);
         return ResponseDto.success("채팅방종료");
     }
 
