@@ -66,15 +66,17 @@ public class ChatRoomService {
         hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getId(), chatRoom);
     }
 
+    //채팅방 입장
+
     public ResponseDto<?> enterRoom(Long roomId, HttpServletRequest request) {
         Member member = validateMember(request);
         //해당 유저가 진행중인 게시글에 참여하고 있는지 확인하는 로직
 
-        Post post = jpaQueryFactory
+        List<Post> post = jpaQueryFactory
                 .selectFrom(QPost.post)
-                .where(QPost.post.isClosed.eq(false))
-                .fetchOne();
-        if(post!=null){
+                .where(QPost.post.isClosed.eq(false).and(QPost.post.member.eq(member)))
+                .fetch();
+        if(post.size()!=0){
             return ResponseDto.fail("No_Admittance", "중복입장 불가능");
         }
 
@@ -136,12 +138,12 @@ public class ChatRoomService {
                 () -> new NullPointerException("해당하는 채팅방이 없습니다.")
         );
 
-        // 나간 유저를 채팅방 리스트에서 제거
+        // 나간 유저를 채팅방 리스트에서 장
         chatRoomMemberJpaRepository.deleteByMember(member);
         return ResponseDto.success("퇴장성공");
     }
 
-    //채팅방종료
+    //공동구매종료
     @Transactional
     public ResponseDto<?> closeChatRoom(Long roomId, HttpServletRequest request) {
         Member member = validateMember(request);
@@ -168,7 +170,7 @@ public class ChatRoomService {
         return ResponseDto.success("채팅방종료");
     }
 
-    //채팅방 하나 불러오기
+    //특정 채팅방 조회
     public ResponseDto<?> findRoom(Long roomId, HttpServletRequest request) {
         Member member = validateMember(request);
         ChatRoom chatRoom = chatRoomJpaRepository.findById(roomId).orElseThrow(
