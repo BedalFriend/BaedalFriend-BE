@@ -50,7 +50,7 @@ public class DeleteScheduler {
     public void hardDelete() {
         List<Post> postList = jpaQueryFactory
                 .selectFrom(post)
-                .where(post.isClosed.eq(false))
+                .where(post.isClosed.eq(true))
                 .fetch();
         for (Post post : postList) {
                 deleteService.delete(post);
