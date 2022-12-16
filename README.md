@@ -143,7 +143,10 @@
 <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
 <img src="https://img.shields.io/badge/Sentry-362D59?style=flat&logo=Sentry&logoColor=white" height="23"/>
 
-
+## ERD 
+<br>
+<h3 aligin="center"><b><a href="https://myawsbucketds.s3.ap-northeast-2.amazonaws.com/533c41c9-343d-46b8-9424-7267e0c0007b.png"> 배달프렌드 ERD </a></b></h3>
+  
 <br>
 <h3 align="center"><b><a href="https://github.com/BedalFriend/BaedalFriend-BE/wiki/API-%EB%AA%85%EC%84%B8%EC%84%9C">⚙ API 명세서 ⚙</a></b></h3>
 
