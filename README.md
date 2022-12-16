@@ -155,12 +155,10 @@
 ---
 <br>
 <h3 align="center"><b> Team </b></h3>
+# 👨‍👨‍👧‍👧배달프렌드 팀원 소개
 
+|백두산|이호진|강소연|김재명|김정은|노희진|지영주|
+|---|---|---|---|---|---|---|
+|[Github](https://github.com/BaekDoosan-maker)|[Github](https://github.com/kaifazhe99)|[Github](https://github.com/BaekDoosan-maker)|[Github](https://github.com/JMKiim)|[Github](https://github.com/mingki831)|[Github](https://github.com/rohheejin)|[Behance](https://www.behance.net/yjj91179bea)|
+|BE / Spring|BE / Spring|BE / Spring|FE / React| FE / React |FE / React|Designer|
 ---
-- <img src="https://img.shields.io/badge/백두산-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/BaekDoosan-maker">
-         <img src="https://img.shields.io/badge/GitHub-609926?style=for-the-badge&logo=github&logoColor=white"/> </a>
-- <img src="https://img.shields.io/badge/이호진-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/kaifazhe99?tab=following">
-         <img src="https://img.shields.io/badge/Github-609926?style=for-the-badge&logo=github&logoColor=white"/> </a>
-- <img src="https://img.shields.io/badge/강소연-609926?style=for-the-badge&logo=Spring&logoColor=white"/>  <a href="https://github.com/ssoyeon59">
-         <img src="https://img.shields.io/badge/Github-609926?style=for-the-badge&logo=github&logoColor=white"/> </a>
-
