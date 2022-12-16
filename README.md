@@ -129,7 +129,7 @@
 |@mysql/mysql|^6.1.2| 데이터 베이스는 관계형 데이터베이스인 mySql을 사용했습니다.|
 |@S3/S3|^2.2.6| Amazaon S3는 내구성이 좋고, 용도에 따른 접속관리를 통해 안정성 또한 좋습니다. 사실상 무제한적인 용량으로 많은 인원이 저희 플랫폼에 가입할경우 문제없이 프로필 이미지 파일을 업로드 할 수 있도록 Amazon S3를 사용했습니다. |
 ---
-<h3 align="center"><b>🛠 Tech Stack 🛠</b></h3>
+<h3><b>🛠 Tech Stack 🛠</b></h3>
 <p>
 <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=github&logoColor=white">
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
@@ -143,21 +143,24 @@
 <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
 <img src="https://img.shields.io/badge/Sentry-362D59?style=flat&logo=Sentry&logoColor=white" height="23"/>
 
-## ERD 
-<br>
-<h3 aligin="center"><b><a href="https://myawsbucketds.s3.ap-northeast-2.amazonaws.com/533c41c9-343d-46b8-9424-7267e0c0007b.png"> 배달프렌드 ERD </a></b></h3>
-  
-<br>
-<h3 align="center"><b><a href="https://github.com/BedalFriend/BaedalFriend-BE/wiki/API-%EB%AA%85%EC%84%B8%EC%84%9C">⚙ API 명세서 ⚙</a></b></h3>
 
 ---
 
-<br>
-<h3 align="center"><b><a href="https://github.com/orgs/BedalFriend/projects/1/views/1"> 개발 진행상황 </a></b></h3>
+## 배달프렌드 ERD & API 명세서 
+
+<h3><b><a href="https://myawsbucketds.s3.ap-northeast-2.amazonaws.com/533c41c9-343d-46b8-9424-7267e0c0007b.png">⚙ 배달프렌드 ERD ⚙</a></b></h3>
+
+<h3><b><a href="https://github.com/BedalFriend/BaedalFriend-BE/wiki/API-%EB%AA%85%EC%84%B8%EC%84%9C">⚙ API 명세서 ⚙</a></b></h3>
+
+---
+
+## 배달프렌드 이슈 & 프로젝트 진행내역
+
+<h3><b><a href="https://github.com/orgs/BedalFriend/projects/1/views/1">⚙ 이슈&프로젝트 진행내역 ⚙</a></b></h3>
 
 ---
 <br>
-<h3 align="center"><b> Team </b></h3>
+
 # 👨‍👨‍👧‍👧배달프렌드 팀원 소개
 
 |백두산|이호진|강소연|김재명|김정은|노희진|지영주|
