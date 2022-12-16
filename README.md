@@ -142,7 +142,7 @@
   <img src="https://camo.githubusercontent.com/a831a652fb5370367ee71ae4255e39623b9edf7e60ffbcf7ba356b1d82a09538/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f737072696e672064617461206a70612d4632384431413f7374796c653d666f722d7468652d6261646765266c6f676f3d737072696e67646174616a7061266c6f676f436f6c6f723d7768697465">
 <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
 <img src="https://img.shields.io/badge/Sentry-362D59?style=flat&logo=Sentry&logoColor=white" height="23"/>
----
+
 
 <br>
 <h3 align="center"><b><a href="https://github.com/BedalFriend/BaedalFriend-BE/wiki/API-%EB%AA%85%EC%84%B8%EC%84%9C">⚙ API 명세서 ⚙</a></b></h3>
