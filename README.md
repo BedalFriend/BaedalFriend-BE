@@ -148,7 +148,7 @@
 
 ## 배달프렌드 ERD & API 명세서 
 
-<h3><b><a href="https://myawsbucketds.s3.ap-northeast-2.amazonaws.com/533c41c9-343d-46b8-9424-7267e0c0007b.png">⚙ 배달프렌드 ERD ⚙</a></b></h3>
+<h3><b><a href="https://myawsbucketds.s3.ap-northeast-2.amazonaws.com/b8f674f0-ca94-4fba-ae96-e732068cac04.png">⚙ 배달프렌드 ERD ⚙</a></b></h3>
 
 <h3><b><a href="https://github.com/BedalFriend/BaedalFriend-BE/wiki/API-%EB%AA%85%EC%84%B8%EC%84%9C">⚙ API 명세서 ⚙</a></b></h3>
 
