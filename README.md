@@ -163,7 +163,7 @@
 
 # 👨‍👨‍👧‍👧배달프렌드 팀원 소개
 
-|백두산|이호진|강소연|김재명|김정은|노희진|지영주|
+|⚜백두산|이호진|강소연|김재명|김정은|노희진|지영주|
 |---|---|---|---|---|---|---|
 |[Github](https://github.com/BaekDoosan-maker)|[Github](https://github.com/kaifazhe99)|[Github](https://github.com/BaekDoosan-maker)|[Github](https://github.com/JMKiim)|[Github](https://github.com/mingki831)|[Github](https://github.com/rohheejin)|[Behance](https://www.behance.net/yjj91179bea)|
 |BE / Spring|BE / Spring|BE / Spring|FE / React| FE / React |FE / React|Designer|
