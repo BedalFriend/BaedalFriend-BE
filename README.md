@@ -121,7 +121,8 @@
 |이름|버전|설명|
 |---|---|---|
 |@sentry/react @sentry/tracing|^7.23.0|실시간 로그 취합 및 분석 도구, 모니터링 플랫폼입니다.<br/>더 나아가서 발생한 로그들을 시각화 도구로 쉽게 분석할 수 있어 사용했습니다.|
-|@redis/redis|^6.0.16| 메시지큐역할로 레디스를 사용했고 백그라운드에서 실행하여 실시간 채팅기능을 구현했습니다.|
+|@redis/redis|^6.0.16| 레디스는 소켓 서버 간 세션 정보를 공유하기 위해 사용했습니다.
+예를 들면, 접속한 소켓 서버가 서로 다른 클라이언트 간의 통신을 하려고 할 때 레디스 Pub/Sub 을 이용 하여 데이터를 전달합니다.|
 |@spring/spring-boot|^2.7.5| AutoConfig로 복잡한 설정을 자동화해주고, 내장 웹서버인 톱캣으로 빠르게 서버 실행이 가능하도록 해주고 , 실행가능한 JAR로 개발가능하고, 자주 사용되는 라이브러리들의 버전관리자동화를 해주는 편리함때문에 사용했습니다.|
 |@springDataJPA/springDataJPA|^2.7.5|  Spring framework에서 JPA를 편리하게 사용할 수 있도록 예상가능하고 반복적인 코드들을 줄여줘서 빠른개발을 도와주기 때문에 사용했습니다.|
 |@lombok/lombok|^1.18.16|  저희는 Lombok을 지원하는 IDE인 인텔리J를 사용했고, Java의 라이브러리로 반복되는 메소드를 Annotation을 사용해서 자동으로 작성해주는 Lombok은 DTO나 Model, Entity가 가지는 프로퍼티에 대해 매번 Getter나 Setter, 생성자를 작성해줘야 하는 반복적인 코드를 줄여주기 때문에 사용했습니다.|
@@ -165,6 +166,6 @@
 
 |⚜백두산|이호진|강소연|김재명|김정은|노희진|지영주|
 |---|---|---|---|---|---|---|
-|[Github](https://github.com/BaekDoosan-maker)|[Github](https://github.com/kaifazhe99)|[Github](https://github.com/BaekDoosan-maker)|[Github](https://github.com/JMKiim)|[Github](https://github.com/mingki831)|[Github](https://github.com/rohheejin)|[Behance](https://www.behance.net/yjj91179bea)|
+|[Github](https://github.com/BaekDoosan-maker)|[Github](https://github.com/kaifazhe99)|[Github](https://github.com/ssoyeon59)|[Github](https://github.com/JMKiim)|[Github](https://github.com/mingki831)|[Github](https://github.com/rohheejin)|[Behance](https://www.behance.net/yjj91179bea)|
 |BE / Spring|BE / Spring|BE / Spring|FE / React| FE / React |FE / React|Designer|
 ---
