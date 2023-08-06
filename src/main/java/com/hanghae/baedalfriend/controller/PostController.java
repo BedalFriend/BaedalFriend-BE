@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/v1")
 public class PostController {
     private final PostService postService;
-
     @ApiImplicitParams({
             @ApiImplicitParam(
                     name = "Refresh_Token",
@@ -24,15 +23,11 @@ public class PostController {
                     paramType = "header"
             )
     })
-
-
-
     // 게시물 등록
     @PostMapping(value = "/auth/posts")
     public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) throws Exception {
         return postService.createPost(requestDto, request);
     }
-
     // 전체 게시물 조회
     @GetMapping(value = "/posts")
     public ResponseDto<?> getAllPosts() {

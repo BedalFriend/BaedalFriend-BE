@@ -6,17 +6,25 @@ buildscript {
 }
 
 
+//buildscript {
+//    ext {
+//        queryDslVersion = "5.0.0"
+//    }
+//}
+
 plugins {
     id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     // 2. querydsl plugins 추가
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
+    //querydsl 추가
+//    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.hanghae'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = '11'
 
 configurations {
     compileOnly {
@@ -59,9 +67,18 @@ dependencies {
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
+    // querydsl 추가
+//    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+//    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
     // implementation
     implementation 'mysql:mysql-connector-java'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // websocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:sockjs-client:1.5.1'
+    implementation 'org.webjars:stomp-websocket:2.3.4'
 
     //jwt setting
     implementation 'com.auth0:java-jwt:3.19.2'
@@ -75,8 +92,8 @@ dependencies {
     implementation 'org.webjars:stomp-websocket:2.3.4'
 
     //Redis
-    implementation 'javax.xml.bind:jaxb-api'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+//    implementation 'javax.xml.bind:jaxb-api'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     //S3
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.332'
@@ -91,10 +108,30 @@ dependencies {
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
 }
+// querydsl 추가 시작
+//def querydslDir = "$buildDir/generated/querydsl"
+//
+//querydsl {
+//    jpa = true
+//    querydslSourcesDir = querydslDir
+//}
+//sourceSets {
+//    main.java.srcDir querydslDir
+//}
+//compileQuerydsl{
+//    options.annotationProcessorPath = configurations.querydsl
+//}
+//configurations {
+//    compileOnly {
+//        extendsFrom annotationProcessor
+//    }
+//    querydsl.extendsFrom compileClasspath
+//}
+// querydsl 추가 끝
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
 
 jar {
     enabled = false
