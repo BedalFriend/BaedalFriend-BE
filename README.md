@@ -69,12 +69,17 @@
 <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=github&logoColor=white">
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 <img src="https://img.shields.io/badge/linux-FCC624?style=for-the-badge&logo=linux&logoColor=black">
+  <img src="https://img.shields.io/badge/Jpa-232F3E?style=for-the-badge&logo=aws&logoColor=white">
+   <img src="https://img.shields.io/badge/MySql-232F3E?style=for-the-badge&logo=aws&logoColor=white">
+   <img src="https://img.shields.io/badge/Websocket-232F3E?style=for-the-badge&logo=aws&logoColor=white">
+   <img src="https://img.shields.io/badge/Oath2-232F3E?style=for-the-badge&logo=aws&logoColor=white">
+   <img src="https://img.shields.io/badge/Jwt-232F3E?style=for-the-badge&logo=aws&logoColor=white">
+   <img src="https://img.shields.io/badge/KakaoLogin-232F3E?style=for-the-badge&logo=aws&logoColor=white">
+
+  
+  
 <img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=aws&logoColor=white">
-<img src="https://camo.githubusercontent.com/fd0243cd3a19485c4f3e82eba48aa53c2b13c41bd87164fc77fa3498ec09d2bd/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f616d617a6f6e73332d3536394133313f7374796c653d666f722d7468652d6261646765266c6f676f3d616d617a6f6e7333266c6f676f436f6c6f723d7768697465"> <img src="https://camo.githubusercontent.com/5309f68ce19176455b37914291b345bd7af797286bbf86aaabdc23d398e93586/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f617773206563322d3037433136303f7374796c653d666f722d7468652d6261646765266c6f676f3d616d617a6f6e65617773266c6f676f436f6c6f723d7768697465">
-  <img src="https://camo.githubusercontent.com/c0f71772804c86d0f144ce923027aff25e8d761c6b791d2de6698607e21c5465/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f677261646c652d3032333033413f7374796c653d666f722d7468652d6261646765266c6f676f3d677261646c65266c6f676f436f6c6f723d7768697465">
-  <img src="https://camo.githubusercontent.com/c1fc168684171582321954905e8b9dc4f59810243ed85e645f3b7938ee3145cb/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6d7973716c2d3434373941313f7374796c653d666f722d7468652d6261646765266c6f676f3d6d7973716c266c6f676f436f6c6f723d7768697465">
-  <img src="https://camo.githubusercontent.com/54a2f74f3cbb3cb810faa417fb9a56b4d947be01e868ab624b3f251a1062257b/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f67697468756220616374696f6e732d3230383846463f7374796c653d666f722d7468652d6261646765266c6f676f3d67697468756220616374696f6e73266c6f676f436f6c6f723d7768697465">
-  <img src="https://camo.githubusercontent.com/a831a652fb5370367ee71ae4255e39623b9edf7e60ffbcf7ba356b1d82a09538/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f737072696e672064617461206a70612d4632384431413f7374796c653d666f722d7468652d6261646765266c6f676f3d737072696e67646174616a7061266c6f676f436f6c6f723d7768697465">
+
 <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
 <img src="https://img.shields.io/badge/Sentry-362D59?style=flat&logo=Sentry&logoColor=white" height="23"/>
 
