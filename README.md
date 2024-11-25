@@ -112,8 +112,9 @@
 
 
 # ♻️ 아키텍처
+![image](https://github.com/user-attachments/assets/d67b51b0-1a83-42c7-8ccd-8ee95a459735)
 
-![image]([https://myawsbucketds.s3.ap-northeast-2.amazonaws.com/5bd10535-4015-4c2f-a338-cd00701cbf29.png](https://doosane.s3.us-east-1.amazonaws.com/%EB%B0%B0%EB%8B%AC%ED%94%84%EB%A0%8C%EB%93%9C_%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png))
+
 
 <br/>
 
