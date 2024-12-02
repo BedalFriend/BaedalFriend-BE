@@ -1,11 +1,11 @@
 # <h1>배달 프렌드 BaedalFriend 📆 2022.11.04 ~ 2022.12.16</h1>
 
-👉🏻 [<img src="https://img.shields.io/badge/배달프렌드-FF5B15?style=flat&logo=PWA&logoColor=white" height="23"/> Click!!](https://www.baedalfriend.app) 👈🏻  
-<br>
 
+<br/>
 # 👫 배달프렌드는
 모집글을 등록하거나 검색하여 주변에서 함께 배달을 시킬 프렌드를 찾는다는 의미로,  
-**" 비싼 배달비 및 최소배달금액 때문에 배달을 망설이는 사람들을 위한 공동 배달서비스 "** 입니다.  
+
+비싼 배달비 및 최소배달금액 때문에 배달을 망설이는 사람들을 위한 공동 배달서비스입니다.  
 <br/>
 
 # 💡 프로젝트 개요
